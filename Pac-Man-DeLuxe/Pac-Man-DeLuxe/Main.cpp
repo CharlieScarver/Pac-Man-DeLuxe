@@ -1,6 +1,7 @@
 #include <iostream>
 #include "SDL.h"
 #include "SDL_main.h"
+#include "Game.h"
 
 // Following the Google C++ Style Guide 
 // https://google.github.io/styleguide/cppguide.html
@@ -19,6 +20,9 @@ extern "C"
 int main(int argc, char* argv[])
 {
 	std::cout << "Hi" << std::endl;
+
+	Game* game = new Game();
+	game->run();
 
 	return 0;
 }
