@@ -1,4 +1,4 @@
-#include "Map.h"
+﻿#include "Map.h"
 #include <iostream>
 #include <fstream>
 
@@ -34,8 +34,55 @@ void Map::LoadMapFromFile(const char* file_name) {
 				tile_y,
 				this->TILE_WIDTH_,
 				this->TILE_HEIGHT_,
-				0,
-				0
+				EMPTY
+			);
+			this->SetTile(tile_x, tile_y, new_tile);
+			tile_y++;
+			break;
+		case '=':
+			// Set proper tile
+			new_tile = new Tile(
+				tile_x,
+				tile_y,
+				this->TILE_WIDTH_,
+				this->TILE_HEIGHT_,
+				WALL_HORIZONTAL_TOP
+			);
+			this->SetTile(tile_x, tile_y, new_tile);
+			tile_y++;
+			break;
+		case '═':
+			// Set proper tile
+			new_tile = new Tile(
+				tile_x,
+				tile_y,
+				this->TILE_WIDTH_,
+				this->TILE_HEIGHT_,
+				WALL_HORIZONTAL_TOP
+			);
+			this->SetTile(tile_x, tile_y, new_tile);
+			tile_y++;
+			break;
+		case '|':
+			// Set proper tile
+			new_tile = new Tile(
+				tile_x,
+				tile_y,
+				this->TILE_WIDTH_,
+				this->TILE_HEIGHT_,
+				WALL_VERTICAL_LEFT
+			);
+			this->SetTile(tile_x, tile_y, new_tile);
+			tile_y++;
+			break;
+		case '!':
+			// Set proper tile
+			new_tile = new Tile(
+				tile_x,
+				tile_y,
+				this->TILE_WIDTH_,
+				this->TILE_HEIGHT_,
+				WALL_VERTICAL_RIGHT
 			);
 			this->SetTile(tile_x, tile_y, new_tile);
 			tile_y++;
