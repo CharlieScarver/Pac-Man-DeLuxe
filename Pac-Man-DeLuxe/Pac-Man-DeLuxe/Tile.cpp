@@ -1,10 +1,64 @@
 #include "Tile.h"
 
-Tile::Tile(float x, float y, float width, float height, int sprite_sheet_x, int sprite_sheet_y) 
+Tile::Tile(float x, float y, float width, float height, TileType type)
 	: GameObject(x, y, width, height) {
-	this->sprite_sheet_x_ = sprite_sheet_x;
-	this->sprite_sheet_y_ = sprite_sheet_y;
-	this->is_solid = true;
+	this->type_ = type;
+
+	switch (this->type_)
+	{
+        case EMPTY:
+            this->sprite_sheet_x_ = 0;
+            this->sprite_sheet_y_ = 0;
+            this->is_solid = false;
+        case WALL_HORIZONTAL_TOP:
+            this->sprite_sheet_x_ = 8;
+            this->sprite_sheet_y_ = 0;
+            this->is_solid = true;
+        case WALL_HORIZONTAL_BOTTOM:
+            this->sprite_sheet_x_ = 16;
+            this->sprite_sheet_y_ = 0;
+            this->is_solid = true;
+        case WALL_VERTICAL_LEFT:
+            this->sprite_sheet_x_ = 24;
+            this->sprite_sheet_y_ = 0;
+            this->is_solid = true;
+        case WALL_VERTICAL_RIGHT:
+            this->sprite_sheet_x_ = 32;
+            this->sprite_sheet_y_ = 0;
+            this->is_solid = true;
+        case WALL_ROUNDED_TOP_LEFT:
+            this->sprite_sheet_x_ = 40;
+            this->sprite_sheet_y_ = 0;
+            this->is_solid = true;
+        case WALL_ROUNDED_TOP_RIGHT:
+            this->sprite_sheet_x_ = 48;
+            this->sprite_sheet_y_ = 0;
+            this->is_solid = true;
+        case WALL_ROUNDED_BOTTOM_LEFT:
+            this->sprite_sheet_x_ = 0;
+            this->sprite_sheet_y_ = 0;
+            this->is_solid = true;
+        case WALL_ROUNDED_BOTTOM_RIGHT:
+            this->sprite_sheet_x_ = 0;
+            this->sprite_sheet_y_ = 0;
+            this->is_solid = true;
+        case WALL_INNER_CORNER_TOP_LEFT:
+            this->sprite_sheet_x_ = 0;
+            this->sprite_sheet_y_ = 0;
+            this->is_solid = true;
+        case WALL_INNER_CORNER_TOP_RIGHT:
+            this->sprite_sheet_x_ = 0;
+            this->sprite_sheet_y_ = 0;
+            this->is_solid = true;
+        case WALL_INNER_CORDER_BOTTOM_LEFT:
+            this->sprite_sheet_x_ = 0;
+            this->sprite_sheet_y_ = 0;
+            this->is_solid = true;
+        case WALL_INNER_CORNER_BOTTOM_RIGHT:
+            this->sprite_sheet_x_ = 0;
+            this->sprite_sheet_y_ = 0;
+            this->is_solid = true;
+	}
 }
 
 Tile::~Tile() {}
