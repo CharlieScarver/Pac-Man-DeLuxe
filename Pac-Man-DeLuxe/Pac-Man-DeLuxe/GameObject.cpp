@@ -2,12 +2,12 @@
 
 int GameObject::current_id_ = 0;
 
-GameObject::GameObject(float x, float y, float width, float height) {
+GameObject::GameObject(float draw_x, float draw_y, float width, float height) {
 	this->id_ = ++current_id_;
-	this->x_ = x;
-	this->y_ = y;
-	this->width_ = width;
-	this->height_ = height;
+	this->render_x_ = draw_x;
+	this->render_y_ = draw_y;
+	this->render_width_ = width;
+	this->render_height_ = height;
 }
 
 GameObject::~GameObject() {}

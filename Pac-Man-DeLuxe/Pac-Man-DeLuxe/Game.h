@@ -1,5 +1,7 @@
 #pragma once
 #include "SDL.h"
+#include "SDL_image.h"
+#include "AssetLoader.h"
 #include "Map.h"
 
 class Game {
@@ -24,6 +26,7 @@ private:
 	void cleanup();
 
 public:
+	AssetLoader* asset_loader_;
 	Map* map_;
 
 	Game();

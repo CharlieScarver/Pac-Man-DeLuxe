@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "SDL_image.h"
 #include <iostream>
 
 Game::Game() {
@@ -10,12 +9,17 @@ Game::Game() {
 	this->texture_ = nullptr;
 	this->source_rect_ = nullptr;
 	this->destination_rect_ = nullptr;
+
+	this->asset_loader_ = nullptr;
+	this->map_ = nullptr;
 }
 
 Game::~Game() {
 }
 
 int Game::init(const char* title, int x, int y, int width, int height, bool fullscreen) {
+	this->is_running_ = true;
+
 	int flags = 0;
 	if (fullscreen) {
 		flags = SDL_WINDOW_FULLSCREEN;
@@ -31,28 +35,38 @@ int Game::init(const char* title, int x, int y, int width, int height, bool full
 
 
 	this->window_ = SDL_CreateWindow(title, x, y, width, height, flags);
-	if (this->window_) {
-		std::cout << "Window created." << std::endl;
+	if (this->window_ == nullptr) {
+		std::cout << "Error creating window:" << SDL_GetError() << std::endl;
 	}
+	std::cout << "Window created." << std::endl;
 
 	this->renderer_ = SDL_CreateRenderer(window_, -1, 0);
-	if (this->renderer_) {
-		std::cout << "Renderer created." << std::endl;
+	if (this->renderer_ == nullptr) {
+		std::cout << "Error creating renderer:" << SDL_GetError() << std::endl;
+	}
+	std::cout << "Renderer created." << std::endl;
+
+	// ==============
+	
+	// Initialize asset loader and load the predefined assets
+	this->asset_loader_ = new AssetLoader();
+
+	if (this->asset_loader_->Init() != 0) {
+		std::cout << "Error initializing asset loader: " << SDL_GetError() << std::endl;
+		return -1;
 	}
 
-	this->is_running_ = true;
+	if (this->asset_loader_->LoadAssets(renderer_) != 0) {
+		std::cout << "Error loading assets: " << SDL_GetError() << std::endl;
+		return -1;
+	}
+
 	// ==============
 
-	this->map_ = new Map(11, 12);
+	this->map_ = new Map();
 	map_->LoadMapFromFile("Assets/Maps/level0.txt");
 
 	// ==============
-	// Load support for PNG images
-	int format_flags = IMG_INIT_PNG;
-	int img_init = IMG_Init(format_flags) != 0;
-	if ((img_init & format_flags) != format_flags) {
-		std::cout << "IMG init error: " << SDL_GetError() << std::endl;
-	}
 
 	this->destination_rect_ = new SDL_Rect();
 	this->destination_rect_->x = 0;
@@ -94,28 +108,31 @@ void Game::render() {
 	}
 
 	int current_frame = 0;
-	SDL_Rect* source_rect = new SDL_Rect();
-	source_rect->x = current_frame * 16;
-	source_rect->y = 0;
-	source_rect->w = 16;
-	source_rect->h = 16;
+	SDL_Rect source_rect;
+	source_rect.x = current_frame * 16;
+	source_rect.y = 0;
+	source_rect.w = 16;
+	source_rect.h = 16;
 
 	this->destination_rect_->x = 84;
 	this->destination_rect_->y = 84;
 
-	if (SDL_RenderCopyEx(this->renderer_, this->texture_, source_rect, this->destination_rect_, 0, NULL, SDL_FLIP_HORIZONTAL) != 0) {
+	if (SDL_RenderCopyEx(this->renderer_, this->texture_, &source_rect, this->destination_rect_, 0, NULL, SDL_FLIP_HORIZONTAL) != 0) {
 		std::cout << "Render copy ex error: " << SDL_GetError() << std::endl;
 	}
 
-	this->map_->Render(this->renderer_);
+	this->map_->Render(this->renderer_, this->asset_loader_);
 
 	// Update the screen with the composed backbuffer
 	SDL_RenderPresent(this->renderer_);
 }
 
 void Game::cleanup() {
-	// Unload the dynamically loaded image libraries
-	IMG_Quit();
+	// Free allocated memory and cleanup libraries loaded in asset loader
+	delete this->map_;
+	delete this->asset_loader_;
+	delete this->destination_rect_;
+
 	// Close and cleanup all SDL systems
 	SDL_Quit();
 	std::cout << "Cleanup finished." << std::endl;

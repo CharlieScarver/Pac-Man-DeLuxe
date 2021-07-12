@@ -1,5 +1,6 @@
 #pragma once
 #include "SDL.h"
+#include "AssetLoader.h"
 
 class GameObject {
 private:
@@ -13,11 +14,11 @@ protected:
 public:
 	// Unique ID of the GameObject instance (First instance ID = 1)
 	int id_;
-	float x_;
-	float y_;
-	float width_;
-	float height_;
+	// IRenderable?
+	float render_x_;
+	float render_y_;
+	float render_width_;
+	float render_height_;
 
-	virtual void update() = 0;
-	virtual void render(SDL_Renderer* renderer) = 0;
+	virtual void render(SDL_Renderer* renderer, AssetLoader* asset_loader) = 0;
 };

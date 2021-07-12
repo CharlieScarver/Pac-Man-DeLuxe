@@ -37,6 +37,12 @@
     <Filter Include="Assets\Maps">
       <UniqueIdentifier>{582b8caf-d62f-4089-9fc9-8693f8a176ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\AssetLoader">
+      <UniqueIdentifier>{04a8653e-40e7-4241-bd3e-c27607eb7127}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AssetLoader">
+      <UniqueIdentifier>{7d661936-536c-4ef9-929f-985844388ae0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -57,6 +63,9 @@
     <ClCompile Include="Tile.cpp">
       <Filter>Source Files\Map</Filter>
     </ClCompile>
+    <ClCompile Include="AssetLoader.cpp">
+      <Filter>Source Files\AssetLoader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -76,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="Map.h">
       <Filter>Header Files\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetLoader.h">
+      <Filter>Header Files\AssetLoader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

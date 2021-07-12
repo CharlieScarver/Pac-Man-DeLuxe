@@ -1,6 +1,13 @@
 #pragma once
 #include "GameObject.h"
 
+#define TILE_SPRITE_WIDTH 8
+#define TILE_SPRITE_HEIGHT 8
+
+// Determines the scale of the tiles (has to be a multiple of TILE_SPRITE_WIDTH)
+#define TILE_WIDTH 24
+#define TILE_HEIGHT 24
+
 typedef enum {
 	EMPTY,
 	WALL_HORIZONTAL_TOP,
@@ -10,11 +17,7 @@ typedef enum {
 	WALL_ROUNDED_TOP_LEFT,
 	WALL_ROUNDED_TOP_RIGHT,
 	WALL_ROUNDED_BOTTOM_LEFT,
-	WALL_ROUNDED_BOTTOM_RIGHT,
-	WALL_INNER_CORNER_TOP_LEFT,
-	WALL_INNER_CORNER_TOP_RIGHT,
-	WALL_INNER_CORDER_BOTTOM_LEFT,
-	WALL_INNER_CORNER_BOTTOM_RIGHT
+	WALL_ROUNDED_BOTTOM_RIGHT
 } TileType;
 
 class Tile : GameObject {
@@ -23,13 +26,22 @@ protected:
 	int sprite_sheet_y_;
 
 public:
-	bool is_solid;
+	// Tile properties
 	TileType type_;
+	bool is_solid;
+	// Column = width
+	int map_x_;
+	// Row = height
+	int map_y_;
 
-	Tile(float x, float y, float width, float height, TileType type);
+	// Tile contents
+	bool contains_player;
+	bool contains_ghost;
+	// Item* contained_item;
+
+	Tile(int x, int y, TileType type);
 	~Tile();
 
-	void update() override;
-	void render(SDL_Renderer* renderer) override;
+	void render(SDL_Renderer* renderer, AssetLoader* asset_loader) override;
 };
 

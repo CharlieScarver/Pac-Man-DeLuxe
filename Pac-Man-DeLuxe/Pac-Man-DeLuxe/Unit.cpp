@@ -18,6 +18,6 @@ void Unit::update() {
 
 }
 
-void Unit::render(SDL_Renderer* renderer) {
+void Unit::render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 
 }
