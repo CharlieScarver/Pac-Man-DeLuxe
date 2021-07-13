@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 	std::cout << "Hi" << std::endl;
 
 	Game* game = new Game();
-	game->run();
+	game->Run();
 
 	return 0;
 }

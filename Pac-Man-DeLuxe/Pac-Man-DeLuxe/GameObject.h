@@ -20,5 +20,5 @@ public:
 	float render_width_;
 	float render_height_;
 
-	virtual void render(SDL_Renderer* renderer, AssetLoader* asset_loader) = 0;
+	virtual void Render(SDL_Renderer* renderer, AssetLoader* asset_loader) = 0;
 };

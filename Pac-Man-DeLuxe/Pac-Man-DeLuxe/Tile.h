@@ -20,8 +20,8 @@ typedef enum {
 	WALL_ROUNDED_BOTTOM_RIGHT
 } TileType;
 
-class Tile : GameObject {
-protected:
+class Tile final : public GameObject {
+private:
 	int sprite_sheet_x_;
 	int sprite_sheet_y_;
 
@@ -42,6 +42,6 @@ public:
 	Tile(int x, int y, TileType type);
 	~Tile();
 
-	void render(SDL_Renderer* renderer, AssetLoader* asset_loader) override;
+	void Render(SDL_Renderer* renderer, AssetLoader* asset_loader) override;
 };
 

@@ -14,10 +14,10 @@ void Unit::ManageAnimation() {
 
 }
 
-void Unit::update() {
+void Unit::Update() {
 
 }
 
-void Unit::render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
+void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 
 }

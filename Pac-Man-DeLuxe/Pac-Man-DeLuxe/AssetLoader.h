@@ -1,7 +1,7 @@
 #pragma once
 #include "SDL_image.h"
 
-class AssetLoader {
+class AssetLoader final {
 public:
 	AssetLoader();
 	~AssetLoader();

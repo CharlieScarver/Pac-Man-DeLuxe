@@ -21,7 +21,7 @@ Game::Game() {
 Game::~Game() {
 }
 
-int Game::init(const char* title, int x, int y, int width, int height, bool fullscreen) {
+int Game::Init(const char* title, int x, int y, int width, int height, bool fullscreen) {
 	this->is_running_ = true;
 
 	int flags = 0;
@@ -87,7 +87,7 @@ int Game::init(const char* title, int x, int y, int width, int height, bool full
 	return 0;
 }
 
-void Game::events(SDL_Event* event) {
+void Game::Events(SDL_Event* event) {
 	switch (event->type) {
 		case SDL_KEYDOWN:
 			// Check which key was pressed
@@ -114,6 +114,17 @@ void Game::events(SDL_Event* event) {
 					break;
 			}
 			break;
+		case SDL_KEYUP:
+			// Check which key was pressed
+			switch (event->key.keysym.sym) {
+				case SDLK_LEFT:
+					this->is_moving_left_ = false;
+					break;
+				case SDLK_RIGHT:
+					this->is_moving_right_ = false;
+					break;
+				}
+			break;
 		case SDL_QUIT:
 			this->is_running_ = false;
 			std::cout << "Quit event received. (Close)" << std::endl;
@@ -121,7 +132,7 @@ void Game::events(SDL_Event* event) {
 	}
 }
 
-void Game::update(float delta_time) {
+void Game::Update(float delta_time) {
 	if (this->is_moving_left_) {
 		this->destination_rect_->x -= delta_time;
 	} else if (this->is_moving_right_) {
@@ -129,7 +140,7 @@ void Game::update(float delta_time) {
 	}
 }
 
-void Game::render() {
+void Game::Render() {
 	// Rendering functions updates a backbuffer, instead of  the screen directly
 	if (SDL_SetRenderDrawColor(this->renderer_, 100, 149, 240, 0) != 0) {
 		std::cout << "Set draw color error: " << SDL_GetError() << std::endl;
@@ -157,7 +168,7 @@ void Game::render() {
 	SDL_RenderPresent(this->renderer_);
 }
 
-void Game::cleanup() {
+void Game::Cleanup() {
 	// Free allocated memory and cleanup libraries loaded in asset loader
 	delete this->map_;
 	delete this->asset_loader_;
@@ -168,9 +179,9 @@ void Game::cleanup() {
 	std::cout << "Cleanup finished." << std::endl;
 }
 
-int Game::run() {
-	if (this->init("SDL Game Window", 50, 50, this->default_window_width, this->default_window_height, false) != 0) {
-		this->cleanup();
+int Game::Run() {
+	if (this->Init("SDL Game Window", 50, 50, this->default_window_width, this->default_window_height, false) != 0) {
+		this->Cleanup();
 		return -1;
 	}
 
@@ -179,7 +190,7 @@ int Game::run() {
 
 	while (this->is_running_) {
 		while (SDL_PollEvent(&Event)) {
-			this->events(&Event);
+			this->Events(&Event);
 		}
 
 		// Calculate delta time
@@ -187,11 +198,11 @@ int Game::run() {
 		const float delta_time = (float)((now - before) * 1000 / (float)SDL_GetPerformanceFrequency());
 		before = now;
 
-		this->update(delta_time);
-		this->render();
+		this->Update(delta_time);
+		this->Render();
 	}
 
-	this->cleanup();
+	this->Cleanup();
 
 	std::cout << "Closing..." << std::endl;
 	return 0;

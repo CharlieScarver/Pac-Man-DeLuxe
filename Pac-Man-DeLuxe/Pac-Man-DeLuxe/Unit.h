@@ -13,6 +13,6 @@ public:
 	int current_tile_row_;
 	int current_tile_col_;
 
-	virtual void update() = 0;
-	virtual void render(SDL_Renderer* renderer, AssetLoader* asset_loader) override;
+	virtual void Update() = 0;
+	virtual void Render(SDL_Renderer* renderer, AssetLoader* asset_loader) override;
 };

@@ -4,7 +4,7 @@
 #include "AssetLoader.h"
 #include "Map.h"
 
-class Game {
+class Game final {
 private:
 	// Original 224x288
 	// Scale 3:1
@@ -23,11 +23,11 @@ private:
 	bool is_moving_right_;
 	bool is_idle_;
 
-	int init(const char* title, int x, int y, int width, int height, bool fullscreen);
-	void update(float delta_time);
-	void events(SDL_Event* event);
-	void render();
-	void cleanup();
+	int Init(const char* title, int x, int y, int width, int height, bool fullscreen);
+	void Update(float delta_time);
+	void Events(SDL_Event* event);
+	void Render();
+	void Cleanup();
 
 public:
 	AssetLoader* asset_loader_;
@@ -36,5 +36,5 @@ public:
 	Game();
 	~Game();
 
-	int run();
+	int Run();
 };

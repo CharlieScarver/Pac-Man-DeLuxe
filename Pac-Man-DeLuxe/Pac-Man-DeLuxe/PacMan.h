@@ -11,6 +11,6 @@ protected:
 public:
 	int lives_;
 
-	void update() override;
-	void render(SDL_Renderer* renderer) override;
+	void Update() override;
+	void Render(SDL_Renderer* renderer) override;
 };

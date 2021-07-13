@@ -102,7 +102,7 @@ void Map::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 		for (int j = 0; j < MAP_HEIGHT_IN_TILES; j++)
 		{
 			// Render tile
-			this->tile_matrix_[i][j]->render(renderer, asset_loader);
+			this->tile_matrix_[i][j]->Render(renderer, asset_loader);
 		}
 	}
 }

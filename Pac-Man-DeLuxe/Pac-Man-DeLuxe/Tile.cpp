@@ -62,7 +62,7 @@ Tile::Tile(int x, int y, TileType type)
 
 Tile::~Tile() {}
 
-void Tile::render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
+void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	// Rendering functions updates a backbuffer, instead of  the screen directly
 	SDL_SetRenderDrawColor(renderer, 50, 25, 200, 0);
 
