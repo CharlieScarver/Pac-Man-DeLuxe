@@ -17,10 +17,14 @@ private:
 
 	SDL_Texture* texture_;
 	SDL_Rect* source_rect_;
-	SDL_Rect* destination_rect_;
+	SDL_FRect* destination_rect_;
+
+	bool is_moving_left_;
+	bool is_moving_right_;
+	bool is_idle_;
 
 	int init(const char* title, int x, int y, int width, int height, bool fullscreen);
-	void update();
+	void update(float delta_time);
 	void events(SDL_Event* event);
 	void render();
 	void cleanup();

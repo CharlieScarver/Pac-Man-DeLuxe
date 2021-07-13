@@ -6,6 +6,8 @@ protected:
 	PacMan(float x, float y, float width, float height);
 	~PacMan();
 
+	void HandleInput();
+
 public:
 	int lives_;
 
