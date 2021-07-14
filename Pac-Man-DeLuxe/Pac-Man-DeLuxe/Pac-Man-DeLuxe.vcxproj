@@ -158,6 +158,7 @@ XCOPY "$(ProjectDir)"\Libraries\SDL2_image-2.0.5\lib\x64\*.DLL "$(TargetDir)" /D
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Pacman.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Unit.cpp" />
   </ItemGroup>

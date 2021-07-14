@@ -5,8 +5,8 @@
 #define TILE_SPRITE_HEIGHT 8
 
 // Determines the scale of the tiles (has to be a multiple of TILE_SPRITE_WIDTH)
-#define TILE_WIDTH 24
-#define TILE_HEIGHT 24
+#define TILE_RENDER_WIDTH 24
+#define TILE_RENDER_HEIGHT 24
 
 typedef enum {
 	EMPTY,
@@ -22,8 +22,8 @@ typedef enum {
 
 class Tile final : public GameObject {
 private:
-	int sprite_sheet_x_;
-	int sprite_sheet_y_;
+	int spritesheet_x_;
+	int spritesheet_y_;
 
 public:
 	// Tile properties

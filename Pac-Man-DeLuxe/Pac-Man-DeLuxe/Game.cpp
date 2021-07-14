@@ -138,6 +138,8 @@ void Game::Update(float delta_time) {
 	} else if (this->is_moving_right_) {
 		this->destination_rect_->x += delta_time;
 	}
+
+	this->map_->Update(delta_time);
 }
 
 void Game::Render() {
@@ -157,11 +159,11 @@ void Game::Render() {
 	source_rect.y = 0;
 	source_rect.w = 16;
 	source_rect.h = 16;
-
+	/*
 	if (SDL_RenderCopyExF(this->renderer_, this->texture_, &source_rect, this->destination_rect_, 0, NULL, SDL_FLIP_HORIZONTAL) != 0) {
 		std::cout << "Render copy ex error: " << SDL_GetError() << std::endl;
 	}
-
+	*/
 	this->map_->Render(this->renderer_, this->asset_loader_);
 
 	// Update the screen with the composed backbuffer

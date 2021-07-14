@@ -4,6 +4,7 @@
 
 Map::Map() {
 	this->file_name_ = nullptr;
+	this->pacman_ = nullptr;
 }
 
 Map::~Map() {
@@ -28,7 +29,15 @@ void Map::LoadMapFromFile(const char* file_name) {
 		std::cout << "Error opening file." << std::endl;
 	}
 
+	float pacman_x, pacman_y;
+	ifs >> pacman_x >> pacman_y;
+	
+	std::cout << "Spawned Pacman at (" << pacman_x << ", " << pacman_y << ")" << std::endl;
+
+	// Consume the newline
 	char c;
+	ifs >> std::noskipws >> c;
+
 	// Columns = width
 	int tile_x = 0;
 	// Rows = height
@@ -81,6 +90,10 @@ void Map::LoadMapFromFile(const char* file_name) {
 		}
 	}
 
+	ifs.close();
+
+	this->pacman_ = new PacMan(pacman_x, pacman_y, UNIT_RENDER_WIDTH, UNIT_RENDER_HEIGHT, this);
+
 	std::cout << "Map loaded." << std::endl;
 }
 
@@ -90,6 +103,10 @@ Tile* Map::GetTile(int x, int y) {
 
 void Map::SetTile(int x, int y, Tile* tile) {
 	this->tile_matrix_[x][y] = tile;
+}
+
+void Map::Update(float delta_time) {
+	this->pacman_->Update(delta_time, this);
 }
 
 void Map::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
@@ -105,4 +122,6 @@ void Map::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 			this->tile_matrix_[i][j]->Render(renderer, asset_loader);
 		}
 	}
+
+	this->pacman_->Render(renderer, asset_loader);
 }

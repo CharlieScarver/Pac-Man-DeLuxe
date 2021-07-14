@@ -1,7 +1,7 @@
 #include "Tile.h"
 
 Tile::Tile(int x, int y, TileType type)
-	: GameObject(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT) {
+	: GameObject(x * TILE_RENDER_WIDTH, y * TILE_RENDER_HEIGHT, TILE_RENDER_WIDTH, TILE_RENDER_HEIGHT) {
 	this->type_ = type;
     this->map_x_ = x;
     this->map_y_ = y;
@@ -13,48 +13,48 @@ Tile::Tile(int x, int y, TileType type)
         case EMPTY:
             // Empty tiles doesn't have a sprite and are not rendered
             // They receive sprite sheet coordinates (0,0) as the defaults
-            this->sprite_sheet_x_ = 0;
-            this->sprite_sheet_y_ = 0;
+            this->spritesheet_x_ = 0;
+            this->spritesheet_y_ = 0;
             this->is_solid = false;
             break;
         case WALL_HORIZONTAL_TOP:
-            this->sprite_sheet_x_ = 0;
-            this->sprite_sheet_y_ = 0;
+            this->spritesheet_x_ = 0;
+            this->spritesheet_y_ = 0;
             this->is_solid = true;
             break;
         case WALL_HORIZONTAL_BOTTOM:
-            this->sprite_sheet_x_ = 8;
-            this->sprite_sheet_y_ = 0;
+            this->spritesheet_x_ = 8;
+            this->spritesheet_y_ = 0;
             this->is_solid = true;
             break;
         case WALL_VERTICAL_LEFT:
-            this->sprite_sheet_x_ = 16;
-            this->sprite_sheet_y_ = 0;
+            this->spritesheet_x_ = 16;
+            this->spritesheet_y_ = 0;
             this->is_solid = true;
             break;
         case WALL_VERTICAL_RIGHT:
-            this->sprite_sheet_x_ = 24;
-            this->sprite_sheet_y_ = 0;
+            this->spritesheet_x_ = 24;
+            this->spritesheet_y_ = 0;
             this->is_solid = true;
             break;
         case WALL_ROUNDED_TOP_LEFT:
-            this->sprite_sheet_x_ = 0;
-            this->sprite_sheet_y_ = 8;
+            this->spritesheet_x_ = 0;
+            this->spritesheet_y_ = 8;
             this->is_solid = true;
             break;
         case WALL_ROUNDED_TOP_RIGHT:
-            this->sprite_sheet_x_ = 8;
-            this->sprite_sheet_y_ = 8;
+            this->spritesheet_x_ = 8;
+            this->spritesheet_y_ = 8;
             this->is_solid = true;
             break;
         case WALL_ROUNDED_BOTTOM_LEFT:
-            this->sprite_sheet_x_ = 16;
-            this->sprite_sheet_y_ = 8;
+            this->spritesheet_x_ = 16;
+            this->spritesheet_y_ = 8;
             this->is_solid = true;
             break;
         case WALL_ROUNDED_BOTTOM_RIGHT:
-            this->sprite_sheet_x_ = 24;
-            this->sprite_sheet_y_ = 8;
+            this->spritesheet_x_ = 24;
+            this->spritesheet_y_ = 8;
             this->is_solid = true;
             break;
 	}
@@ -67,8 +67,8 @@ void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	SDL_SetRenderDrawColor(renderer, 50, 25, 200, 0);
 
     SDL_Rect spritesheet_rect;
-    spritesheet_rect.x = this->sprite_sheet_x_;
-    spritesheet_rect.y = this->sprite_sheet_y_;
+    spritesheet_rect.x = this->spritesheet_x_;
+    spritesheet_rect.y = this->spritesheet_y_;
     spritesheet_rect.w = TILE_SPRITE_WIDTH;
     spritesheet_rect.h = TILE_SPRITE_HEIGHT;
 
