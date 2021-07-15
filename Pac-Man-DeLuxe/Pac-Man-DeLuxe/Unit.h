@@ -42,7 +42,7 @@ protected:
 
 	Tile* GetTileForUnitCoordinates(float x, float y);
 
-	void ManageMovement(float delta_time, Map* map);
+	void ManageMovement(float delta_time);
 	void ManageAnimation(float delta_time);
 
 public:
@@ -50,6 +50,6 @@ public:
 	int current_tile_x_;
 	int current_tile_y_;
 
-	virtual void Update(float delta_time, Map* map);
+	virtual void Update(float delta_time, const Uint8* keyboard_state);
 	virtual void Render(SDL_Renderer* renderer, AssetLoader* asset_loader) override;
 };

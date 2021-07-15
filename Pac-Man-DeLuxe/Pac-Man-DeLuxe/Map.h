@@ -21,6 +21,6 @@ public:
 	Tile* GetTile(int x, int y);
 	void SetTile(int x, int y, Tile* tile);
 
-	void Update(float delta_time);
+	void Update(float delta_time, const Uint8* keyboard_state);
 	void Render(SDL_Renderer* renderer, AssetLoader* asset_loader);
 };

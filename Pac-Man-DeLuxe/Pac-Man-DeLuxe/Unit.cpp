@@ -52,12 +52,11 @@ Tile* Unit::GetTileForUnitCoordinates(float x, float y) {
 	return this->map_->GetTile(center_tile_x, center_tile_y);
 }
 
-void Unit::ManageMovement(float delta_time, Map* map) {
+void Unit::ManageMovement(float delta_time) {
 	float future_x = this->render_x_;
 	float future_y = this->render_y_;
 
 	if (this->is_moving_left_) {
-
 		future_x -= this->velocity_x_ * delta_time;
 	} else if (this->is_moving_right_) {
 		future_x += this->velocity_x_ * delta_time;
@@ -70,12 +69,24 @@ void Unit::ManageMovement(float delta_time, Map* map) {
 		future_y += this->velocity_y_ * delta_time;
 	}
 
-	Tile* future_tile = GetTileForUnitCoordinates(future_x, future_y);
-
-	// If tile is solid stop unit can't move to it
-	if (future_tile->is_solid) {
+	// If not moving there's no need to proceed
+	if (future_x == this->render_x_ && future_y == this->render_y_) {
 		return;
 	}
+
+	Tile* future_tile = GetTileForUnitCoordinates(future_x, future_y);
+
+	// If tile is solid stop the unit
+	if (future_tile == nullptr || future_tile->is_solid) {
+		this->is_idle_ = true;
+		this->is_moving_up_ = false;
+		this->is_moving_down_ = false;
+		this->is_moving_left_ = false;
+		this->is_moving_right_ = false;
+		return;
+	}
+
+	std::cout << "Moving to (" << future_x << ", " << future_y << "), tile[ " << future_tile->map_x_ << " ][ " << future_tile->map_y_ << " ]" << std::endl;
 	
 	// If tile is not solid move to the new position
 	this->render_x_ = future_x;
@@ -83,7 +94,7 @@ void Unit::ManageMovement(float delta_time, Map* map) {
 
 	// If tile is not solid => change current tile
 	this->current_tile_x_ = future_tile->map_x_;
-	this->current_tile_y_ = future_tile->map_x_;
+	this->current_tile_y_ = future_tile->map_y_;
 }
 
 void Unit::ManageAnimation(float delta_time) {
@@ -96,15 +107,14 @@ void Unit::ManageAnimation(float delta_time) {
 		if (this->current_animation_frame_ >= this->animation_frames_count_)
 		{
 			this->current_animation_frame_ = 0;
-			std::cout << "Animation reset." << std::endl;
 		}
 
 		this->animation_timer_ = 0.0;
 	}
 }
 
-void Unit::Update(float delta_time, Map* map) {
-	this->ManageMovement(delta_time, map);
+void Unit::Update(float delta_time, const Uint8* keyboard_state) {
+	this->ManageMovement(delta_time);
 	this->ManageAnimation(delta_time);
 }
 

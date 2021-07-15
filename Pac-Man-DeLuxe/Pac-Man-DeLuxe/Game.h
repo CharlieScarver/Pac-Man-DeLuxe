@@ -24,7 +24,7 @@ private:
 	bool is_idle_;
 
 	int Init(const char* title, int x, int y, int width, int height, bool fullscreen);
-	void Update(float delta_time);
+	void Update(float delta_time, const Uint8* keyboard_state);
 	void Events(SDL_Event* event);
 	void Render();
 	void Cleanup();

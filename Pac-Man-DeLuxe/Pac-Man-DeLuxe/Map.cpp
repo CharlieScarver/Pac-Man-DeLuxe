@@ -105,8 +105,8 @@ void Map::SetTile(int x, int y, Tile* tile) {
 	this->tile_matrix_[x][y] = tile;
 }
 
-void Map::Update(float delta_time) {
-	this->pacman_->Update(delta_time, this);
+void Map::Update(float delta_time, const Uint8* keyboard_state) {
+	this->pacman_->Update(delta_time, keyboard_state);
 }
 
 void Map::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {

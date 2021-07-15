@@ -6,16 +6,8 @@ Game::Game() {
 	this->window_ = nullptr;
 	this->renderer_ = nullptr;
 
-	this->texture_ = nullptr;
-	this->source_rect_ = nullptr;
-	this->destination_rect_ = nullptr;
-
 	this->asset_loader_ = nullptr;
 	this->map_ = nullptr;
-
-	this->is_idle_ = false;
-	this->is_moving_left_ = false;
-	this->is_moving_right_ = false;
 }
 
 Game::~Game() {
@@ -37,24 +29,22 @@ int Game::Init(const char* title, int x, int y, int width, int height, bool full
 	}
 	std::cout << "SDL initialized succesfully." << std::endl;
 
-
+	// Create window
 	this->window_ = SDL_CreateWindow(title, x, y, width, height, flags);
 	if (this->window_ == nullptr) {
 		std::cout << "Error creating window:" << SDL_GetError() << std::endl;
 	}
 	std::cout << "Window created." << std::endl;
 
+	// Create renderer
 	this->renderer_ = SDL_CreateRenderer(window_, -1, 0);
 	if (this->renderer_ == nullptr) {
 		std::cout << "Error creating renderer:" << SDL_GetError() << std::endl;
 	}
 	std::cout << "Renderer created." << std::endl;
 
-	// ==============
-	
 	// Initialize asset loader and load the predefined assets
 	this->asset_loader_ = new AssetLoader();
-
 	if (this->asset_loader_->Init() != 0) {
 		std::cout << "Error initializing asset loader: " << SDL_GetError() << std::endl;
 		return -1;
@@ -65,24 +55,9 @@ int Game::Init(const char* title, int x, int y, int width, int height, bool full
 		return -1;
 	}
 
-	// ==============
-
+	// Load map file
 	this->map_ = new Map();
 	map_->LoadMapFromFile("Assets/Maps/level0.txt");
-
-	// ==============
-
-	this->destination_rect_ = new SDL_FRect();
-	this->destination_rect_->x = 84;
-	this->destination_rect_->y = 84;
-	this->destination_rect_->w = 48;
-	this->destination_rect_->h = 48;
-
-	// Image to Surface to Texture
-	SDL_Surface* tempSurface = IMG_Load("Assets/Spritesheets/pac-man-ghosts-sprites.png");
-	this->texture_ = SDL_CreateTextureFromSurface(this->renderer_, tempSurface);
-	// Free the surface
-	SDL_FreeSurface(tempSurface);
 
 	return 0;
 }
@@ -90,40 +65,11 @@ int Game::Init(const char* title, int x, int y, int width, int height, bool full
 void Game::Events(SDL_Event* event) {
 	switch (event->type) {
 		case SDL_KEYDOWN:
-			// Check which key was pressed
-			switch (event->key.keysym.sym) {
-				case SDLK_LEFT:
-					this->is_moving_left_ = true;
-					this->is_moving_right_ = false;
-					this->is_idle_ = false;
-					break;
-				case SDLK_RIGHT:
-					this->is_moving_left_ = false;
-					this->is_moving_right_ = true;
-					this->is_idle_ = false;
-					break;
-				case SDLK_UP:
-				
-					break;
-				case SDLK_DOWN:
-				
-					break;
-				case SDLK_ESCAPE:
-					this->is_running_ = false;
-					std::cout << "Quit event received. (Esc)" << std::endl;
-					break;
+			// Quit if Escape was pressed
+			if (event->key.keysym.sym == SDLK_ESCAPE) {
+				this->is_running_ = false;
+				std::cout << "Quit event received. (Esc)" << std::endl;
 			}
-			break;
-		case SDL_KEYUP:
-			// Check which key was pressed
-			switch (event->key.keysym.sym) {
-				case SDLK_LEFT:
-					this->is_moving_left_ = false;
-					break;
-				case SDLK_RIGHT:
-					this->is_moving_right_ = false;
-					break;
-				}
 			break;
 		case SDL_QUIT:
 			this->is_running_ = false;
@@ -132,14 +78,9 @@ void Game::Events(SDL_Event* event) {
 	}
 }
 
-void Game::Update(float delta_time) {
-	if (this->is_moving_left_) {
-		this->destination_rect_->x -= delta_time;
-	} else if (this->is_moving_right_) {
-		this->destination_rect_->x += delta_time;
-	}
-
-	this->map_->Update(delta_time);
+void Game::Update(float delta_time, const Uint8* keyboard_state) {
+	// Update map
+	this->map_->Update(delta_time, keyboard_state);
 }
 
 void Game::Render() {
@@ -153,17 +94,7 @@ void Game::Render() {
 		std::cout << "Render clear error: " << SDL_GetError() << std::endl;
 	}
 
-	int current_frame = 0;
-	SDL_Rect source_rect;
-	source_rect.x = current_frame * 16;
-	source_rect.y = 0;
-	source_rect.w = 16;
-	source_rect.h = 16;
-	/*
-	if (SDL_RenderCopyExF(this->renderer_, this->texture_, &source_rect, this->destination_rect_, 0, NULL, SDL_FLIP_HORIZONTAL) != 0) {
-		std::cout << "Render copy ex error: " << SDL_GetError() << std::endl;
-	}
-	*/
+	// Render map
 	this->map_->Render(this->renderer_, this->asset_loader_);
 
 	// Update the screen with the composed backbuffer
@@ -174,7 +105,6 @@ void Game::Cleanup() {
 	// Free allocated memory and cleanup libraries loaded in asset loader
 	delete this->map_;
 	delete this->asset_loader_;
-	delete this->destination_rect_;
 
 	// Close and cleanup all SDL systems
 	SDL_Quit();
@@ -195,12 +125,14 @@ int Game::Run() {
 			this->Events(&Event);
 		}
 
+		const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
+
 		// Calculate delta time
 		const Uint64 now = SDL_GetPerformanceCounter();
 		const float delta_time = (float)((now - before) * 1000 / (float)SDL_GetPerformanceFrequency());
 		before = now;
 
-		this->Update(delta_time);
+		this->Update(delta_time, keyboard_state);
 		this->Render();
 	}
 
