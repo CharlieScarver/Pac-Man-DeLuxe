@@ -1,4 +1,5 @@
 #include "PacMan.h"
+#include "Map.h"
 
 PacMan::PacMan(float x, float y, float width, float height, Map* map) : Unit(x, y, width, height, map) {
 
@@ -17,33 +18,65 @@ PacMan::~PacMan() {}
 
 void PacMan::HandleInput(const Uint8* keyboard_state) {
 	const const Uint8* state = SDL_GetKeyboardState(NULL);
+	// Get the current tile
+	Tile* current_tile = this->map_->GetTile(this->current_tile_x_, this->current_tile_y_);
+	
 	if (state[SDL_SCANCODE_W]) {
-		this->is_idle_ = false;
-		this->is_moving_up_ = true;
-		this->is_moving_down_ = false;
-		this->is_moving_left_ = false;
-		this->is_moving_right_ = false;
+		// Change movement only if idle, moving in the opposite direction or on a turn tile
+		if (this->is_idle_ || this->is_moving_down_ || current_tile->is_turn_tile_) {
+			// If pacman is turning => center him on the current tile
+			if (!this->is_moving_up_) {
+				this->SetCenterToTileCenter(current_tile);
+			}
+
+			this->is_idle_ = false;
+			this->is_moving_up_ = true;
+			this->is_moving_down_ = false;
+			this->is_moving_left_ = false;
+			this->is_moving_right_ = false;
+		}
 	}
 	else if (state[SDL_SCANCODE_S]) {
-		this->is_idle_ = false;
-		this->is_moving_up_ = false;
-		this->is_moving_down_ = true;
-		this->is_moving_left_ = false;
-		this->is_moving_right_ = false;
+		if (this->is_idle_ || this->is_moving_up_ || current_tile->is_turn_tile_) {
+			// If pacman is turning => center him on the current tile
+			if (!this->is_moving_down_) {
+				this->SetCenterToTileCenter(current_tile);
+			}
+
+			this->is_idle_ = false;
+			this->is_moving_up_ = false;
+			this->is_moving_down_ = true;
+			this->is_moving_left_ = false;
+			this->is_moving_right_ = false;
+		}
 	}
 	else if (state[SDL_SCANCODE_A]) {
-		this->is_idle_ = false;
-		this->is_moving_up_ = false;
-		this->is_moving_down_ = false;
-		this->is_moving_left_ = true;
-		this->is_moving_right_ = false;
+		if (this->is_idle_ || this->is_moving_right_ || current_tile->is_turn_tile_) {
+			// If pacman is turning => center him on the current tile
+			if (!this->is_moving_left_) {
+				this->SetCenterToTileCenter(current_tile);
+			}
+
+			this->is_idle_ = false;
+			this->is_moving_up_ = false;
+			this->is_moving_down_ = false;
+			this->is_moving_left_ = true;
+			this->is_moving_right_ = false;
+		}
 	}
 	else if (state[SDL_SCANCODE_D]) {
-		this->is_idle_ = false;
-		this->is_moving_up_ = false;
-		this->is_moving_down_ = false;
-		this->is_moving_left_ = false;
-		this->is_moving_right_ = true;
+		if (this->is_idle_ || this->is_moving_left_ || current_tile->is_turn_tile_) {
+			// If pacman is turning => center him on the current tile
+			if (!this->is_moving_right_) {
+				this->SetCenterToTileCenter(current_tile);
+			}
+
+			this->is_idle_ = false;
+			this->is_moving_up_ = false;
+			this->is_moving_down_ = false;
+			this->is_moving_left_ = false;
+			this->is_moving_right_ = true;
+		}
 	}
 }
 

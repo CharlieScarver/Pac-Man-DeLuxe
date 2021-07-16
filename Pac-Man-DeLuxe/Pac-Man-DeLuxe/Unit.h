@@ -10,6 +10,13 @@ class Map;
 #define UNIT_RENDER_WIDTH 48
 #define UNIT_RENDER_HEIGHT 48
 
+typedef enum class OrientationEnum {
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN
+} Orientation;
+
 class Unit : public GameObject {
 protected:
 	// Spritesheet source rect
@@ -41,6 +48,9 @@ protected:
 	~Unit();
 
 	Tile* GetTileForUnitCoordinates(float x, float y);
+	Tile* GetTileForCenterUnitCoordinates(float center_x, float center_y);
+	void SetCenterToTileCenter(Tile* tile);
+	void StopMoving();
 
 	void ManageMovement(float delta_time);
 	void ManageAnimation(float delta_time);
@@ -49,6 +59,8 @@ public:
 	// Current tile
 	int current_tile_x_;
 	int current_tile_y_;
+
+	Orientation orientation_;
 
 	virtual void Update(float delta_time, const Uint8* keyboard_state);
 	virtual void Render(SDL_Renderer* renderer, AssetLoader* asset_loader) override;

@@ -30,7 +30,7 @@ Unit::Unit(float x, float y, float width, float height, Map* map) : GameObject(x
 
 	Tile* current_tile = GetTileForUnitCoordinates(x, y);
 
-	if (!current_tile->is_solid) {
+	if (!current_tile->is_solid_) {
 		// If tile is not solid => change current tile
 		this->current_tile_x_ = current_tile->map_x_;
 		this->current_tile_y_ = current_tile->map_y_;
@@ -52,49 +52,148 @@ Tile* Unit::GetTileForUnitCoordinates(float x, float y) {
 	return this->map_->GetTile(center_tile_x, center_tile_y);
 }
 
+Tile* Unit::GetTileForCenterUnitCoordinates(float center_x, float center_y) {
+	// Calculate which tile that should be in
+	int center_tile_x = (int)(center_x / TILE_RENDER_WIDTH);
+	int center_tile_y = (int)(center_y / TILE_RENDER_HEIGHT);
+
+	// Get the tile object
+	return this->map_->GetTile(center_tile_x, center_tile_y);
+}
+
+void Unit::SetCenterToTileCenter(Tile* tile) {
+	float tile_center_x = (tile->map_x_ * TILE_RENDER_WIDTH) + (float)TILE_RENDER_WIDTH / 2.0f;
+	float tile_center_y = (tile->map_y_* TILE_RENDER_HEIGHT) + (float)TILE_RENDER_HEIGHT / 2.0f;
+
+	this->render_x_ = tile_center_x - (float)UNIT_RENDER_WIDTH / 2.0f;
+	this->render_y_ = tile_center_y - (float)UNIT_RENDER_HEIGHT / 2.0f;
+}
+
+void Unit::StopMoving() {
+	this->is_idle_ = true;
+	this->is_moving_up_ = false;
+	this->is_moving_down_ = false;
+	this->is_moving_left_ = false;
+	this->is_moving_right_ = false;
+}
+
 void Unit::ManageMovement(float delta_time) {
-	float future_x = this->render_x_;
-	float future_y = this->render_y_;
+
+	// Coordinates of the center point of the sprite
+	float center_x = this->render_x_ + (UNIT_RENDER_WIDTH / 2);
+	float center_y = this->render_y_ + (UNIT_RENDER_HEIGHT / 2);
+
+	float future_center_x = center_x;
+	float future_center_y = center_y;
+
+	Orientation new_orientation = this->orientation_;
 
 	if (this->is_moving_left_) {
-		future_x -= this->velocity_x_ * delta_time;
+		future_center_x -= this->velocity_x_ * delta_time;
+		new_orientation = Orientation::LEFT;
 	} else if (this->is_moving_right_) {
-		future_x += this->velocity_x_ * delta_time;
+		future_center_x += this->velocity_x_ * delta_time;
+		new_orientation = Orientation::RIGHT;
 	}
 
 	if (this->is_moving_up_) {
-		future_y -= this->velocity_y_ * delta_time;
+		future_center_y -= this->velocity_y_ * delta_time;
+		new_orientation = Orientation::UP;
 	}
 	else if (this->is_moving_down_) {
-		future_y += this->velocity_y_ * delta_time;
+		future_center_y += this->velocity_y_ * delta_time;
+		new_orientation = Orientation::DOWN;
 	}
 
 	// If not moving there's no need to proceed
-	if (future_x == this->render_x_ && future_y == this->render_y_) {
+	if (future_center_x == this->render_x_ && future_center_y == this->render_y_) {
 		return;
 	}
 
-	Tile* future_tile = GetTileForUnitCoordinates(future_x, future_y);
+
+
+
+
+
+	float current_tile_center_x = (this->current_tile_x_ * TILE_RENDER_WIDTH) + (float)TILE_RENDER_WIDTH / 2.0f;
+	float current_tile_center_y = (this->current_tile_y_ * TILE_RENDER_HEIGHT) + (float)TILE_RENDER_HEIGHT / 2.0f;
+
+	Tile* next_tile = nullptr;
+	if (this->is_moving_left_ && future_center_x <= current_tile_center_x) {
+	
+		// If unit is on the map border => stop
+		if (this->current_tile_x_ == 0) {
+			this->StopMoving();
+			return;
+		}
+
+		// Get the next tile in the direction of movement (to the left)
+		next_tile = this->map_->GetTile(this->current_tile_x_ - 1, this->current_tile_y_);
+
+	} else if (this->is_moving_right_ && future_center_x >= current_tile_center_x) {
+
+		// If unit is on the map border => stop
+		if (this->current_tile_x_ == MAP_WIDTH_IN_TILES - 1) {
+			this->StopMoving();
+			return;
+		}
+
+		// Get the next tile in the direction of movement (to the right)
+		next_tile = this->map_->GetTile(this->current_tile_x_ + 1, this->current_tile_y_);
+
+	} else if (this->is_moving_up_ && future_center_y <= current_tile_center_y) {
+
+		// If unit is on the map border => stop
+		if (this->current_tile_y_ == 0) {
+			this->StopMoving();
+			return;
+		}
+
+		// Get the next tile in the direction of movement (to the right)
+		next_tile = this->map_->GetTile(this->current_tile_x_, this->current_tile_y_ - 1);
+
+	} else if (this->is_moving_down_ && future_center_y >= current_tile_center_y) {
+
+		// If unit is on the map border => stop
+		if (this->current_tile_y_ == MAP_HEIGHT_IN_TILES - 1) {
+			this->StopMoving();
+			return;
+		}
+
+		// Get the next tile in the direction of movement (to the right)
+		next_tile = this->map_->GetTile(this->current_tile_x_, this->current_tile_y_ + 1);
+	}
+
+	// If the next tile is solid => stop
+	if (next_tile != nullptr && next_tile->is_solid_) {
+		this->StopMoving();
+		return;
+	}
+
+
+
+
+
+	Tile* future_tile = GetTileForCenterUnitCoordinates(future_center_x, future_center_y);
 
 	// If tile is solid stop the unit
-	if (future_tile == nullptr || future_tile->is_solid) {
-		this->is_idle_ = true;
-		this->is_moving_up_ = false;
-		this->is_moving_down_ = false;
-		this->is_moving_left_ = false;
-		this->is_moving_right_ = false;
+	if (future_tile == nullptr || future_tile->is_solid_) {
+		this->StopMoving();
 		return;
 	}
 
-	std::cout << "Moving to (" << future_x << ", " << future_y << "), tile[ " << future_tile->map_x_ << " ][ " << future_tile->map_y_ << " ]" << std::endl;
+	std::cout << "Moving to (" << future_center_x << ", " << future_center_y << "), tile[ " << future_tile->map_x_ << " ][ " << future_tile->map_y_ << " ]" << std::endl;
 	
-	// If tile is not solid move to the new position
-	this->render_x_ = future_x;
-	this->render_y_ = future_y;
+	// Move to the new position
+	this->render_x_ = future_center_x - ((float)UNIT_RENDER_WIDTH / 2.0f);
+	this->render_y_ = future_center_y- ((float)UNIT_RENDER_HEIGHT / 2.0f);
 
-	// If tile is not solid => change current tile
+	// Update the current tile
 	this->current_tile_x_ = future_tile->map_x_;
 	this->current_tile_y_ = future_tile->map_y_;
+
+	// Update orientation
+	this->orientation_ = new_orientation;
 }
 
 void Unit::ManageAnimation(float delta_time) {
@@ -136,8 +235,23 @@ void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 
 	SDL_RenderDrawRectF(renderer, &render_rect);
 
-	SDL_RenderCopyF(renderer, asset_loader->units_spritesheet_, &spritesheet_rect, &render_rect);
-
+	// Render the unit sprite according to the orientation
+	switch (this->orientation_)
+	{
+		case Orientation::LEFT:
+			SDL_RenderCopyExF(renderer, asset_loader->units_spritesheet_, &spritesheet_rect, &render_rect, 0, nullptr, SDL_FLIP_NONE);
+			break;
+		case Orientation::RIGHT:
+			SDL_RenderCopyExF(renderer, asset_loader->units_spritesheet_, &spritesheet_rect, &render_rect, 0, nullptr, SDL_FLIP_HORIZONTAL);
+			break;
+		case Orientation::UP:
+			SDL_RenderCopyExF(renderer, asset_loader->units_spritesheet_, &spritesheet_rect, &render_rect, 90, nullptr, SDL_FLIP_NONE);
+			break;
+		case Orientation::DOWN:
+			SDL_RenderCopyExF(renderer, asset_loader->units_spritesheet_, &spritesheet_rect, &render_rect, 270, nullptr, SDL_FLIP_NONE);
+			break;
+	}
+	
 	// Draw center point in red
 	SDL_FRect center_point_rect;
 	center_point_rect.x = this->render_x_ + (UNIT_RENDER_WIDTH / 2);
