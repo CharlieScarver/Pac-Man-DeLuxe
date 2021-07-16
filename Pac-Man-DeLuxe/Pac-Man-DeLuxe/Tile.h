@@ -28,18 +28,20 @@ private:
 public:
 	// Tile properties
 	TileType type_;
-	bool is_solid;
+	bool is_solid_;
+	bool is_turn_tile_;
 	// Column = width
 	int map_x_;
 	// Row = height
 	int map_y_;
 
 	// Tile contents
-	bool contains_player;
-	bool contains_ghost;
+	bool contains_player_;
+	bool contains_ghost_;
 	// Item* contained_item;
 
 	Tile(int x, int y, TileType type);
+	Tile(int x, int y, TileType type, bool is_turn_tile);
 	~Tile();
 
 	void Render(SDL_Renderer* renderer, AssetLoader* asset_loader) override;

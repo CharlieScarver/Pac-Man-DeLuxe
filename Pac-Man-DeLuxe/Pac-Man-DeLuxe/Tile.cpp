@@ -1,12 +1,13 @@
 #include "Tile.h"
 
-Tile::Tile(int x, int y, TileType type)
+Tile::Tile(int x, int y, TileType type, bool is_turn_tile = false)
 	: GameObject(x * TILE_RENDER_WIDTH, y * TILE_RENDER_HEIGHT, TILE_RENDER_WIDTH, TILE_RENDER_HEIGHT) {
 	this->type_ = type;
     this->map_x_ = x;
     this->map_y_ = y;
-    this->contains_player = false;
-    this->contains_ghost = false;
+    this->contains_player_ = false;
+    this->contains_ghost_ = false;
+    this->is_turn_tile_ = is_turn_tile;
 
 	switch (this->type_)
 	{
@@ -15,50 +16,53 @@ Tile::Tile(int x, int y, TileType type)
             // They receive sprite sheet coordinates (0,0) as the defaults
             this->spritesheet_x_ = 0;
             this->spritesheet_y_ = 0;
-            this->is_solid = false;
+            this->is_solid_ = false;
             break;
         case WALL_HORIZONTAL_TOP:
             this->spritesheet_x_ = 0;
             this->spritesheet_y_ = 0;
-            this->is_solid = true;
+            this->is_solid_ = true;
             break;
         case WALL_HORIZONTAL_BOTTOM:
             this->spritesheet_x_ = 8;
             this->spritesheet_y_ = 0;
-            this->is_solid = true;
+            this->is_solid_ = true;
             break;
         case WALL_VERTICAL_LEFT:
             this->spritesheet_x_ = 16;
             this->spritesheet_y_ = 0;
-            this->is_solid = true;
+            this->is_solid_ = true;
             break;
         case WALL_VERTICAL_RIGHT:
             this->spritesheet_x_ = 24;
             this->spritesheet_y_ = 0;
-            this->is_solid = true;
+            this->is_solid_ = true;
             break;
         case WALL_ROUNDED_TOP_LEFT:
             this->spritesheet_x_ = 0;
             this->spritesheet_y_ = 8;
-            this->is_solid = true;
+            this->is_solid_ = true;
             break;
         case WALL_ROUNDED_TOP_RIGHT:
             this->spritesheet_x_ = 8;
             this->spritesheet_y_ = 8;
-            this->is_solid = true;
+            this->is_solid_ = true;
             break;
         case WALL_ROUNDED_BOTTOM_LEFT:
             this->spritesheet_x_ = 16;
             this->spritesheet_y_ = 8;
-            this->is_solid = true;
+            this->is_solid_ = true;
             break;
         case WALL_ROUNDED_BOTTOM_RIGHT:
             this->spritesheet_x_ = 24;
             this->spritesheet_y_ = 8;
-            this->is_solid = true;
+            this->is_solid_ = true;
             break;
 	}
 }
+
+
+Tile::Tile(int x, int y, TileType type) : Tile(x, y, type, false) {}
 
 Tile::~Tile() {}
 

@@ -50,6 +50,11 @@ void Map::LoadMapFromFile(const char* file_name) {
 			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, EMPTY));
 			tile_x++;
 			break;
+		case '*':
+			// Set proper tile and increase the column counter
+			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, EMPTY, true));
+			tile_x++;
+			break;
 		case '=':
 			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, WALL_HORIZONTAL_TOP));
 			tile_x++;
