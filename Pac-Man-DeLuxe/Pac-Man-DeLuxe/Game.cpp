@@ -121,6 +121,10 @@ int Game::Run() {
 	SDL_Event Event;
 	Uint64 before = SDL_GetPerformanceCounter();
 
+	float fps = 0;
+	int fps_counter = 0;
+	float fps_timer = 0;
+
 	while (this->is_running_) {
 		while (SDL_PollEvent(&Event)) {
 			this->Events(&Event);
@@ -130,8 +134,20 @@ int Game::Run() {
 
 		// Calculate delta time
 		const Uint64 now = SDL_GetPerformanceCounter();
-		const float delta_time = (float)((now - before) * 1000 / (float)SDL_GetPerformanceFrequency());
+		const float delta_time = (float)(now - before) * 1000.0f / (float)SDL_GetPerformanceFrequency();
 		before = now;
+
+		// Calculate fps
+		fps_counter++;
+		fps_timer += delta_time;
+		// Set the fps value every 1s = 1000ms
+		if (fps_timer >= 1000) {
+			fps = fps_counter;
+			fps_counter = 0;
+			fps_timer = 0;
+
+			std::cout << "FPS: " << fps << std::endl;
+		}
 
 		this->Update(delta_time, keyboard_state);
 		this->Render();
