@@ -21,6 +21,8 @@ public:
 	Tile* GetTile(int x, int y);
 	void SetTile(int x, int y, Tile* tile);
 
+	bool DetermineIfTileIsTurn(int x, int y);
+
 	void Update(float delta_time, const Uint8* keyboard_state);
 	void Render(SDL_Renderer* renderer, AssetLoader* asset_loader);
 };

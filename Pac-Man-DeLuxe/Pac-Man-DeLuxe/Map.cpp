@@ -50,17 +50,14 @@ void Map::LoadMapFromFile(const char* file_name) {
 	int tile_x = 0;
 	// Rows = height
 	int tile_y = 0;
+	// Parse the map file
 	while (ifs.get(c)) {
 		switch (c)
 		{
 		case '.':
+		case ' ':
 			// Set proper tile and increase the column counter
 			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, EMPTY));
-			tile_x++;
-			break;
-		case '*':
-			// Set proper tile and increase the column counter
-			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, EMPTY, true));
 			tile_x++;
 			break;
 		case '=':
@@ -105,13 +102,28 @@ void Map::LoadMapFromFile(const char* file_name) {
 
 	ifs.close();
 
+	// Set turn tiles - tiles where units can turn
+	for (int i = 0; i < MAP_WIDTH_IN_TILES; i++)
+	{
+		for (int j = 0; j < MAP_HEIGHT_IN_TILES; j++)
+		{
+			// Tiles on the border can't be turn tiles
+			if ((i <= 0 || i >= MAP_WIDTH_IN_TILES - 1) || (j <= 0 || j >= MAP_HEIGHT_IN_TILES - 1)) {
+				continue;
+			}
+
+			this->tile_matrix_[i][j]->is_turn_tile_ = DetermineIfTileIsTurn(i, j);
+		}
+	}
+
+	// Create Pac-Man
 	this->pacman_ = new PacMan(pacman_x, pacman_y, UNIT_RENDER_WIDTH, UNIT_RENDER_HEIGHT, this);
 
 	std::cout << "Map loaded." << std::endl;
 }
 
 Tile* Map::GetTile(int x, int y) {
-	if ((x < 0 || x > MAP_WIDTH_IN_TILES) && (y < 0 || y > MAP_HEIGHT_IN_TILES)) {
+	if ((x < 0 || x >= MAP_WIDTH_IN_TILES) && (y < 0 || y >= MAP_HEIGHT_IN_TILES)) {
 		return nullptr;
 	}
 
@@ -120,6 +132,19 @@ Tile* Map::GetTile(int x, int y) {
 
 void Map::SetTile(int x, int y, Tile* tile) {
 	this->tile_matrix_[x][y] = tile;
+}
+
+bool Map::DetermineIfTileIsTurn(int x, int y) {
+	// If two adjacent tiles on opposite axes are EMPTY => the given tile is on a turn
+	if (
+		(this->tile_matrix_[x - 1][y]->type_ == EMPTY && (this->tile_matrix_[x][y - 1]->type_ == EMPTY || this->tile_matrix_[x][y + 1]->type_ == EMPTY))
+		||
+		(this->tile_matrix_[x + 1][y]->type_ == EMPTY && (this->tile_matrix_[x][y - 1]->type_ == EMPTY || this->tile_matrix_[x][y + 1]->type_ == EMPTY))
+		) {
+		return true;
+	}
+
+	return false;
 }
 
 void Map::Update(float delta_time, const Uint8* keyboard_state) {
