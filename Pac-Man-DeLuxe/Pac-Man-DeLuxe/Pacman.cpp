@@ -17,7 +17,7 @@ PacMan::PacMan(float x, float y, float width, float height, Map* map) : Unit(x, 
 PacMan::~PacMan() {}
 
 void PacMan::HandleInput(const Uint8* keyboard_state) {
-	const const Uint8* state = SDL_GetKeyboardState(NULL);
+	const Uint8* state = SDL_GetKeyboardState(NULL);
 	// Get the current tile
 	Tile* current_tile = this->map_->GetTile(this->current_tile_x_, this->current_tile_y_);
 	
