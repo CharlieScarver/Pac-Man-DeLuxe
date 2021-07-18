@@ -121,6 +121,9 @@ int Game::Run() {
 	SDL_Event Event;
 	Uint64 before = SDL_GetPerformanceCounter();
 
+	// Frame time that would result in 60 fps
+	const float desired_frame_time = 16.67f;
+
 	float fps = 0;
 	int fps_counter = 0;
 	float fps_timer = 0;
@@ -137,9 +140,16 @@ int Game::Run() {
 		const float delta_time = (float)(now - before) * 1000.0f / (float)SDL_GetPerformanceFrequency();
 		before = now;
 
+		// Cap FPS at 60
+		float frame_time_diff = desired_frame_time - delta_time;
+		if (frame_time_diff > 0) {
+			// Wait out the difference in frame time
+			SDL_Delay((Uint32)frame_time_diff);
+		}
+
 		// Calculate fps
 		fps_counter++;
-		fps_timer += delta_time;
+		fps_timer += delta_time + frame_time_diff;
 		// Set the fps value every 1s = 1000ms
 		if (fps_timer >= 1000) {
 			fps = fps_counter;
