@@ -214,7 +214,9 @@ void Unit::ManageAnimation(float delta_time) {
 
 void Unit::Update(float delta_time, const Uint8* keyboard_state) {
 	this->ManageMovement(delta_time);
-	this->ManageAnimation(delta_time);
+	if (!this->is_idle_) {
+		this->ManageAnimation(delta_time);
+	}
 }
 
 void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
