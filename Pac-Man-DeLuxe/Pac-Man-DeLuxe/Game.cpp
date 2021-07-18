@@ -57,7 +57,7 @@ int Game::Init(const char* title, int x, int y, int width, int height, bool full
 
 	// Load map file
 	this->map_ = new Map();
-	map_->LoadMapFromFile("Assets/Maps/level0.txt");
+	map_->LoadMapFromFile("Assets/Maps/level1.txt");
 
 	return 0;
 }
@@ -85,7 +85,8 @@ void Game::Update(float delta_time, const Uint8* keyboard_state) {
 
 void Game::Render() {
 	// Rendering functions updates a backbuffer, instead of  the screen directly
-	if (SDL_SetRenderDrawColor(this->renderer_, 100, 149, 240, 0) != 0) {
+	// Cornflower blue  100, 149, 240
+	if (SDL_SetRenderDrawColor(this->renderer_, 0, 0, 0, 0) != 0) {
 		std::cout << "Set draw color error: " << SDL_GetError() << std::endl;
 	}
 

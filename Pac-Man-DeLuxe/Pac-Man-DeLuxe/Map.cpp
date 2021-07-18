@@ -5,6 +5,14 @@
 Map::Map() {
 	this->file_name_ = nullptr;
 	this->pacman_ = nullptr;
+
+	for (int i = 0; i < MAP_WIDTH_IN_TILES; i++)
+	{
+		for (int j = 0; j < MAP_HEIGHT_IN_TILES; j++)
+		{
+			this->tile_matrix_[i][j] = nullptr;
+		}
+	}
 }
 
 Map::~Map() {
@@ -103,6 +111,10 @@ void Map::LoadMapFromFile(const char* file_name) {
 }
 
 Tile* Map::GetTile(int x, int y) {
+	if ((x < 0 || x > MAP_WIDTH_IN_TILES) && (y < 0 || y > MAP_HEIGHT_IN_TILES)) {
+		return nullptr;
+	}
+
 	return this->tile_matrix_[x][y];
 }
 

@@ -97,6 +97,9 @@
     <Text Include="Assets\level0.txt">
       <Filter>Assets\Maps</Filter>
     </Text>
+    <Text Include="Assets\Maps\level1.txt">
+      <Filter>Assets\Maps</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\pac-man-hosts-sprites.png">

@@ -173,6 +173,7 @@ XCOPY "$(ProjectDir)"\Libraries\SDL2_image-2.0.5\lib\x64\*.DLL "$(TargetDir)" /D
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\level0.txt" />
+    <Text Include="Assets\Maps\level1.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\pac-man-hosts-sprites.png" />
