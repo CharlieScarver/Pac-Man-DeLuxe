@@ -233,7 +233,9 @@ void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	render_rect.w = this->render_width_;
 	render_rect.h = this->render_height_;
 
-	SDL_RenderDrawRectF(renderer, &render_rect);
+	if (RENDER_UNITS_DEBUG) {
+		SDL_RenderDrawRectF(renderer, &render_rect);
+	}
 
 	// Render the unit sprite according to the orientation
 	switch (this->orientation_)
@@ -252,23 +254,26 @@ void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 			break;
 	}
 	
-	// Draw center point in red
-	SDL_FRect center_point_rect;
-	center_point_rect.x = this->render_x_ + (UNIT_RENDER_WIDTH / 2);
-	center_point_rect.y = this->render_y_ + (UNIT_RENDER_HEIGHT / 2);
-	center_point_rect.w = 2;
-	center_point_rect.h = 2;
 
-	SDL_SetRenderDrawColor(renderer, 200, 25, 25, 0);
-	SDL_RenderDrawRectF(renderer, &center_point_rect);
+	if (RENDER_UNITS_DEBUG) {
+		// Draw center point in red
+		SDL_FRect center_point_rect;
+		center_point_rect.x = this->render_x_ + (UNIT_RENDER_WIDTH / 2);
+		center_point_rect.y = this->render_y_ + (UNIT_RENDER_HEIGHT / 2);
+		center_point_rect.w = 2;
+		center_point_rect.h = 2;
 
-	// Draw current tile in red
-	SDL_FRect current_tile_rect;
-	current_tile_rect.x = this->current_tile_x_ * TILE_RENDER_WIDTH;
-	current_tile_rect.y = this->current_tile_y_ * TILE_RENDER_HEIGHT;
-	current_tile_rect.w = TILE_RENDER_WIDTH;
-	current_tile_rect.h = TILE_RENDER_HEIGHT;
+		SDL_SetRenderDrawColor(renderer, 200, 25, 25, 0);
+		SDL_RenderDrawRectF(renderer, &center_point_rect);
 
-	SDL_SetRenderDrawColor(renderer, 200, 25, 25, 0);
-	SDL_RenderDrawRectF(renderer, &current_tile_rect);
+		// Draw current tile in red
+		SDL_FRect current_tile_rect;
+		current_tile_rect.x = this->current_tile_x_ * TILE_RENDER_WIDTH;
+		current_tile_rect.y = this->current_tile_y_ * TILE_RENDER_HEIGHT;
+		current_tile_rect.w = TILE_RENDER_WIDTH;
+		current_tile_rect.h = TILE_RENDER_HEIGHT;
+
+		SDL_SetRenderDrawColor(renderer, 200, 25, 25, 0);
+		SDL_RenderDrawRectF(renderer, &current_tile_rect);
+	}
 }

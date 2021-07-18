@@ -8,6 +8,8 @@
 #define TILE_RENDER_WIDTH 24
 #define TILE_RENDER_HEIGHT 24
 
+#define RENDER_TILES_DEBUG 1
+
 typedef enum {
 	EMPTY,
 	WALL_HORIZONTAL_TOP,

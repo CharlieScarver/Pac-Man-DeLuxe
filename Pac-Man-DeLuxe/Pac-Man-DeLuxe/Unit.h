@@ -10,6 +10,8 @@ class Map;
 #define UNIT_RENDER_WIDTH 48
 #define UNIT_RENDER_HEIGHT 48
 
+#define RENDER_UNITS_DEBUG 1
+
 typedef enum class OrientationEnum {
 	LEFT,
 	RIGHT,

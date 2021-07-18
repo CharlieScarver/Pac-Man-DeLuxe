@@ -68,7 +68,6 @@ Tile::~Tile() {}
 
 void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	// Rendering functions updates a backbuffer, instead of  the screen directly
-	SDL_SetRenderDrawColor(renderer, 50, 25, 200, 0);
 
     SDL_Rect spritesheet_rect;
     spritesheet_rect.x = this->spritesheet_x_;
@@ -82,7 +81,11 @@ void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
     render_rect.w = this->render_width_;
     render_rect.h = this->render_height_;
 
-	SDL_RenderDrawRectF(renderer, &render_rect);
+    if (RENDER_TILES_DEBUG) {
+        SDL_SetRenderDrawColor(renderer, 50, 25, 200, 0);
+
+        SDL_RenderDrawRectF(renderer, &render_rect);
+    }
 
     // Don't render empty tiles
     if (this->type_ == EMPTY) {
