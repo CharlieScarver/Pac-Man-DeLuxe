@@ -3,7 +3,7 @@
 #include "Map.h"
 
 Unit::Unit(float x, float y, float width, float height, Map* map) : GameObject(x, y, width, height) {
-	// todo
+	// Set defaults
 	this->spritesheet_x_ = 0;
 	this->spritesheet_y_ = 0;
 
@@ -12,8 +12,9 @@ Unit::Unit(float x, float y, float width, float height, Map* map) : GameObject(x
 	this->is_moving_right_ = false;
 	this->is_moving_up_ = false;
 	this->is_moving_down_ = false;
+	this->is_cornering_ = false;
 
-	// todo
+	this->current_tile_ = nullptr;
 	this->current_tile_x_ = 0;
 	this->current_tile_y_ = 0;
 
@@ -77,6 +78,22 @@ void Unit::StopMoving() {
 	this->is_moving_right_ = false;
 }
 
+Tile* Unit::GetNextTileInDirection(Orientation direction) {
+	switch (direction)
+	{
+		case Orientation::UP:
+			return this->map_->GetTile(this->current_tile_x_, this->current_tile_y_ - 1);
+		case Orientation::DOWN:
+			return this->map_->GetTile(this->current_tile_x_, this->current_tile_y_ + 1);
+		case Orientation::LEFT:
+			return this->map_->GetTile(this->current_tile_x_ - 1, this->current_tile_y_);
+		case Orientation::RIGHT:
+			return this->map_->GetTile(this->current_tile_x_ + 1, this->current_tile_y_);
+		default:
+			return nullptr;
+	}
+}
+
 void Unit::ManageMovement(float delta_time) {
 
 	// Coordinates of the center point of the sprite
@@ -89,19 +106,19 @@ void Unit::ManageMovement(float delta_time) {
 	Orientation new_orientation = this->orientation_;
 
 	if (this->is_moving_left_) {
-		future_center_x -= this->velocity_x_ * delta_time;
+		future_center_x -= this->velocity_x_;
 		new_orientation = Orientation::LEFT;
 	} else if (this->is_moving_right_) {
-		future_center_x += this->velocity_x_ * delta_time;
+		future_center_x += this->velocity_x_;
 		new_orientation = Orientation::RIGHT;
 	}
 
 	if (this->is_moving_up_) {
-		future_center_y -= this->velocity_y_ * delta_time;
+		future_center_y -= this->velocity_y_;
 		new_orientation = Orientation::UP;
 	}
 	else if (this->is_moving_down_) {
-		future_center_y += this->velocity_y_ * delta_time;
+		future_center_y += this->velocity_y_;
 		new_orientation = Orientation::DOWN;
 	}
 
@@ -182,8 +199,6 @@ void Unit::ManageMovement(float delta_time) {
 		return;
 	}
 
-	std::cout << "Moving to (" << future_center_x << ", " << future_center_y << "), tile[ " << future_tile->map_x_ << " ][ " << future_tile->map_y_ << " ]" << std::endl;
-	
 	// Move to the new position
 	this->render_x_ = future_center_x - ((float)UNIT_RENDER_WIDTH / 2.0f);
 	this->render_y_ = future_center_y- ((float)UNIT_RENDER_HEIGHT / 2.0f);
@@ -191,6 +206,7 @@ void Unit::ManageMovement(float delta_time) {
 	// Update the current tile
 	this->current_tile_x_ = future_tile->map_x_;
 	this->current_tile_y_ = future_tile->map_y_;
+	this->current_tile_ = future_tile;
 
 	// Update orientation
 	this->orientation_ = new_orientation;
@@ -220,7 +236,6 @@ void Unit::Update(float delta_time, const Uint8* keyboard_state) {
 }
 
 void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
-	// Rendering functions updates a backbuffer, instead of the screen directly
 	this->spritesheet_texture_ = asset_loader->units_spritesheet_;
 
 	SDL_Rect spritesheet_rect;
@@ -236,27 +251,28 @@ void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	render_rect.h = this->render_height_;
 
 	if (RENDER_UNITS_DEBUG) {
+		// Draw sprite box
+		SDL_SetRenderDrawColor(renderer, 50, 25, 200, 0);
 		SDL_RenderDrawRectF(renderer, &render_rect);
 	}
 
 	// Render the unit sprite according to the orientation
 	switch (this->orientation_)
 	{
-		case Orientation::LEFT:
-			SDL_RenderCopyExF(renderer, asset_loader->units_spritesheet_, &spritesheet_rect, &render_rect, 0, nullptr, SDL_FLIP_NONE);
-			break;
-		case Orientation::RIGHT:
-			SDL_RenderCopyExF(renderer, asset_loader->units_spritesheet_, &spritesheet_rect, &render_rect, 0, nullptr, SDL_FLIP_HORIZONTAL);
-			break;
 		case Orientation::UP:
 			SDL_RenderCopyExF(renderer, asset_loader->units_spritesheet_, &spritesheet_rect, &render_rect, 90, nullptr, SDL_FLIP_NONE);
 			break;
 		case Orientation::DOWN:
 			SDL_RenderCopyExF(renderer, asset_loader->units_spritesheet_, &spritesheet_rect, &render_rect, 270, nullptr, SDL_FLIP_NONE);
 			break;
+		case Orientation::LEFT:
+			SDL_RenderCopyExF(renderer, asset_loader->units_spritesheet_, &spritesheet_rect, &render_rect, 0, nullptr, SDL_FLIP_NONE);
+			break;
+		case Orientation::RIGHT:
+			SDL_RenderCopyExF(renderer, asset_loader->units_spritesheet_, &spritesheet_rect, &render_rect, 0, nullptr, SDL_FLIP_HORIZONTAL);
+			break;
 	}
 	
-
 	if (RENDER_UNITS_DEBUG) {
 		// Draw center point in red
 		SDL_FRect center_point_rect;

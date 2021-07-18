@@ -10,6 +10,8 @@ class Map;
 #define UNIT_RENDER_WIDTH 48
 #define UNIT_RENDER_HEIGHT 48
 
+#define UNIT_TURN_PIXEL_RADIUS 2
+
 #define RENDER_UNITS_DEBUG 1
 
 typedef enum class OrientationEnum {
@@ -39,6 +41,7 @@ protected:
 	bool is_moving_right_;
 	bool is_moving_up_;
 	bool is_moving_down_;
+	bool is_cornering_;
 
 	// Velocity
 	float velocity_x_;
@@ -53,6 +56,7 @@ protected:
 	Tile* GetTileForCenterUnitCoordinates(float center_x, float center_y);
 	void SetCenterToTileCenter(Tile* tile);
 	void StopMoving();
+	Tile* GetNextTileInDirection(Orientation direction);
 
 	void ManageMovement(float delta_time);
 	void ManageAnimation(float delta_time);
@@ -61,6 +65,7 @@ public:
 	// Current tile
 	int current_tile_x_;
 	int current_tile_y_;
+	Tile* current_tile_;
 
 	Orientation orientation_;
 

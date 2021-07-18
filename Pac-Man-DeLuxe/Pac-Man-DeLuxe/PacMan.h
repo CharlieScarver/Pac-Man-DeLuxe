@@ -4,9 +4,14 @@
 #define PACMAN_SPRITESHEET_X 0
 #define PACMAN_SPRITESHEET_Y 0
 #define PACMAN_ANIMATION_FRAMES 2
-#define PACMAN_ANIMATION_DELAY 400
-#define PACMAN_DEFAULT_VELOCITY_X 0.15f
-#define PACMAN_DEFAULT_VELOCITY_Y 0.15f
+#define PACMAN_ANIMATION_DELAY 300
+// Original Pac-Man speed is 1.46 pixels per frame
+#define PACMAN_DEFAULT_VELOCITY 1.46f * 1.12f
+
+// Bottom row sprint time:
+// ~3.80 s neworion
+// ~3.43 s nes
+// ~3.74 s mine
 
 class PacMan final : public Unit {
 protected:
