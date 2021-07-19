@@ -66,7 +66,7 @@
     <ClCompile Include="AssetLoader.cpp">
       <Filter>Source Files\AssetLoader</Filter>
     </ClCompile>
-    <ClCompile Include="Pacman.cpp">
+    <ClCompile Include="PacMan.cpp">
       <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>
