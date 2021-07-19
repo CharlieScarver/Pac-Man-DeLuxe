@@ -30,7 +30,9 @@ private:
 public:
 	// Tile properties
 	TileType type_;
+	// Units cannot enter solid tiles
 	bool is_solid_;
+	// Turn tiles mark where a unit can make a turn
 	bool is_turn_tile_;
 	// Column = width
 	int map_x_;

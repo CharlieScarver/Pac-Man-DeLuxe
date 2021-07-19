@@ -67,8 +67,6 @@ Tile::Tile(int x, int y, TileType type) : Tile(x, y, type, false) {}
 Tile::~Tile() {}
 
 void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
-	// Rendering functions updates a backbuffer, instead of  the screen directly
-
     SDL_Rect spritesheet_rect;
     spritesheet_rect.x = this->spritesheet_x_;
     spritesheet_rect.y = this->spritesheet_y_;
@@ -81,10 +79,27 @@ void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
     render_rect.w = this->render_width_;
     render_rect.h = this->render_height_;
 
-    if (RENDER_TILES_DEBUG) {
+    if (RENDER_TILES_DEBUG && this->type_ == EMPTY) {
+        // Draw tile box
         SDL_SetRenderDrawColor(renderer, 50, 25, 200, 0);
-
         SDL_RenderDrawRectF(renderer, &render_rect);
+
+        SDL_SetRenderDrawColor(renderer, 75, 75, 0, 0);
+        // Draw tile center point axes
+        SDL_RenderDrawLine(
+            renderer,
+            this->render_x_,
+            this->render_y_ + (float)TILE_RENDER_HEIGHT / 2.0f,
+            this->render_x_ + TILE_RENDER_WIDTH,
+            this->render_y_ + (float)TILE_RENDER_HEIGHT / 2.0f
+        );
+        SDL_RenderDrawLine(
+            renderer,
+            this->render_x_ + (float)TILE_RENDER_WIDTH / 2.0f,
+            this->render_y_,
+            this->render_x_ + (float)TILE_RENDER_WIDTH / 2.0f,
+            this->render_y_ + TILE_RENDER_HEIGHT
+        );
     }
 
     // Don't render empty tiles
@@ -92,5 +107,6 @@ void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
         return;
     }
 
+    // Render the tile
     SDL_RenderCopyF(renderer, asset_loader->tiles_spritesheet_, &spritesheet_rect, &render_rect);
 }
