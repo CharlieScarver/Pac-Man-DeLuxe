@@ -75,7 +75,7 @@ void Unit::ManageMovement(float delta_time) {
 	}
 
 	// Center point of the rendered unit sprite
-	Vector2 render_center = Vector2::FindCenterPointOfRectangle(this->render_position_, this->render_size_);
+	Vector2 render_center = Utilities::GetCenterPointOfRectangle(this->render_position_, this->render_size_);
 
 	// Future position of the center
 	Vector2 future_center = render_center;
@@ -102,7 +102,7 @@ void Unit::ManageMovement(float delta_time) {
 
 
 	// Get current tile center
-	Vector2 current_tile_center = Vector2::FindCenterPointOfRectangle(this->current_tile_->render_position_, this->current_tile_->render_size_);
+	Vector2 current_tile_center = Utilities::GetCenterPointOfRectangle(this->current_tile_->render_position_, this->current_tile_->render_size_);
 
 	// Don't allow unit to move beyond the center of the tile
 	if ((this->direction_ == Direction::UP && future_center.y_ <= current_tile_center.y_) ||

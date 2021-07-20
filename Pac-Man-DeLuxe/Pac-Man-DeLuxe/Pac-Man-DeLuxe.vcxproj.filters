@@ -49,6 +49,15 @@
     <Filter Include="Header Files\Structs">
       <UniqueIdentifier>{8f11eb22-2ee1-4604-8354-694f55ed12ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Helpers">
+      <UniqueIdentifier>{9b222bf8-ca54-461d-8413-cf5a44dc0488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Helpers">
+      <UniqueIdentifier>{1f9392ae-b39b-410e-a703-aa8e863b5b20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Structs">
+      <UniqueIdentifier>{459b6b93-e50c-4b04-8605-b11863ed86a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -77,6 +86,12 @@
     </ClCompile>
     <ClCompile Include="Ghost.cpp">
       <Filter>Source Files\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities.cpp">
+      <Filter>Source Files\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>Source Files\Structs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="Vector2.h">
       <Filter>Header Files\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
+      <Filter>Header Files\Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

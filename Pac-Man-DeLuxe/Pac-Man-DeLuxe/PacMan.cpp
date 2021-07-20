@@ -19,10 +19,10 @@ PacMan::~PacMan() {}
 void PacMan::HandleInput(const Uint8* keyboard_state) {
 	const Uint8* state = SDL_GetKeyboardState(NULL);
 	// Get the current tile center
-	Vector2 current_tile_center = Vector2::FindCenterPointOfRectangle(this->current_tile_->render_position_, this->current_tile_->render_size_);
+	Vector2 current_tile_center = Utilities::GetCenterPointOfRectangle(this->current_tile_->render_position_, this->current_tile_->render_size_);
 
 	// Get the rendered sprite center
-	Vector2 render_center = Vector2::FindCenterPointOfRectangle(this->render_position_, this->render_size_);
+	Vector2 render_center = Utilities::GetCenterPointOfRectangle(this->render_position_, this->render_size_);
 
 	bool center_x_in_turn_interval = render_center.x_ >= current_tile_center.x_ - UNIT_TURN_PIXEL_RADIUS && render_center.x_ <= current_tile_center.x_ + UNIT_TURN_PIXEL_RADIUS;
 	bool center_y_in_turn_interval = render_center.y_ >= current_tile_center.y_ - UNIT_TURN_PIXEL_RADIUS && render_center.y_ <= current_tile_center.y_ + UNIT_TURN_PIXEL_RADIUS;

@@ -162,6 +162,8 @@ XCOPY "$(ProjectDir)"\Libraries\SDL2_image-2.0.5\lib\x64\*.DLL "$(TargetDir)" /D
     <ClCompile Include="PacMan.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Unit.cpp" />
+    <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="Vector2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Direction.h" />
@@ -176,6 +178,7 @@ XCOPY "$(ProjectDir)"\Libraries\SDL2_image-2.0.5\lib\x64\*.DLL "$(TargetDir)" /D
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileType.h" />
     <ClInclude Include="Unit.h" />
+    <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <ItemGroup>
