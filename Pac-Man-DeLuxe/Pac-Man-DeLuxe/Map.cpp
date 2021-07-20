@@ -3,6 +3,7 @@
 #include "Map.h"
 
 Map::Map() {
+	this->collision_occured_ = false;
 	this->file_name_ = nullptr;
 	this->pacman_ = nullptr;
 
@@ -13,15 +14,27 @@ Map::Map() {
 			this->tile_matrix_[i][j] = nullptr;
 		}
 	}
+
+	this->units_ = std::vector<Unit*>();
 }
 
 Map::~Map() {
+	// Free the tiles
 	for (int i = 0; i < MAP_WIDTH_IN_TILES; i++)
 	{
 		for (int j = 0; j < MAP_HEIGHT_IN_TILES; j++)
 		{
 			delete this->tile_matrix_[i][j];
 		}
+	}
+
+	// Free Pac-Man
+	delete this->pacman_;
+
+	// Free the other units
+	for (int i = 0; i < this->units_.size(); i++)
+	{
+		delete this->units_[i];
 	}
 }
 
@@ -119,6 +132,10 @@ void Map::LoadMapFromFile(const char* file_name) {
 	// Create Pac-Man
 	this->pacman_ = new PacMan(pacman_x, pacman_y, UNIT_RENDER_WIDTH, UNIT_RENDER_HEIGHT, this);
 
+	// Create ghosts
+	this->units_.push_back(new Ghost(312, 180, this, GhostType::BLINKY));
+	this->units_.push_back(new Ghost(312, 756, this, GhostType::INKY));
+
 	std::cout << "Map loaded." << std::endl;
 }
 
@@ -148,7 +165,19 @@ bool Map::DetermineIfTileIsTurn(int x, int y) {
 }
 
 void Map::Update(float delta_time, const Uint8* keyboard_state) {
+	// Update Pac-Man
 	this->pacman_->Update(delta_time, keyboard_state);
+
+	// Update the other units
+	for (int i = 0; i < this->units_.size(); i++)
+	{
+		this->units_[i]->Update(delta_time, keyboard_state);
+
+		// Check for collision between Pac-Man and other units
+		if (this->pacman_->current_tile_ == this->units_[i]->current_tile_) {
+			this->collision_occured_ = true;
+		}
+	}
 }
 
 void Map::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
@@ -165,5 +194,12 @@ void Map::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 		}
 	}
 
+	// Render Pac-Man
 	this->pacman_->Render(renderer, asset_loader);
+
+	// Rednder the other units
+	for (int i = 0; i < this->units_.size(); i++)
+	{
+		this->units_[i]->Render(renderer, asset_loader);
+	}
 }

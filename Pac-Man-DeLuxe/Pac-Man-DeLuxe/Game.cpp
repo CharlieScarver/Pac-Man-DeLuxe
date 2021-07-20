@@ -8,6 +8,8 @@ Game::Game() {
 
 	this->asset_loader_ = nullptr;
 	this->map_ = nullptr;
+
+	this->is_paused_ = false;
 }
 
 Game::~Game() {
@@ -81,6 +83,11 @@ void Game::Events(SDL_Event* event) {
 void Game::Update(float delta_time, const Uint8* keyboard_state) {
 	// Update map
 	this->map_->Update(delta_time, keyboard_state);
+
+	if (this->map_->collision_occured_) {
+		this->is_paused_ = true;
+		std::cout << "Game over!" << std::endl;
+	}
 }
 
 void Game::Render() {
@@ -159,7 +166,12 @@ int Game::Run() {
 			std::cout << "FPS: " << fps << std::endl;
 		}
 
-		this->Update(delta_time, keyboard_state);
+		// Update the game is not paused
+		if (!this->is_paused_) {
+			this->Update(delta_time, keyboard_state);
+		}
+
+		// Render the game
 		this->Render();
 	}
 

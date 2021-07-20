@@ -50,7 +50,6 @@ protected:
 	Map* map_;
 
 	Unit(float x, float y, float width, float height, Map* map);
-	~Unit();
 
 	Tile* GetTileForUnitCoordinates(float x, float y);
 	Tile* GetTileForCenterUnitCoordinates(float center_x, float center_y);
@@ -68,6 +67,8 @@ public:
 	Tile* current_tile_;
 
 	Orientation orientation_;
+
+	~Unit();
 
 	virtual void Update(float delta_time, const Uint8* keyboard_state);
 	virtual void Render(SDL_Renderer* renderer, AssetLoader* asset_loader) override;

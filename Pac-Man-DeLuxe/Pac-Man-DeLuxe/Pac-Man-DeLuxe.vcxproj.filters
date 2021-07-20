@@ -43,6 +43,12 @@
     <Filter Include="Source Files\AssetLoader">
       <UniqueIdentifier>{7d661936-536c-4ef9-929f-985844388ae0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Helpers">
+      <UniqueIdentifier>{8f11eb22-2ee1-4604-8354-694f55ed12ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Enums">
+      <UniqueIdentifier>{b8f4ea71-0456-429e-874e-ddc10c67a7a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -69,6 +75,9 @@
     <ClCompile Include="PacMan.cpp">
       <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Ghost.cpp">
+      <Filter>Source Files\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -91,6 +100,12 @@
     </ClInclude>
     <ClInclude Include="AssetLoader.h">
       <Filter>Header Files\AssetLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Ghost.h">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="GhostType.h">
+      <Filter>Header Files\Enums</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

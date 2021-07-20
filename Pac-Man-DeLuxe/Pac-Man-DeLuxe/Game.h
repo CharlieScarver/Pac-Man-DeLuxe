@@ -12,6 +12,7 @@ private:
 	const int default_window_height = 864;
 
 	bool is_running_;
+	bool is_paused_;
 	SDL_Window* window_;
 	SDL_Renderer* renderer_;
 

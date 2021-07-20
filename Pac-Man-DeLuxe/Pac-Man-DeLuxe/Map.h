@@ -1,6 +1,8 @@
 #pragma once
+#include <vector>
 #include "Tile.h"
 #include "PacMan.h"
+#include "Ghost.h"
 
 #define MAP_WIDTH_IN_TILES 28
 #define MAP_HEIGHT_IN_TILES 36
@@ -11,11 +13,15 @@ class Map final {
 private:
 	char* file_name_;
 	Tile* tile_matrix_[MAP_WIDTH_IN_TILES][MAP_HEIGHT_IN_TILES];
+
 public:
-	Map();
-	~Map();
+	bool collision_occured_;
 
 	PacMan* pacman_;
+	std::vector<Unit*> units_;
+
+	Map();
+	~Map();
 
 	void LoadMapFromFile(const char* file_name);
 	Tile* GetTile(int x, int y);
