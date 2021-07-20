@@ -9,13 +9,9 @@
 #define TILE_RENDER_WIDTH 24
 #define TILE_RENDER_HEIGHT 24
 
-#define RENDER_TILES_DEBUG 1
+#define RENDER_TILES_DEBUG 0
 
 class Tile final : public GameObject {
-private:
-	int spritesheet_x_;
-	int spritesheet_y_;
-
 public:
 	// Tile properties
 	TileType type_;

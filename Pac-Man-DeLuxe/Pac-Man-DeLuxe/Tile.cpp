@@ -5,57 +5,51 @@ Tile::Tile(int x, int y, TileType type, bool is_turn_tile = false)
 	this->type_ = type;
     this->map_x_ = x;
     this->map_y_ = y;
+    
     this->contains_player_ = false;
     this->contains_ghost_ = false;
     this->is_turn_tile_ = is_turn_tile;
+
+    this->sprite_size_ = Vector2(TILE_SPRITE_WIDTH, TILE_SPRITE_HEIGHT);
 
 	switch (this->type_)
 	{
         case TileType::EMPTY:
             // Empty tiles doesn't have a sprite and are not rendered
             // They receive sprite sheet coordinates (0,0) as the defaults
-            this->spritesheet_x_ = 0;
-            this->spritesheet_y_ = 0;
+            this->spritesheet_position_ = Vector2(0, 0);
             this->is_solid_ = false;
             break;
         case TileType::WALL_HORIZONTAL_TOP:
-            this->spritesheet_x_ = 0;
-            this->spritesheet_y_ = 0;
+            this->spritesheet_position_ = Vector2(0, 0);
             this->is_solid_ = true;
             break;
         case TileType::WALL_HORIZONTAL_BOTTOM:
-            this->spritesheet_x_ = 8;
-            this->spritesheet_y_ = 0;
+            this->spritesheet_position_ = Vector2(8, 0);
             this->is_solid_ = true;
             break;
         case TileType::WALL_VERTICAL_LEFT:
-            this->spritesheet_x_ = 16;
-            this->spritesheet_y_ = 0;
+            this->spritesheet_position_ = Vector2(16, 0);
             this->is_solid_ = true;
             break;
         case TileType::WALL_VERTICAL_RIGHT:
-            this->spritesheet_x_ = 24;
-            this->spritesheet_y_ = 0;
+            this->spritesheet_position_ = Vector2(24, 0);
             this->is_solid_ = true;
             break;
         case TileType::WALL_ROUNDED_TOP_LEFT:
-            this->spritesheet_x_ = 0;
-            this->spritesheet_y_ = 8;
+            this->spritesheet_position_ = Vector2(0, 8);
             this->is_solid_ = true;
             break;
         case TileType::WALL_ROUNDED_TOP_RIGHT:
-            this->spritesheet_x_ = 8;
-            this->spritesheet_y_ = 8;
+            this->spritesheet_position_ = Vector2(8, 8);
             this->is_solid_ = true;
             break;
         case TileType::WALL_ROUNDED_BOTTOM_LEFT:
-            this->spritesheet_x_ = 16;
-            this->spritesheet_y_ = 8;
+            this->spritesheet_position_ = Vector2(16, 8);
             this->is_solid_ = true;
             break;
         case TileType::WALL_ROUNDED_BOTTOM_RIGHT:
-            this->spritesheet_x_ = 24;
-            this->spritesheet_y_ = 8;
+            this->spritesheet_position_ = Vector2(24, 8);
             this->is_solid_ = true;
             break;
 	}
@@ -68,10 +62,10 @@ Tile::~Tile() {}
 
 void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
     SDL_Rect spritesheet_rect;
-    spritesheet_rect.x = this->spritesheet_x_;
-    spritesheet_rect.y = this->spritesheet_y_;
-    spritesheet_rect.w = TILE_SPRITE_WIDTH;
-    spritesheet_rect.h = TILE_SPRITE_HEIGHT;
+    spritesheet_rect.x = this->spritesheet_position_.x_;
+    spritesheet_rect.y = this->spritesheet_position_.y_;
+    spritesheet_rect.w = this->sprite_size_.x_;
+    spritesheet_rect.h = this->sprite_size_.y_;
 
     SDL_FRect render_rect;
     render_rect.x = this->render_position_.x_;

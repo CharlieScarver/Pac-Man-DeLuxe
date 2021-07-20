@@ -5,8 +5,8 @@ PacMan::PacMan(float x, float y, float width, float height, Map* map) : Unit(x, 
 
 	this->lives_ = 1;
 
-	this->spritesheet_x_ = PACMAN_SPRITESHEET_X;
-	this->spritesheet_y_ = PACMAN_SPRITESHEET_Y;
+	this->spritesheet_position_ = Vector2(PACMAN_SPRITESHEET_X, PACMAN_SPRITESHEET_Y);
+
 	this->animation_frames_count_ = PACMAN_ANIMATION_FRAMES;
 	this->animation_delay_ = PACMAN_ANIMATION_DELAY;
 

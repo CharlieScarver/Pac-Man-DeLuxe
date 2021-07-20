@@ -3,16 +3,13 @@
 #include "Map.h"
 
 Unit::Unit(float x, float y, float width, float height, Map* map) : GameObject(x, y, width, height) {
-	// Set defaults
-	this->spritesheet_x_ = 0;
-	this->spritesheet_y_ = 0;
+
+	this->sprite_size_ = Vector2(UNIT_SPRITE_WIDTH, UNIT_SPRITE_HEIGHT);
 
 	this->direction_ = Direction::NONE;
 	this->orientation_ = Orientation::LEFT;
 
 	this->current_tile_ = nullptr;
-	this->current_tile_x_ = 0;
-	this->current_tile_y_ = 0;
 
 	this->current_animation_frame_ = 0;
 	this->animation_frames_count_ = 1;
@@ -24,12 +21,6 @@ Unit::Unit(float x, float y, float width, float height, Map* map) : GameObject(x
 	this->map_ = map;
 
 	this->current_tile_ = GetTileForUnitCoordinates(x, y);
-
-	if (!this->current_tile_->is_solid_) {
-		// If tile is not solid => change current tile
-		this->current_tile_x_ = this->current_tile_->map_x_;
-		this->current_tile_y_ = this->current_tile_->map_y_;
-	}
 }
 
 Unit::~Unit() {}
@@ -125,14 +116,10 @@ void Unit::ManageMovement(float delta_time) {
 	Tile* future_tile = GetTileForCenterUnitCoordinates(future_center.x_, future_center.y_);
 
 	// Move to the new position
-	this->render_position_.x_ = future_center.x_ - ((float)UNIT_RENDER_WIDTH / 2.0f);
-	this->render_position_.y_ = future_center.y_ - ((float)UNIT_RENDER_HEIGHT / 2.0f);
-	this->render_position_.x_ = future_center.x_ - ((float)UNIT_RENDER_WIDTH / 2.0f);
-	this->render_position_.y_ = future_center.y_ - ((float)UNIT_RENDER_HEIGHT / 2.0f);
+	this->render_position_.x_ = future_center.x_ - (this->render_size_.x_ / 2.0f);
+	this->render_position_.y_ = future_center.y_ - (this->render_size_.y_ / 2.0f);
 
 	// Update the current tile
-	this->current_tile_x_ = future_tile->map_x_;
-	this->current_tile_y_ = future_tile->map_y_;
 	this->current_tile_ = future_tile;
 
 	// Update orientation
@@ -166,10 +153,10 @@ void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	this->spritesheet_texture_ = asset_loader->units_spritesheet_;
 
 	SDL_Rect spritesheet_rect;
-	spritesheet_rect.x = this->spritesheet_x_ + (this->current_animation_frame_ * UNIT_SPRITE_WIDTH);
-	spritesheet_rect.y = this->spritesheet_y_;
-	spritesheet_rect.w = UNIT_SPRITE_WIDTH;
-	spritesheet_rect.h = UNIT_SPRITE_HEIGHT;
+	spritesheet_rect.x = this->spritesheet_position_.x_ + (this->current_animation_frame_ * this->sprite_size_.x_);
+	spritesheet_rect.y = this->spritesheet_position_.y_;
+	spritesheet_rect.w = this->sprite_size_.x_;
+	spritesheet_rect.h = this->sprite_size_.y_;
 
 	SDL_FRect render_rect;
 	render_rect.x = this->render_position_.x_;
@@ -203,8 +190,8 @@ void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	if (RENDER_UNITS_DEBUG) {
 		// Draw center point in red
 		SDL_FRect center_point_rect;
-		center_point_rect.x = this->render_position_.x_ + (UNIT_RENDER_WIDTH / 2);
-		center_point_rect.y = this->render_position_.y_ + (UNIT_RENDER_HEIGHT / 2);
+		center_point_rect.x = this->render_position_.x_ + (this->render_size_.x_ / 2);
+		center_point_rect.y = this->render_position_.y_ + (this->render_size_.y_ / 2);
 		center_point_rect.w = 2;
 		center_point_rect.h = 2;
 
@@ -213,8 +200,8 @@ void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 
 		// Draw current tile in red
 		SDL_FRect current_tile_rect;
-		current_tile_rect.x = this->current_tile_x_ * TILE_RENDER_WIDTH;
-		current_tile_rect.y = this->current_tile_y_ * TILE_RENDER_HEIGHT;
+		current_tile_rect.x = this->current_tile_->map_x_ * TILE_RENDER_WIDTH;
+		current_tile_rect.y = this->current_tile_->map_y_ * TILE_RENDER_HEIGHT;
 		current_tile_rect.w = TILE_RENDER_WIDTH;
 		current_tile_rect.h = TILE_RENDER_HEIGHT;
 

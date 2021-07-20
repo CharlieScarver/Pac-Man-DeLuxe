@@ -18,10 +18,7 @@ class Map;
 
 class Unit : public GameObject {
 protected:
-	// Spritesheet source rect
-	int spritesheet_x_;
-	int spritesheet_y_;
-
+	// The loaded spritesheet texture
 	SDL_Texture* spritesheet_texture_;
 
 	// Animation
@@ -48,8 +45,6 @@ protected:
 
 public:
 	// Current tile
-	int current_tile_x_;
-	int current_tile_y_;
 	Tile* current_tile_;
 
 	Orientation orientation_;
