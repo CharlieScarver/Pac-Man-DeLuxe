@@ -74,10 +74,10 @@ void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
     spritesheet_rect.h = TILE_SPRITE_HEIGHT;
 
     SDL_FRect render_rect;
-    render_rect.x = this->render_x_;
-    render_rect.y = this->render_y_;
-    render_rect.w = this->render_width_;
-    render_rect.h = this->render_height_;
+    render_rect.x = this->render_position_.x_;
+    render_rect.y = this->render_position_.y_;
+    render_rect.w = this->render_size_.x_;
+    render_rect.h = this->render_size_.y_;
 
     if (RENDER_TILES_DEBUG && this->type_ == TileType::EMPTY) {
         // Draw tile box
@@ -88,17 +88,17 @@ void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
         // Draw tile center point axes
         SDL_RenderDrawLineF(
             renderer,
-            this->render_x_,
-            this->render_y_ + (float)TILE_RENDER_HEIGHT / 2.0f,
-            this->render_x_ + TILE_RENDER_WIDTH,
-            this->render_y_ + (float)TILE_RENDER_HEIGHT / 2.0f
+            this->render_position_.x_,
+            this->render_position_.y_ + (float)TILE_RENDER_HEIGHT / 2.0f,
+            this->render_position_.x_ + TILE_RENDER_WIDTH,
+            this->render_position_.y_ + (float)TILE_RENDER_HEIGHT / 2.0f
         );
         SDL_RenderDrawLineF(
             renderer,
-            this->render_x_ + (float)TILE_RENDER_WIDTH / 2.0f,
-            this->render_y_,
-            this->render_x_ + (float)TILE_RENDER_WIDTH / 2.0f,
-            this->render_y_ + TILE_RENDER_HEIGHT
+            this->render_position_.x_ + (float)TILE_RENDER_WIDTH / 2.0f,
+            this->render_position_.y_,
+            this->render_position_.x_ + (float)TILE_RENDER_WIDTH / 2.0f,
+            this->render_position_.y_ + TILE_RENDER_HEIGHT
         );
     }
 

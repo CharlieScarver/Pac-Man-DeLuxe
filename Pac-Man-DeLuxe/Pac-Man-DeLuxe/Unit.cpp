@@ -27,12 +27,12 @@ Unit::Unit(float x, float y, float width, float height, Map* map) : GameObject(x
 
 	this->map_ = map;
 
-	Tile* current_tile = GetTileForUnitCoordinates(x, y);
+	this->current_tile_ = GetTileForUnitCoordinates(x, y);
 
-	if (!current_tile->is_solid_) {
+	if (!this->current_tile_->is_solid_) {
 		// If tile is not solid => change current tile
-		this->current_tile_x_ = current_tile->map_x_;
-		this->current_tile_y_ = current_tile->map_y_;
+		this->current_tile_x_ = this->current_tile_->map_x_;
+		this->current_tile_y_ = this->current_tile_->map_y_;
 	}
 }
 
@@ -64,8 +64,8 @@ void Unit::SetCenterToTileCenter(Tile* tile) {
 	float tile_center_x = (tile->map_x_ * TILE_RENDER_WIDTH) + (float)TILE_RENDER_WIDTH / 2.0f;
 	float tile_center_y = (tile->map_y_* TILE_RENDER_HEIGHT) + (float)TILE_RENDER_HEIGHT / 2.0f;
 
-	this->render_x_ = tile_center_x - (float)UNIT_RENDER_WIDTH / 2.0f;
-	this->render_y_ = tile_center_y - (float)UNIT_RENDER_HEIGHT / 2.0f;
+	this->render_position_.x_ = tile_center_x - (float)UNIT_RENDER_WIDTH / 2.0f;
+	this->render_position_.y_ = tile_center_y - (float)UNIT_RENDER_HEIGHT / 2.0f;
 }
 
 void Unit::StopMoving() {
@@ -98,45 +98,44 @@ void Unit::ManageMovement(float delta_time) {
 		return;
 	}
 
-	// Coordinates of the center point of the sprite
-	float center_x = this->render_x_ + (UNIT_RENDER_WIDTH / 2);
-	float center_y = this->render_y_ + (UNIT_RENDER_HEIGHT / 2);
+	// Center point of the rendered unit sprite
+	Vector2 render_center = Vector2::FindCenterPointOfRectangle(this->render_position_, this->render_size_);
 
-	float future_center_x = center_x;
-	float future_center_y = center_y;
+	// Future position of the center
+	Vector2 future_center = render_center;
 
 	Orientation future_orientation = this->orientation_;
 
-	// Get future position and orientation based on direction of movement
+	// Get future position and orientation based on the movement direction
 	if (this->is_moving_up_) {
-		future_center_y -= this->velocity_y_;
+		future_center.y_ -= this->velocity_y_;
 		future_orientation = Orientation::UP;
 	}
 	else if (this->is_moving_down_) {
-		future_center_y += this->velocity_y_;
+		future_center.y_ += this->velocity_y_;
 		future_orientation = Orientation::DOWN;
 	}
 	else if (this->is_moving_left_) {
-		future_center_x -= this->velocity_x_;
+		future_center.x_ -= this->velocity_x_;
 		future_orientation = Orientation::LEFT;
 	}
 	else if (this->is_moving_right_) {
-		future_center_x += this->velocity_x_;
+		future_center.x_ += this->velocity_x_;
 		future_orientation = Orientation::RIGHT;
 	}
 
 
-	float current_tile_center_x = (this->current_tile_x_ * TILE_RENDER_WIDTH) + (float)TILE_RENDER_WIDTH / 2.0f;
-	float current_tile_center_y = (this->current_tile_y_ * TILE_RENDER_HEIGHT) + (float)TILE_RENDER_HEIGHT / 2.0f;
+	// Get current tile center
+	Vector2 current_tile_center = Vector2::FindCenterPointOfRectangle(this->current_tile_->render_position_, this->current_tile_->render_size_);
 
 	// Don't allow unit to move beyond the center of the tile
-	if ((this->is_moving_left_ && future_center_x <= current_tile_center_x) ||
-		(this->is_moving_right_ && future_center_x >= current_tile_center_x) ||
-		(this->is_moving_up_ && future_center_y <= current_tile_center_y) ||
-		(this->is_moving_down_ && future_center_y >= current_tile_center_y)
+	if ((this->is_moving_left_ && future_center.x_ <= current_tile_center.x_) ||
+		(this->is_moving_right_ && future_center.x_ >= current_tile_center.x_) ||
+		(this->is_moving_up_ && future_center.y_ <= current_tile_center.y_) ||
+		(this->is_moving_down_ && future_center.y_ >= current_tile_center.y_)
 	) {
 		// Get the next tile in the direction of movement (to the left)
-		Tile*  next_tile = this->GetNextTileInDirection(future_orientation);
+		Tile*  next_tile = this->map_->GetNextTileInDirection(this->current_tile_, future_orientation);
 
 		// If the next tile is out of bounds or solid => stop (in the center)
 		if (next_tile == nullptr || (next_tile != nullptr && next_tile->is_solid_)) {
@@ -147,11 +146,13 @@ void Unit::ManageMovement(float delta_time) {
 
 
 	// Get the tile of the future position
-	Tile* future_tile = GetTileForCenterUnitCoordinates(future_center_x, future_center_y);
+	Tile* future_tile = GetTileForCenterUnitCoordinates(future_center.x_, future_center.y_);
 
 	// Move to the new position
-	this->render_x_ = future_center_x - ((float)UNIT_RENDER_WIDTH / 2.0f);
-	this->render_y_ = future_center_y - ((float)UNIT_RENDER_HEIGHT / 2.0f);
+	this->render_position_.x_ = future_center.x_ - ((float)UNIT_RENDER_WIDTH / 2.0f);
+	this->render_position_.y_ = future_center.y_ - ((float)UNIT_RENDER_HEIGHT / 2.0f);
+	this->render_position_.x_ = future_center.x_ - ((float)UNIT_RENDER_WIDTH / 2.0f);
+	this->render_position_.y_ = future_center.y_ - ((float)UNIT_RENDER_HEIGHT / 2.0f);
 
 	// Update the current tile
 	this->current_tile_x_ = future_tile->map_x_;
@@ -195,10 +196,10 @@ void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	spritesheet_rect.h = UNIT_SPRITE_HEIGHT;
 
 	SDL_FRect render_rect;
-	render_rect.x = this->render_x_;
-	render_rect.y = this->render_y_;
-	render_rect.w = this->render_width_;
-	render_rect.h = this->render_height_;
+	render_rect.x = this->render_position_.x_;
+	render_rect.y = this->render_position_.y_;
+	render_rect.w = this->render_size_.x_;
+	render_rect.h = this->render_size_.y_;
 
 	if (RENDER_UNITS_DEBUG) {
 		// Draw sprite box
@@ -226,8 +227,8 @@ void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	if (RENDER_UNITS_DEBUG) {
 		// Draw center point in red
 		SDL_FRect center_point_rect;
-		center_point_rect.x = this->render_x_ + (UNIT_RENDER_WIDTH / 2);
-		center_point_rect.y = this->render_y_ + (UNIT_RENDER_HEIGHT / 2);
+		center_point_rect.x = this->render_position_.x_ + (UNIT_RENDER_WIDTH / 2);
+		center_point_rect.y = this->render_position_.y_ + (UNIT_RENDER_HEIGHT / 2);
 		center_point_rect.w = 2;
 		center_point_rect.h = 2;
 

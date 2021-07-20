@@ -43,11 +43,11 @@
     <Filter Include="Source Files\AssetLoader">
       <UniqueIdentifier>{7d661936-536c-4ef9-929f-985844388ae0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Helpers">
-      <UniqueIdentifier>{8f11eb22-2ee1-4604-8354-694f55ed12ef}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Enums">
       <UniqueIdentifier>{b8f4ea71-0456-429e-874e-ddc10c67a7a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Structs">
+      <UniqueIdentifier>{8f11eb22-2ee1-4604-8354-694f55ed12ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +112,12 @@
     </ClInclude>
     <ClInclude Include="Orientation.h">
       <Filter>Header Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Direction.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>Header Files\Structs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
