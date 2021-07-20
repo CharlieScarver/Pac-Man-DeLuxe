@@ -86,14 +86,14 @@ void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 
         SDL_SetRenderDrawColor(renderer, 75, 75, 0, 0);
         // Draw tile center point axes
-        SDL_RenderDrawLine(
+        SDL_RenderDrawLineF(
             renderer,
             this->render_x_,
             this->render_y_ + (float)TILE_RENDER_HEIGHT / 2.0f,
             this->render_x_ + TILE_RENDER_WIDTH,
             this->render_y_ + (float)TILE_RENDER_HEIGHT / 2.0f
         );
-        SDL_RenderDrawLine(
+        SDL_RenderDrawLineF(
             renderer,
             this->render_x_ + (float)TILE_RENDER_WIDTH / 2.0f,
             this->render_y_,
