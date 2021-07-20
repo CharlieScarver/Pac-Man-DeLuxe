@@ -7,8 +7,8 @@ PacMan::PacMan(float x, float y, float width, float height, Map* map) : Unit(x, 
 
 	this->spritesheet_x_ = PACMAN_SPRITESHEET_X;
 	this->spritesheet_y_ = PACMAN_SPRITESHEET_Y;
-	this->animation_delay_ = PACMAN_ANIMATION_DELAY;
 	this->animation_frames_count_ = PACMAN_ANIMATION_FRAMES;
+	this->animation_delay_ = PACMAN_ANIMATION_DELAY;
 
 	this->velocity_x_ = PACMAN_DEFAULT_VELOCITY;
 	this->velocity_y_ = PACMAN_DEFAULT_VELOCITY;

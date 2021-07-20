@@ -4,7 +4,7 @@
 #define PACMAN_SPRITESHEET_X 0
 #define PACMAN_SPRITESHEET_Y 0
 #define PACMAN_ANIMATION_FRAMES 2
-#define PACMAN_ANIMATION_DELAY 300
+#define PACMAN_ANIMATION_DELAY 100
 // Original Pac-Man speed is 1.46 pixels per frame
 #define PACMAN_DEFAULT_VELOCITY 1.46f * 1.12f
 
