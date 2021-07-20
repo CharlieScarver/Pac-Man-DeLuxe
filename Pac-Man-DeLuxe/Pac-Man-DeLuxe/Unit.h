@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Orientation.h"
+#include "Direction.h"
 
 // Forward declaration to resolve circular dependency
 class Tile;
@@ -13,7 +14,7 @@ class Map;
 
 #define UNIT_TURN_PIXEL_RADIUS 2
 
-#define RENDER_UNITS_DEBUG 1
+#define RENDER_UNITS_DEBUG 0
 
 class Unit : public GameObject {
 protected:
@@ -29,14 +30,6 @@ protected:
 	float animation_timer_;
 	int animation_delay_; // static? no need?
 
-	// Movement
-	bool is_idle_;
-	bool is_moving_left_;
-	bool is_moving_right_;
-	bool is_moving_up_;
-	bool is_moving_down_;
-	bool is_cornering_;
-
 	// Velocity
 	float velocity_x_;
 	float velocity_y_;
@@ -49,7 +42,6 @@ protected:
 	Tile* GetTileForCenterUnitCoordinates(float center_x, float center_y);
 	void SetCenterToTileCenter(Tile* tile);
 	void StopMoving();
-	Tile* GetNextTileInDirection(Orientation direction);
 
 	void ManageMovement(float delta_time);
 	void ManageAnimation(float delta_time);
@@ -61,6 +53,7 @@ public:
 	Tile* current_tile_;
 
 	Orientation orientation_;
+	Direction direction_;
 
 	~Unit();
 

@@ -174,21 +174,23 @@ int Map::GetTileDistanceBetweenTwoTiles(Tile* tile1, Tile* tile2) {
 	return x_distance + y_distance;
 }
 
-Tile* Map::GetNextTileInDirection(Tile* source_tile, Orientation direction) {
+Tile* Map::GetNextTileInDirection(Tile* source_tile, Direction direction) {
 	if (source_tile == nullptr) {
 		return nullptr;
 	}
 
 	switch (direction)
 	{
-		case Orientation::UP:
+		case Direction::UP:
 			return this->GetTile(source_tile->map_x_, source_tile->map_y_ - 1);
-		case Orientation::DOWN:
+		case Direction::DOWN:
 			return this->GetTile(source_tile->map_x_, source_tile->map_y_ + 1);
-		case Orientation::LEFT:
+		case Direction::LEFT:
 			return this->GetTile(source_tile->map_x_ - 1, source_tile->map_y_);
-		case Orientation::RIGHT:
+		case Direction::RIGHT:
 			return this->GetTile(source_tile->map_x_ + 1, source_tile->map_y_);
+		case Direction::NONE:
+			return source_tile;
 		default:
 			return nullptr;
 	}

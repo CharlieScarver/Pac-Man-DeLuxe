@@ -3,6 +3,7 @@
 #include "Tile.h"
 #include "PacMan.h"
 #include "Ghost.h"
+#include "Direction.h"
 
 #define MAP_WIDTH_IN_TILES 28
 #define MAP_HEIGHT_IN_TILES 36
@@ -30,7 +31,7 @@ public:
 	bool DetermineIfTileIsTurn(int x, int y);
 
 	int GetTileDistanceBetweenTwoTiles(Tile* tile1, Tile* tile2);
-	Tile* GetNextTileInDirection(Tile* source_tile, Orientation direction);
+	Tile* GetNextTileInDirection(Tile* source_tile, Direction direction);
 
 	void Update(float delta_time, const Uint8* keyboard_state);
 	void Render(SDL_Renderer* renderer, AssetLoader* asset_loader);
