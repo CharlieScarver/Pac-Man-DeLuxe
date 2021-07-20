@@ -107,6 +107,12 @@
     <ClInclude Include="GhostType.h">
       <Filter>Header Files\Enums</Filter>
     </ClInclude>
+    <ClInclude Include="TileType.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Orientation.h">
+      <Filter>Header Files\Enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\level0.txt">

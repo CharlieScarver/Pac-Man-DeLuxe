@@ -169,9 +169,11 @@ XCOPY "$(ProjectDir)"\Libraries\SDL2_image-2.0.5\lib\x64\*.DLL "$(TargetDir)" /D
     <ClInclude Include="Ghost.h" />
     <ClInclude Include="GhostType.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Orientation.h" />
     <ClInclude Include="PacMan.h" />
     <ClInclude Include="AssetLoader.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="TileType.h" />
     <ClInclude Include="Unit.h" />
   </ItemGroup>
   <ItemGroup>

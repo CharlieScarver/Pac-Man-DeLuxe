@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "TileType.h"
 
 #define TILE_SPRITE_WIDTH 8
 #define TILE_SPRITE_HEIGHT 8
@@ -9,18 +10,6 @@
 #define TILE_RENDER_HEIGHT 24
 
 #define RENDER_TILES_DEBUG 1
-
-typedef enum {
-	EMPTY,
-	WALL_HORIZONTAL_TOP,
-	WALL_HORIZONTAL_BOTTOM,
-	WALL_VERTICAL_LEFT,
-	WALL_VERTICAL_RIGHT,
-	WALL_ROUNDED_TOP_LEFT,
-	WALL_ROUNDED_TOP_RIGHT,
-	WALL_ROUNDED_BOTTOM_LEFT,
-	WALL_ROUNDED_BOTTOM_RIGHT
-} TileType;
 
 class Tile final : public GameObject {
 private:

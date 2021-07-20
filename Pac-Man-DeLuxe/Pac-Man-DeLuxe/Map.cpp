@@ -70,39 +70,39 @@ void Map::LoadMapFromFile(const char* file_name) {
 		case '.':
 		case ' ':
 			// Set proper tile and increase the column counter
-			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, EMPTY));
+			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, TileType::EMPTY));
 			tile_x++;
 			break;
 		case '=':
-			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, WALL_HORIZONTAL_TOP));
+			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, TileType::WALL_HORIZONTAL_TOP));
 			tile_x++;
 			break;
 		case '-': // \u2550 = 45 somehow
-			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, WALL_HORIZONTAL_BOTTOM));
+			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, TileType::WALL_HORIZONTAL_BOTTOM));
 			tile_x++;
 			break;
 		case '|':
-			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, WALL_VERTICAL_LEFT));
+			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, TileType::WALL_VERTICAL_LEFT));
 			tile_x++;
 			break;
 		case '!':
-			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, WALL_VERTICAL_RIGHT));
+			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, TileType::WALL_VERTICAL_RIGHT));
 			tile_x++;
 			break;
 		case ']':
-			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, WALL_ROUNDED_TOP_LEFT));
+			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, TileType::WALL_ROUNDED_TOP_LEFT));
 			tile_x++;
 			break;
 		case '[':
-			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, WALL_ROUNDED_TOP_RIGHT));
+			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, TileType::WALL_ROUNDED_TOP_RIGHT));
 			tile_x++;
 			break;
 		case ')':
-			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, WALL_ROUNDED_BOTTOM_LEFT));
+			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, TileType::WALL_ROUNDED_BOTTOM_LEFT));
 			tile_x++;
 			break;
 		case '(': // \u2554 = 43 somehow
-			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, WALL_ROUNDED_BOTTOM_RIGHT));
+			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, TileType::WALL_ROUNDED_BOTTOM_RIGHT));
 			tile_x++;
 			break;
 		case '\n':
@@ -154,9 +154,11 @@ void Map::SetTile(int x, int y, Tile* tile) {
 bool Map::DetermineIfTileIsTurn(int x, int y) {
 	// If two adjacent tiles on opposite axes are EMPTY => the given tile is on a turn
 	if (
-		(this->tile_matrix_[x - 1][y]->type_ == EMPTY && (this->tile_matrix_[x][y - 1]->type_ == EMPTY || this->tile_matrix_[x][y + 1]->type_ == EMPTY))
+		(this->tile_matrix_[x - 1][y]->type_ == TileType::EMPTY &&
+			(this->tile_matrix_[x][y - 1]->type_ == TileType::EMPTY || this->tile_matrix_[x][y + 1]->type_ == TileType::EMPTY))
 		||
-		(this->tile_matrix_[x + 1][y]->type_ == EMPTY && (this->tile_matrix_[x][y - 1]->type_ == EMPTY || this->tile_matrix_[x][y + 1]->type_ == EMPTY))
+		(this->tile_matrix_[x + 1][y]->type_ == TileType::EMPTY &&
+			(this->tile_matrix_[x][y - 1]->type_ == TileType::EMPTY || this->tile_matrix_[x][y + 1]->type_ == TileType::EMPTY))
 		) {
 		return true;
 	}

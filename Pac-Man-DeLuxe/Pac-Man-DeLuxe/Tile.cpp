@@ -11,49 +11,49 @@ Tile::Tile(int x, int y, TileType type, bool is_turn_tile = false)
 
 	switch (this->type_)
 	{
-        case EMPTY:
+        case TileType::EMPTY:
             // Empty tiles doesn't have a sprite and are not rendered
             // They receive sprite sheet coordinates (0,0) as the defaults
             this->spritesheet_x_ = 0;
             this->spritesheet_y_ = 0;
             this->is_solid_ = false;
             break;
-        case WALL_HORIZONTAL_TOP:
+        case TileType::WALL_HORIZONTAL_TOP:
             this->spritesheet_x_ = 0;
             this->spritesheet_y_ = 0;
             this->is_solid_ = true;
             break;
-        case WALL_HORIZONTAL_BOTTOM:
+        case TileType::WALL_HORIZONTAL_BOTTOM:
             this->spritesheet_x_ = 8;
             this->spritesheet_y_ = 0;
             this->is_solid_ = true;
             break;
-        case WALL_VERTICAL_LEFT:
+        case TileType::WALL_VERTICAL_LEFT:
             this->spritesheet_x_ = 16;
             this->spritesheet_y_ = 0;
             this->is_solid_ = true;
             break;
-        case WALL_VERTICAL_RIGHT:
+        case TileType::WALL_VERTICAL_RIGHT:
             this->spritesheet_x_ = 24;
             this->spritesheet_y_ = 0;
             this->is_solid_ = true;
             break;
-        case WALL_ROUNDED_TOP_LEFT:
+        case TileType::WALL_ROUNDED_TOP_LEFT:
             this->spritesheet_x_ = 0;
             this->spritesheet_y_ = 8;
             this->is_solid_ = true;
             break;
-        case WALL_ROUNDED_TOP_RIGHT:
+        case TileType::WALL_ROUNDED_TOP_RIGHT:
             this->spritesheet_x_ = 8;
             this->spritesheet_y_ = 8;
             this->is_solid_ = true;
             break;
-        case WALL_ROUNDED_BOTTOM_LEFT:
+        case TileType::WALL_ROUNDED_BOTTOM_LEFT:
             this->spritesheet_x_ = 16;
             this->spritesheet_y_ = 8;
             this->is_solid_ = true;
             break;
-        case WALL_ROUNDED_BOTTOM_RIGHT:
+        case TileType::WALL_ROUNDED_BOTTOM_RIGHT:
             this->spritesheet_x_ = 24;
             this->spritesheet_y_ = 8;
             this->is_solid_ = true;
@@ -79,7 +79,7 @@ void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
     render_rect.w = this->render_width_;
     render_rect.h = this->render_height_;
 
-    if (RENDER_TILES_DEBUG && this->type_ == EMPTY) {
+    if (RENDER_TILES_DEBUG && this->type_ == TileType::EMPTY) {
         // Draw tile box
         SDL_SetRenderDrawColor(renderer, 50, 25, 200, 0);
         SDL_RenderDrawRectF(renderer, &render_rect);
@@ -103,7 +103,7 @@ void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
     }
 
     // Don't render empty tiles
-    if (this->type_ == EMPTY) {
+    if (this->type_ == TileType::EMPTY) {
         return;
     }
 

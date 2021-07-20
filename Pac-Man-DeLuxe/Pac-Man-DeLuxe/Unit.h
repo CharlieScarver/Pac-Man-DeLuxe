@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "Orientation.h"
 
 // Forward declaration to resolve circular dependency
 class Tile;
@@ -13,13 +14,6 @@ class Map;
 #define UNIT_TURN_PIXEL_RADIUS 2
 
 #define RENDER_UNITS_DEBUG 1
-
-typedef enum class OrientationEnum {
-	LEFT,
-	RIGHT,
-	UP,
-	DOWN
-} Orientation;
 
 class Unit : public GameObject {
 protected:
