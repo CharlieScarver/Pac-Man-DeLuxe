@@ -29,6 +29,9 @@ public:
 
 	bool DetermineIfTileIsTurn(int x, int y);
 
+	int GetTileDistanceBetweenTwoTiles(Tile* tile1, Tile* tile2);
+	Tile* GetNextTileInDirection(Tile* source_tile, Orientation direction);
+
 	void Update(float delta_time, const Uint8* keyboard_state);
 	void Render(SDL_Renderer* renderer, AssetLoader* asset_loader);
 };

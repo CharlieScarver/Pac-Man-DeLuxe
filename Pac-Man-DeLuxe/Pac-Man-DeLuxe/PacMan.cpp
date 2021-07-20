@@ -31,7 +31,7 @@ void PacMan::HandleInput(const Uint8* keyboard_state) {
 		// Change movement only if [idle], [moving in the opposite direction] or [on a turn tile and within turn interval]
 		if (this->is_idle_ || this->is_moving_down_ || (this->current_tile_->is_turn_tile_ && center_x_in_turn_interval && center_y_in_turn_interval)) {
 			// Don't allow turning into a wall to stop yourself on an intersection
-			Tile* next_tile = this->GetNextTileInDirection(Orientation::UP);
+			Tile* next_tile = this->map_->GetNextTileInDirection(this->current_tile_, Orientation::UP);
 			if (next_tile != nullptr && next_tile->is_solid_) {
 				return;
 			}
@@ -51,7 +51,7 @@ void PacMan::HandleInput(const Uint8* keyboard_state) {
 	else if (state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]) {
 		if (this->is_idle_ || this->is_moving_up_ || (this->current_tile_->is_turn_tile_ && center_x_in_turn_interval && center_y_in_turn_interval)) {
 			// Don't allow turning into a wall to stop yourself on an intersection
-			Tile* next_tile = this->GetNextTileInDirection(Orientation::DOWN);
+			Tile* next_tile = this->map_->GetNextTileInDirection(this->current_tile_, Orientation::DOWN);
 			if (next_tile != nullptr && next_tile->is_solid_) {
 				return;
 			}
@@ -71,7 +71,7 @@ void PacMan::HandleInput(const Uint8* keyboard_state) {
 	else if (state[SDL_SCANCODE_A] || state[SDL_SCANCODE_LEFT]) {
 		if (this->is_idle_ || this->is_moving_right_ || (this->current_tile_->is_turn_tile_ && center_x_in_turn_interval && center_y_in_turn_interval)) {
 			// Don't allow turning into a wall to stop yourself on an intersection
-			Tile* next_tile = this->GetNextTileInDirection(Orientation::LEFT);
+			Tile* next_tile = this->map_->GetNextTileInDirection(this->current_tile_, Orientation::LEFT);
 			if (next_tile != nullptr && next_tile->is_solid_) {
 				return;
 			}
@@ -91,7 +91,7 @@ void PacMan::HandleInput(const Uint8* keyboard_state) {
 	else if (state[SDL_SCANCODE_D] || state[SDL_SCANCODE_RIGHT]) {
 		if (this->is_idle_ || this->is_moving_left_  || (this->current_tile_->is_turn_tile_ && center_x_in_turn_interval && center_y_in_turn_interval)) {
 			// Don't allow turning into a wall to stop yourself on an intersection
-			Tile* next_tile = this->GetNextTileInDirection(Orientation::RIGHT);
+			Tile* next_tile = this->map_->GetNextTileInDirection(this->current_tile_, Orientation::RIGHT);
 			if (next_tile != nullptr && next_tile->is_solid_) {
 				return;
 			}

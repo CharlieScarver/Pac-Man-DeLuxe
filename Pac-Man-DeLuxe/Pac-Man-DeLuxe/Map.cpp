@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <fstream>
+#include <cmath>
 #include "Map.h"
 
 Map::Map() {
@@ -164,6 +165,33 @@ bool Map::DetermineIfTileIsTurn(int x, int y) {
 	}
 
 	return false;
+}
+
+int Map::GetTileDistanceBetweenTwoTiles(Tile* tile1, Tile* tile2) {
+	int x_distance = abs(tile1->map_x_ - tile2->map_x_);
+	int y_distance = abs(tile1->map_y_ - tile2->map_y_);
+
+	return x_distance + y_distance;
+}
+
+Tile* Map::GetNextTileInDirection(Tile* source_tile, Orientation direction) {
+	if (source_tile == nullptr) {
+		return nullptr;
+	}
+
+	switch (direction)
+	{
+		case Orientation::UP:
+			return this->GetTile(source_tile->map_x_, source_tile->map_y_ - 1);
+		case Orientation::DOWN:
+			return this->GetTile(source_tile->map_x_, source_tile->map_y_ + 1);
+		case Orientation::LEFT:
+			return this->GetTile(source_tile->map_x_ - 1, source_tile->map_y_);
+		case Orientation::RIGHT:
+			return this->GetTile(source_tile->map_x_ + 1, source_tile->map_y_);
+		default:
+			return nullptr;
+	}
 }
 
 void Map::Update(float delta_time, const Uint8* keyboard_state) {
