@@ -33,6 +33,16 @@ public:
 	int GetTileDistanceBetweenTwoTiles(Tile* tile1, Tile* tile2);
 	Tile* GetNextTileInDirection(Tile* source_tile, Direction direction);
 
+	/// <summary>
+	/// Returns a vector with the neighbouring tiles (four or less if on the edge of the map).
+	/// </summary>
+	std::vector<Tile*> GetNeighbourTiles(Tile* origin_tile);
+
+	/// <summary>
+	/// Returns the direction that has to be used to travel from a given tile to another given neighbouring tile.
+	/// </summary>
+	Direction GetDirectionBetweenNeighbourTiles(Tile* source, Tile* destination);
+
 	void Update(float delta_time, const Uint8* keyboard_state);
 	void Render(SDL_Renderer* renderer, AssetLoader* asset_loader);
 };

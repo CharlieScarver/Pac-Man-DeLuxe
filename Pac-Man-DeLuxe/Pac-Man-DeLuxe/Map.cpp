@@ -134,14 +134,14 @@ void Map::LoadMapFromFile(const char* file_name) {
 	this->pacman_ = new PacMan(pacman_x, pacman_y, UNIT_RENDER_WIDTH, UNIT_RENDER_HEIGHT, this);
 
 	// Create ghosts
-	this->units_.push_back(new Ghost(312, 180, this, GhostType::BLINKY));
+	//this->units_.push_back(new Ghost(312, 180, this, GhostType::BLINKY));
 	this->units_.push_back(new Ghost(312, 756, this, GhostType::INKY));
 
 	std::cout << "Map loaded." << std::endl;
 }
 
 Tile* Map::GetTile(int x, int y) {
-	if ((x < 0 || x >= MAP_WIDTH_IN_TILES) && (y < 0 || y >= MAP_HEIGHT_IN_TILES)) {
+	if ((x < 0 || x >= MAP_WIDTH_IN_TILES) || (y < 0 || y >= MAP_HEIGHT_IN_TILES)) {
 		return nullptr;
 	}
 
@@ -194,6 +194,51 @@ Tile* Map::GetNextTileInDirection(Tile* source_tile, Direction direction) {
 		default:
 			return nullptr;
 	}
+}
+
+std::vector<Tile*> Map::GetNeighbourTiles(Tile* origin_tile) {
+	std::vector<Tile*> storage;
+
+	Tile* neighbour_tile = this->GetNextTileInDirection(origin_tile, Direction::UP);
+	if (neighbour_tile != nullptr) {
+		storage.push_back(neighbour_tile);
+	}
+
+	neighbour_tile = this->GetNextTileInDirection(origin_tile, Direction::DOWN);
+	if (neighbour_tile != nullptr) {
+		storage.push_back(neighbour_tile);
+	}
+
+	neighbour_tile = this->GetNextTileInDirection(origin_tile, Direction::LEFT);
+	if (neighbour_tile != nullptr) {
+		storage.push_back(neighbour_tile);
+	}
+
+	neighbour_tile = this->GetNextTileInDirection(origin_tile, Direction::RIGHT);
+	if (neighbour_tile != nullptr) {
+		storage.push_back(neighbour_tile);
+	}
+
+	return storage;
+}
+
+Direction Map::GetDirectionBetweenNeighbourTiles(Tile* source, Tile* destination) {
+	// Compare the map indices of the tiles to find the direction
+	if (source->map_x_ - destination->map_x_ == 1) {
+		return Direction::LEFT;
+	}
+	else if (source->map_x_ - destination->map_x_ == -1) {
+		return Direction::RIGHT;
+	}
+	else if (source->map_y_ - destination->map_y_ == 1) {
+		return Direction::UP;
+	}
+	else if (source->map_y_ - destination->map_y_ == -1) {
+		return Direction::DOWN;
+	}
+	
+	// The tiles are not neighbouring
+	return Direction::NONE;
 }
 
 void Map::Update(float delta_time, const Uint8* keyboard_state) {
