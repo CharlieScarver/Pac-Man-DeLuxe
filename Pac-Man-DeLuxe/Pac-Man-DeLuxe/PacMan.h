@@ -8,6 +8,8 @@
 // Original Pac-Man speed is 1.46 pixels per frame
 #define PACMAN_DEFAULT_VELOCITY 1.46f * 1.12f
 
+#define PACMAN_TURN_PIXEL_RADIUS 3.5f
+
 // Bottom row sprint time:
 // ~3.80 s neworion
 // ~3.43 s nes

@@ -24,8 +24,8 @@ void PacMan::HandleInput(const Uint8* keyboard_state) {
 	// Get the rendered sprite center
 	Vector2 render_center = Utilities::GetCenterPointOfRectangle(this->render_position_, this->render_size_);
 
-	bool center_x_in_turn_interval = render_center.x_ >= current_tile_center.x_ - UNIT_TURN_PIXEL_RADIUS && render_center.x_ <= current_tile_center.x_ + UNIT_TURN_PIXEL_RADIUS;
-	bool center_y_in_turn_interval = render_center.y_ >= current_tile_center.y_ - UNIT_TURN_PIXEL_RADIUS && render_center.y_ <= current_tile_center.y_ + UNIT_TURN_PIXEL_RADIUS;
+	bool center_x_in_turn_interval = render_center.x_ >= current_tile_center.x_ - PACMAN_TURN_PIXEL_RADIUS && render_center.x_ <= current_tile_center.x_ + PACMAN_TURN_PIXEL_RADIUS;
+	bool center_y_in_turn_interval = render_center.y_ >= current_tile_center.y_ - PACMAN_TURN_PIXEL_RADIUS && render_center.y_ <= current_tile_center.y_ + PACMAN_TURN_PIXEL_RADIUS;
 	
 	if (state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP]) {
 		// Change movement only if [idle], [moving in the opposite direction] or [on a turn tile and within turn interval]
