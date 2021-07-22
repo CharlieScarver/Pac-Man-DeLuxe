@@ -132,7 +132,7 @@ int Game::Run() {
 	const float desired_frame_time = 16.67f;
 
 	float fps = 0;
-	int fps_counter = 0;
+	float fps_counter = 0;
 	float fps_timer = 0;
 
 	while (this->is_running_) {
@@ -141,6 +141,11 @@ int Game::Run() {
 		}
 
 		const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
+
+		if (keyboard_state[SDL_SCANCODE_P]) {
+			this->is_paused_ = !this->is_paused_;
+			SDL_Delay(500);
+		}
 
 		// Calculate delta time
 		const Uint64 now = SDL_GetPerformanceCounter();

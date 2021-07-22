@@ -61,11 +61,12 @@ Tile::Tile(int x, int y, TileType type) : Tile(x, y, type, false) {}
 Tile::~Tile() {}
 
 void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
+    // Spritesheet poistion and size actually use integers
     SDL_Rect spritesheet_rect;
-    spritesheet_rect.x = this->spritesheet_position_.x_;
-    spritesheet_rect.y = this->spritesheet_position_.y_;
-    spritesheet_rect.w = this->sprite_size_.x_;
-    spritesheet_rect.h = this->sprite_size_.y_;
+    spritesheet_rect.x = (int)this->spritesheet_position_.x_;
+    spritesheet_rect.y = (int)this->spritesheet_position_.y_;
+    spritesheet_rect.w = (int)this->sprite_size_.x_;
+    spritesheet_rect.h = (int)this->sprite_size_.y_;
 
     SDL_FRect render_rect;
     render_rect.x = this->render_position_.x_;
@@ -79,8 +80,9 @@ void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
         SDL_RenderDrawRectF(renderer, &render_rect);
 
         SDL_SetRenderDrawColor(renderer, 75, 75, 0, 0);
+
         // Draw tile center point axes
-        SDL_RenderDrawLineF(
+        /*SDL_RenderDrawLineF(
             renderer,
             this->render_position_.x_,
             this->render_position_.y_ + (float)TILE_RENDER_HEIGHT / 2.0f,
@@ -93,7 +95,7 @@ void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
             this->render_position_.y_,
             this->render_position_.x_ + (float)TILE_RENDER_WIDTH / 2.0f,
             this->render_position_.y_ + TILE_RENDER_HEIGHT
-        );
+        );*/
     }
 
     // Don't render empty tiles

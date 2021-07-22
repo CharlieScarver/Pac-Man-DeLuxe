@@ -11,7 +11,7 @@
 // Original ghost speed is 1.46 pixels per frame
 #define GHOST_DEFAULT_VELOCITY 1.46f * 1.12f
 
-#define RENDER_GHOSTS_DEBUG 1
+#define RENDER_GHOSTS_DEBUG 0
 
 class Ghost final : public Unit {
 private:

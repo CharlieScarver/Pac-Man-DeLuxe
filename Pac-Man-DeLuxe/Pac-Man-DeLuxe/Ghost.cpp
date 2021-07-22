@@ -268,42 +268,45 @@ void Ghost::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 		}
 	}
 
-	// Draw last calculated path
-	for (int i = (int)this->reversed_path_to_target_.size() - 1; i >= 0; i--)
-	{
-		Tile* tile = this->reversed_path_to_target_[i];
+	// Render shortest path chosen by the ghost
+	if (RENDER_GHOSTS_DEBUG) {
+		// Draw last calculated path
+		for (int i = (int)this->reversed_path_to_target_.size() - 1; i >= 0; i--)
+		{
+			Tile* tile = this->reversed_path_to_target_[i];
 
-		SDL_FRect tile_rect;
-		tile_rect.x = tile->map_x_ * TILE_RENDER_WIDTH;
-		tile_rect.y = tile->map_y_ * TILE_RENDER_HEIGHT;
-		tile_rect.w = TILE_RENDER_WIDTH;
-		tile_rect.h = TILE_RENDER_HEIGHT;
+			SDL_FRect tile_rect;
+			tile_rect.x = tile->map_x_ * TILE_RENDER_WIDTH;
+			tile_rect.y = tile->map_y_ * TILE_RENDER_HEIGHT;
+			tile_rect.w = TILE_RENDER_WIDTH;
+			tile_rect.h = TILE_RENDER_HEIGHT;
 
-		if (this->ghost_type_ == GhostType::BLINKY) {
-			SDL_SetRenderDrawColor(renderer, 200, 25, 25, 0);
+			if (this->ghost_type_ == GhostType::BLINKY) {
+				SDL_SetRenderDrawColor(renderer, 200, 25, 25, 0);
+			}
+			else if (this->ghost_type_ == GhostType::PINKY) {
+				SDL_SetRenderDrawColor(renderer, 255, 175, 250, 0);
+			}
+			else if (this->ghost_type_ == GhostType::INKY) {
+				SDL_SetRenderDrawColor(renderer, 25, 200, 200, 0);
+			}
+			else if (this->ghost_type_ == GhostType::CLYDE) {
+				SDL_SetRenderDrawColor(renderer, 175, 100, 25, 0);
+			}
+			else {
+				SDL_SetRenderDrawColor(renderer, 200, 200, 25, 0);
+			}
+			SDL_RenderDrawRectF(renderer, &tile_rect);
 		}
-		else if (this->ghost_type_ == GhostType::PINKY) {
-			SDL_SetRenderDrawColor(renderer, 255, 175, 250, 0);
-		}
-		else if (this->ghost_type_ == GhostType::INKY) {
-			SDL_SetRenderDrawColor(renderer, 25, 200, 200, 0);
-		}
-		else if (this->ghost_type_ == GhostType::CLYDE) {
-			SDL_SetRenderDrawColor(renderer, 175, 100, 25, 0);
-		}
-		else {
-			SDL_SetRenderDrawColor(renderer, 200, 200, 25, 0);
-		}
-		SDL_RenderDrawRectF(renderer, &tile_rect);
-	} 
 
-	// Draw target tile rect
-	SDL_FRect target_tile_rect;
-	target_tile_rect.x = this->target_tile_->map_x_ * TILE_RENDER_WIDTH;
-	target_tile_rect.y = this->target_tile_->map_y_ * TILE_RENDER_HEIGHT;
-	target_tile_rect.w = TILE_RENDER_WIDTH;
-	target_tile_rect.h = TILE_RENDER_HEIGHT;
+		// Draw target tile rect
+		SDL_FRect target_tile_rect;
+		target_tile_rect.x = this->target_tile_->map_x_ * TILE_RENDER_WIDTH;
+		target_tile_rect.y = this->target_tile_->map_y_ * TILE_RENDER_HEIGHT;
+		target_tile_rect.w = TILE_RENDER_WIDTH;
+		target_tile_rect.h = TILE_RENDER_HEIGHT;
 
-	SDL_SetRenderDrawColor(renderer, 25, 200, 25, 0);
-	SDL_RenderDrawRectF(renderer, &target_tile_rect);
+		SDL_SetRenderDrawColor(renderer, 25, 200, 25, 0);
+		SDL_RenderDrawRectF(renderer, &target_tile_rect);
+	}
 }

@@ -11,15 +11,17 @@ bool Utilities::IsValueInInterval(float value, float interval_center, float inte
 Direction Utilities::GetOppositeDirection(Direction direction) {
 	switch (direction)
 	{
-	case Direction::NONE:
-		return Direction::NONE;
-	case Direction::UP:
-		return Direction::DOWN;
-	case Direction::DOWN:
-		return Direction::UP;
-	case Direction::LEFT:
-		return Direction::RIGHT;
-	case Direction::RIGHT:
-		return Direction::LEFT;
+		case Direction::NONE:
+			return Direction::NONE;
+		case Direction::UP:
+			return Direction::DOWN;
+		case Direction::DOWN:
+			return Direction::UP;
+		case Direction::LEFT:
+			return Direction::RIGHT;
+		case Direction::RIGHT:
+			return Direction::LEFT;
+		default:
+			return Direction::NONE;
 	}
 }

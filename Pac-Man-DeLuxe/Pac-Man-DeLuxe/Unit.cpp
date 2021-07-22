@@ -152,11 +152,12 @@ void Unit::Update(float delta_time, const Uint8* keyboard_state) {
 void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	this->spritesheet_texture_ = asset_loader->units_spritesheet_;
 
+	// Spritesheet poistion and size actually use integers
 	SDL_Rect spritesheet_rect;
-	spritesheet_rect.x = this->spritesheet_position_.x_ + (this->current_animation_frame_ * this->sprite_size_.x_);
-	spritesheet_rect.y = this->spritesheet_position_.y_;
-	spritesheet_rect.w = this->sprite_size_.x_;
-	spritesheet_rect.h = this->sprite_size_.y_;
+	spritesheet_rect.x = (int)this->spritesheet_position_.x_ + (this->current_animation_frame_ * (int)this->sprite_size_.x_);
+	spritesheet_rect.y = (int)this->spritesheet_position_.y_;
+	spritesheet_rect.w = (int)this->sprite_size_.x_;
+	spritesheet_rect.h = (int)this->sprite_size_.y_;
 
 	SDL_FRect render_rect;
 	render_rect.x = this->render_position_.x_;
