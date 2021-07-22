@@ -16,12 +16,20 @@
 // ~3.74 s mine
 
 class PacMan final : public Unit {
+private:
+	int skip_frames = 0;
+
 protected:
 
 	void HandleInput(const Uint8* keyboard_state);
 
 public:
 	int lives_;
+
+	/// <summary>
+	/// Shows how much score does the player have.
+	/// </summary>
+	int score_;
 
 	PacMan(float x, float y, float width, float height, Map* map);
 	~PacMan();

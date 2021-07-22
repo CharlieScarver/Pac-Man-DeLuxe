@@ -84,6 +84,11 @@ void Game::Update(float delta_time, const Uint8* keyboard_state) {
 	// Update map
 	this->map_->Update(delta_time, keyboard_state);
 
+	if (this->map_->no_more_items_) {
+		this->is_paused_ = true;
+		std::cout << "You win!" << std::endl;
+	}
+
 	if (this->map_->collision_occured_) {
 		this->is_paused_ = true;
 		std::cout << "Game over!" << std::endl;

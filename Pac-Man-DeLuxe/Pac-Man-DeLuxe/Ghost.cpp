@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include "Ghost.h"
 #include "Map.h"
-const float Ghost::ghost_default_velocity_ = 1.46f * 1.1f;
+const float Ghost::ghost_default_velocity_ = 1.46f * 1.08f;
 
 Ghost::Ghost(float x, float y, Map* map, GhostType ghost_type) : Unit(x, y, Ghost::ghost_render_width_, Ghost::ghost_render_height_, map) {
 

@@ -4,9 +4,11 @@
 #include "Map.h"
 
 Map::Map() {
-	this->collision_occured_ = false;
 	this->file_name_ = nullptr;
 	this->pacman_ = nullptr;
+
+	this->collision_occured_ = false;
+	this->no_more_items_ = false;
 
 	for (int i = 0; i < MAP_WIDTH_IN_TILES; i++)
 	{
@@ -15,8 +17,6 @@ Map::Map() {
 			this->tile_matrix_[i][j] = nullptr;
 		}
 	}
-
-	this->units_ = std::vector<Unit*>();
 }
 
 Map::~Map() {
@@ -36,6 +36,12 @@ Map::~Map() {
 	for (int i = 0; i < this->units_.size(); i++)
 	{
 		delete this->units_[i];
+	}
+
+	// Free the items
+	for (int i = 0; i < this->items_.size(); i++)
+	{
+		delete this->items_[i];
 	}
 }
 
@@ -64,11 +70,44 @@ void Map::LoadMapFromFile(const char* file_name) {
 	int tile_x = 0;
 	// Rows = height
 	int tile_y = 0;
+
+	Tile* tile;
+	Item* item;
+
 	// Parse the map file
 	while (ifs.get(c)) {
 		switch (c)
 		{
 		case '.':
+			// Create the tile
+			tile = new Tile(tile_x, tile_y, TileType::EMPTY);
+
+			// Create item and add it to the items vector
+			item = new Item(tile, ItemType::PELLET);
+			this->items_.push_back(item);
+
+			// Set the contained item
+			tile->contained_item = item;
+
+			// Set proper tile and increase the column counter
+			this->SetTile(tile_x, tile_y, tile);
+			tile_x++;
+			break;
+		case '*':
+			// Create the tile
+			tile = new Tile(tile_x, tile_y, TileType::EMPTY);
+
+			// Create item and add it to the items vector
+			item = new Item(tile, ItemType::ENERGIZER);
+			this->items_.push_back(item);
+
+			// Set the contained item
+			tile->contained_item = item;
+
+			// Set proper tile and increase the column counter
+			this->SetTile(tile_x, tile_y, tile);
+			tile_x++;
+			break;
 		case ' ':
 			// Set proper tile and increase the column counter
 			this->SetTile(tile_x, tile_y, new Tile(tile_x, tile_y, TileType::EMPTY));
@@ -258,6 +297,12 @@ void Map::Update(float delta_time, const Uint8* keyboard_state) {
 			this->collision_occured_ = true;
 		}
 	}
+
+	// Update items
+	for (int i = 0; i < this->items_.size(); i++)
+	{
+		this->items_[i]->Update(delta_time, keyboard_state);
+	}
 }
 
 void Map::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
@@ -265,19 +310,25 @@ void Map::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	// Given the known problems with unsigned and signed/unsigned mixtures, better stick to (signed) integers of a sufficient size.
 	// https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#es107-dont-use-unsigned-for-subscripts-prefer-gslindex
 
+	this->no_more_items_ = true;
+	// Render tiles
 	for (int i = 0; i < MAP_WIDTH_IN_TILES; i++)
 	{
 		for (int j = 0; j < MAP_HEIGHT_IN_TILES; j++)
 		{
 			// Render tile
 			this->tile_matrix_[i][j]->Render(renderer, asset_loader);
+
+			if (this->tile_matrix_[i][j]->contained_item != nullptr) {
+				this->no_more_items_ = false;
+			}
 		}
 	}
 
 	// Render Pac-Man
 	this->pacman_->Render(renderer, asset_loader);
 
-	// Rednder the other units
+	// Render the other units
 	for (int i = 0; i < this->units_.size(); i++)
 	{
 		this->units_[i]->Render(renderer, asset_loader);

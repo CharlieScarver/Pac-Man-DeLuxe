@@ -1,6 +1,6 @@
 #include "Tile.h"
 
-Tile::Tile(int x, int y, TileType type, bool is_turn_tile = false)
+Tile::Tile(int x, int y, TileType type, Item* contained_item)
 	: GameObject(x * TILE_RENDER_WIDTH, y * TILE_RENDER_HEIGHT, TILE_RENDER_WIDTH, TILE_RENDER_HEIGHT) {
 	this->type_ = type;
     this->map_x_ = x;
@@ -8,9 +8,11 @@ Tile::Tile(int x, int y, TileType type, bool is_turn_tile = false)
     
     this->contains_player_ = false;
     this->contains_ghost_ = false;
-    this->is_turn_tile_ = is_turn_tile;
+    this->is_turn_tile_ = false;
 
     this->sprite_size_ = Vector2(TILE_SPRITE_WIDTH, TILE_SPRITE_HEIGHT);
+
+    this->contained_item = contained_item;
 
 	switch (this->type_)
 	{
@@ -55,8 +57,7 @@ Tile::Tile(int x, int y, TileType type, bool is_turn_tile = false)
 	}
 }
 
-
-Tile::Tile(int x, int y, TileType type) : Tile(x, y, type, false) {}
+Tile::Tile(int x, int y, TileType type) : Tile(x, y, type, nullptr) {}
 
 Tile::~Tile() {}
 
@@ -99,10 +100,13 @@ void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
     }
 
     // Don't render empty tiles
-    if (this->type_ == TileType::EMPTY) {
-        return;
+    if (this->type_ != TileType::EMPTY) {
+        // Render the tile
+        SDL_RenderCopyF(renderer, asset_loader->tiles_spritesheet_, &spritesheet_rect, &render_rect);
     }
 
-    // Render the tile
-    SDL_RenderCopyF(renderer, asset_loader->tiles_spritesheet_, &spritesheet_rect, &render_rect);
+    // Render the contained item (if any)
+    if (this->contained_item != nullptr) {
+        this->contained_item->Render(renderer, asset_loader);
+    }
 }

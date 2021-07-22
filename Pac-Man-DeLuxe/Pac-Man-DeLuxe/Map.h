@@ -4,6 +4,7 @@
 #include "PacMan.h"
 #include "Ghost.h"
 #include "Direction.h"
+#include "Item.h"
 
 #define MAP_WIDTH_IN_TILES 28
 #define MAP_HEIGHT_IN_TILES 36
@@ -17,9 +18,11 @@ private:
 
 public:
 	bool collision_occured_;
+	bool no_more_items_;
 
 	PacMan* pacman_;
 	std::vector<Unit*> units_;
+	std::vector<Item*> items_;
 
 	Map();
 	~Map();

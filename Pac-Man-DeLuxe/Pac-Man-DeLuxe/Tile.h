@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "TileType.h"
+#include "Item.h"
 
 #define TILE_SPRITE_WIDTH 8
 #define TILE_SPRITE_HEIGHT 8
@@ -27,10 +28,10 @@ public:
 	// Tile contents
 	bool contains_player_;
 	bool contains_ghost_;
-	// Item* contained_item;
+	Item* contained_item;
 
 	Tile(int x, int y, TileType type);
-	Tile(int x, int y, TileType type, bool is_turn_tile);
+	Tile(int x, int y, TileType type, Item* contained_item);
 	~Tile();
 
 	void Render(SDL_Renderer* renderer, AssetLoader* asset_loader) override;

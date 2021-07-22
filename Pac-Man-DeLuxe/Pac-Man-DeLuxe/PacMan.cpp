@@ -4,6 +4,7 @@
 PacMan::PacMan(float x, float y, float width, float height, Map* map) : Unit(x, y, width, height, map) {
 
 	this->lives_ = 1;
+	this->score_ = 0;
 
 	this->spritesheet_position_ = Vector2(PACMAN_SPRITESHEET_X, PACMAN_SPRITESHEET_Y);
 
@@ -95,9 +96,32 @@ void PacMan::HandleInput(const Uint8* keyboard_state) {
 }
 
 void PacMan::Update(float delta_time, const Uint8* keyboard_state) {
-	this->HandleInput(keyboard_state);
+	if (this->skip_frames == 0) {
+		this->HandleInput(keyboard_state);
 
-	Unit::Update(delta_time, keyboard_state);
+		Unit::Update(delta_time, keyboard_state);
+	}
+	else {
+		this->skip_frames--;
+	}
+
+	// If the current tile contains an item
+	if (this->current_tile_->contained_item != nullptr) {
+		// Gain score
+		this->score_ += this->current_tile_->contained_item->score_;
+
+		if (this->current_tile_->contained_item->item_type_ == ItemType::PELLET) {
+			// Skip one frame after consuming a pellet
+			this->skip_frames = 1;
+		}
+		else if (this->current_tile_->contained_item->item_type_ == ItemType::ENERGIZER) {
+			// Skip three frames after consuming an energizer
+			this->skip_frames = 3;
+		}
+
+		// Remove the item from the tile (memory will be freed by the Map later)
+		this->current_tile_->contained_item = nullptr;
+	}
 }
 
 void PacMan::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
