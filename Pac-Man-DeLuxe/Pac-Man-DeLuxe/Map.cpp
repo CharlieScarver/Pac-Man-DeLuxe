@@ -134,8 +134,10 @@ void Map::LoadMapFromFile(const char* file_name) {
 	this->pacman_ = new PacMan(pacman_x, pacman_y, UNIT_RENDER_WIDTH, UNIT_RENDER_HEIGHT, this);
 
 	// Create ghosts
-	//this->units_.push_back(new Ghost(312, 180, this, GhostType::BLINKY));
-	this->units_.push_back(new Ghost(312, 756, this, GhostType::INKY));
+	this->units_.push_back(new Ghost(636, 84, this, GhostType::BLINKY));
+	//this->units_.push_back(new Ghost(36, 84, this, GhostType::PINKY));
+	//this->units_.push_back(new Ghost(636, 756, this, GhostType::INKY));
+	//this->units_.push_back(new Ghost(36, 756, this, GhostType::CLYDE));
 
 	std::cout << "Map loaded." << std::endl;
 }
@@ -197,6 +199,7 @@ Tile* Map::GetNextTileInDirection(Tile* source_tile, Direction direction) {
 }
 
 std::vector<Tile*> Map::GetNeighbourTiles(Tile* origin_tile) {
+	// Tile preference order is UP, LEFT, DOWN, RIGHT (most to least preferred)
 	std::vector<Tile*> storage;
 
 	Tile* neighbour_tile = this->GetNextTileInDirection(origin_tile, Direction::UP);
@@ -204,12 +207,12 @@ std::vector<Tile*> Map::GetNeighbourTiles(Tile* origin_tile) {
 		storage.push_back(neighbour_tile);
 	}
 
-	neighbour_tile = this->GetNextTileInDirection(origin_tile, Direction::DOWN);
+	neighbour_tile = this->GetNextTileInDirection(origin_tile, Direction::LEFT);
 	if (neighbour_tile != nullptr) {
 		storage.push_back(neighbour_tile);
 	}
 
-	neighbour_tile = this->GetNextTileInDirection(origin_tile, Direction::LEFT);
+	neighbour_tile = this->GetNextTileInDirection(origin_tile, Direction::DOWN);
 	if (neighbour_tile != nullptr) {
 		storage.push_back(neighbour_tile);
 	}

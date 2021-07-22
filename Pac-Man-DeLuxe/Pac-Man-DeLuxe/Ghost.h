@@ -11,6 +11,8 @@
 // Original ghost speed is 1.46 pixels per frame
 #define GHOST_DEFAULT_VELOCITY 1.46f * 1.12f
 
+#define RENDER_GHOSTS_DEBUG 1
+
 class Ghost final : public Unit {
 private:
 	// Sizes
@@ -22,11 +24,11 @@ private:
 	// Animation
 	static const int blinky_spritesheet_x_ = 0;
 	static const int blinky_spritesheet_y_ = 16;
-	static const int pinky_spritesheet_x_ = 16;
+	static const int pinky_spritesheet_x_ = 32;
 	static const int pinky_spritesheet_y_ = 16;
 	static const int inky_spritesheet_x_ = 0;
 	static const int inky_spritesheet_y_ = 32;
-	static const int clyde_spritesheet_x_ = 16;
+	static const int clyde_spritesheet_x_ = 32;
 	static const int clyde_spritesheet_y_ = 32;
 
 	static const int ghost_animation_frames_ = 2;
@@ -37,20 +39,46 @@ private:
 
 	// Turning
 	bool is_turning_;
-	Direction next_turn_;
+
+	/// <summary>
+	/// The tile which the ghost is trying to reach.
+	/// The target tuke can change dynamically.
+	/// </summary>
+	Tile* target_tile_;
 
 	// Path finding
 	std::vector<Tile*> reversed_path_to_target_;
 
+	// Render path finding
+	std::vector<std::vector<Tile*>> visited_layers_;
+
 protected:
 
+	/// <summary>
+	/// Handles the behaviour and choices of the ghosts.
+	/// </summary>
 	void AI();
+
+	/// <summary>
+	/// Find the shortest path on the map from a given start tile to a given goal tile.
+	/// Returns a vector of tiles representing the shortest path.
+	/// The vector is reversed (from goal to start).
+	/// Uses Breath-first search internally.
+	/// </summary>
 	std::vector<Tile*> FindShortestPath(Tile* start, Tile* goal);
+	
+	/// <summary>
+	/// Returns the direction in which the ghost has to turn next.
+	/// Usually the direction follows the shortest path to a target tile but not always.
+	/// </summary>
+	Direction GetNextTurnDirection();
 
 public:
+	/// <summary>
+	/// Type of the ghost.
+	/// The four possible types are: Blinky, Pinky, Inky and Clyde.
+	/// </summary>
 	GhostType ghost_type_;
-
-	Tile* target_tile_;
 
 	Ghost(float x, float y, Map* map, GhostType ghost_type);
 	~Ghost();
