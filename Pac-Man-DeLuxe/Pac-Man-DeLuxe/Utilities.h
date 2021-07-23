@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector2.h"
 #include "Direction.h"
+#include "Orientation.h"
 
 class Utilities {
 private:
@@ -22,4 +23,10 @@ public:
 	/// Returns the opposite direction of the given one.
 	/// </summary>
 	static Direction GetOppositeDirection(Direction direction);
+
+	/// <summary>
+	/// Returns a direction based on an orientation.
+	/// Can be used to avoid receiving an undesired Direction::NONE for a stationary target.
+	/// </summary>
+	static Direction GetDirectionFromOrientation(Orientation orientation);
 };
