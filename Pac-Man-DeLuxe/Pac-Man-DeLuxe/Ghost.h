@@ -3,13 +3,8 @@
 #include "GhostType.h"
 #include "Tile.h"
 #include "Utilities.h"
-
-#define GHOST_SPRITESHEET_X 0
-#define GHOST_SPRITESHEET_Y 0
-#define GHOST_ANIMATION_FRAMES 2
-#define GHOST_ANIMATION_DELAY 100
-// Original ghost speed is 1.46 pixels per frame
-#define GHOST_DEFAULT_VELOCITY 1.46f * 1.12f
+#include "Timer.h"
+#include "GhostMode.h"
 
 #define RENDER_GHOSTS_DEBUG 0
 
@@ -31,14 +26,32 @@ private:
 	static const int clyde_spritesheet_x_ = 32;
 	static const int clyde_spritesheet_y_ = 32;
 
+	static const int frightened_spritesheet_x_ = 0;
+	static const int frightened_spritesheet_y_ = 48;
+
 	static const int ghost_animation_frames_ = 2;
 	static const int ghost_animation_delay_ = 200;
 
 	// Movement
-	static const float ghost_default_velocity_;
+
+	// Original ghost speed is 1.46 pixels per frame (at 60 fps)
+	static const float ghost_default_velocity_; // in pixels per frame
+	
+	// Frightened velocity is 50% of normal velocity
+	static const float ghost_frightened_velocity_;
+
+	static const int ghost_scatter_duration_ = 7000; // in ms
+	static const int ghost_chase_duration_ = 20000;
+	static const int ghost_frightened_duration_ = 5000;
 
 	// Turning
 	bool is_turning_;
+
+	/// <summary>
+	/// Type of the ghost.
+	/// The possible types are: Blinky, Pinky, Inky and Clyde.
+	/// </summary>
+	GhostType type_;
 
 	/// <summary>
 	/// The tile which the ghost is trying to reach.
@@ -52,12 +65,36 @@ private:
 	// Render path finding
 	std::vector<std::vector<Tile*>> visited_layers_;
 
-protected:
+	// Mode
+	GhostMode previous_mode_;
+
+	/// <summary>
+	/// Mode of the ghost.
+	/// The possible modes are: Scatter, Chase and Fright.
+	/// </summary>
+	GhostMode mode_;
+
+	/// <summary>
+	/// Shows if the ghost was eaten by Pac-Man.
+	/// Once eaten the ghost will head towards the respawn tile to revive itself.
+	/// </summary>
+	bool is_eaten_;
+
+	// Timers
+	Timer scatter_timer_;
+	Timer chase_timer_;
+	Timer frightened_timer_;
 
 	/// <summary>
 	/// Handles the behaviour and choices of the ghosts.
 	/// </summary>
-	void AI();
+	void AI(float delta_time);
+
+	/// <summary>
+	/// Returns the appropriate target tile based on mode and ghost type.
+	/// </summary>
+	/// <returns></returns>
+	Tile* GetTargetTile();
 
 	/// <summary>
 	/// Find the shortest path on the map from a given start tile to a given goal tile.
@@ -73,15 +110,48 @@ protected:
 	/// </summary>
 	Direction GetNextTurnDirection();
 
-public:
 	/// <summary>
-	/// Type of the ghost.
-	/// The four possible types are: Blinky, Pinky, Inky and Clyde.
+	/// Returns a random valid direction to turn towards.
 	/// </summary>
-	GhostType ghost_type_;
+	/// <returns></returns>
+	Direction GetRandomValidDirection();
+
+	/// <summary>
+	/// Change the ghost's mode to a given one.
+	/// </summary>
+	/// <param name="ghost_mode"></param>
+	void ChangeMode(GhostMode new_mode);
+
+public:
 
 	Ghost(float x, float y, Map* map, GhostType ghost_type);
-	~Ghost();
+	~Ghost() = default;
+
+	// Properties
+
+	/// <summary>
+	/// Mode of the ghost.
+	/// The possible modes are: Scatter, Chase and Fright.
+	/// </summary>
+	GhostMode Mode();
+
+	/// <summary>
+	/// Shows if the ghost was eaten by Pac-Man.
+	/// Once eaten the ghost will head towards the respawn tile to revive itself.
+	/// </summary>
+	bool IsEaten();
+
+	// Methods
+
+	/// <summary>
+	/// Mark the ghost as eaten by Pac-Man
+	/// </summary>
+	void GetEaten();
+
+	/// <summary>
+	/// Frighten the ghost.
+	/// </summary>
+	void Frighten();
 
 	void Update(float delta_time, const Uint8* keyboard_state) override;
 	void Render(SDL_Renderer* renderer, AssetLoader* asset_loader) override;

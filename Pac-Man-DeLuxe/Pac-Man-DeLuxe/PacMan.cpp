@@ -1,21 +1,26 @@
 #include "PacMan.h"
 #include "Map.h"
 
-PacMan::PacMan(float x, float y, float width, float height, Map* map) : Unit(x, y, width, height, map) {
+// Original Pac-Man speed is 1.46 pixels per frame
+const float PacMan::default_velocity_ = 1.46f * 1.12f;
+// Energized velocity is 110% of original velocity
+const float PacMan::energized_velocity_ = PacMan::default_velocity_ * 1.1f;
 
-	this->lives_ = 1;
+const float PacMan::turn_radius_ = 3.5f;
+
+PacMan::PacMan(float x, float y, float width, float height, Map* map) : Unit(x, y, width, height, map), energized_timer_() {
+
+	this->spritesheet_position_ = Vector2(PacMan::spritesheet_x_, PacMan::spritesheet_y_);
+
+	this->animation_frames_count_ = PacMan::animation_frames_;
+	this->animation_delay_ = PacMan::animation_delay_;
+
+	this->velocity_x_ = PacMan::default_velocity_;
+	this->velocity_y_ = PacMan::default_velocity_;
+
 	this->score_ = 0;
-
-	this->spritesheet_position_ = Vector2(PACMAN_SPRITESHEET_X, PACMAN_SPRITESHEET_Y);
-
-	this->animation_frames_count_ = PACMAN_ANIMATION_FRAMES;
-	this->animation_delay_ = PACMAN_ANIMATION_DELAY;
-
-	this->velocity_x_ = PACMAN_DEFAULT_VELOCITY;
-	this->velocity_y_ = PACMAN_DEFAULT_VELOCITY;
+	this->is_energized_ = false;
 }
-
-PacMan::~PacMan() {}
 
 void PacMan::HandleInput(const Uint8* keyboard_state) {
 	const Uint8* state = SDL_GetKeyboardState(NULL);
@@ -25,8 +30,8 @@ void PacMan::HandleInput(const Uint8* keyboard_state) {
 	// Get the rendered sprite center
 	Vector2 render_center = Utilities::GetCenterPointOfRectangle(this->render_position_, this->render_size_);
 
-	bool center_x_in_turn_interval = render_center.x_ >= current_tile_center.x_ - PACMAN_TURN_PIXEL_RADIUS && render_center.x_ <= current_tile_center.x_ + PACMAN_TURN_PIXEL_RADIUS;
-	bool center_y_in_turn_interval = render_center.y_ >= current_tile_center.y_ - PACMAN_TURN_PIXEL_RADIUS && render_center.y_ <= current_tile_center.y_ + PACMAN_TURN_PIXEL_RADIUS;
+	bool center_x_in_turn_interval = render_center.x_ >= current_tile_center.x_ - PacMan::turn_radius_ && render_center.x_ <= current_tile_center.x_ + PacMan::turn_radius_;
+	bool center_y_in_turn_interval = render_center.y_ >= current_tile_center.y_ - PacMan::turn_radius_ && render_center.y_ <= current_tile_center.y_ + PacMan::turn_radius_;
 	
 	if (state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP]) {
 		// Change movement only if [idle], [moving in the opposite direction] or [on a turn tile and within turn interval]
@@ -95,6 +100,25 @@ void PacMan::HandleInput(const Uint8* keyboard_state) {
 	}
 }
 
+void PacMan::GainScore(int gained_score) {
+	this->score_ += gained_score;
+}
+
+void PacMan::Energize() {
+	this->is_energized_ = true;
+
+	// Start the energized timer
+	this->energized_timer_.Start(PacMan::energized_duration_);
+	
+	// Update the animation delay and velocity
+	this->animation_delay_ = PacMan::energized_animation_delay_;
+	this->velocity_x_ = PacMan::energized_velocity_;
+	this->velocity_y_ = PacMan::energized_velocity_;
+
+	// Frighten the ghosts
+	this->map_->FrightenGhosts();
+}
+
 void PacMan::Update(float delta_time, const Uint8* keyboard_state) {
 	if (this->skip_frames == 0) {
 		this->HandleInput(keyboard_state);
@@ -117,10 +141,19 @@ void PacMan::Update(float delta_time, const Uint8* keyboard_state) {
 		else if (this->current_tile_->contained_item->item_type_ == ItemType::ENERGIZER) {
 			// Skip three frames after consuming an energizer
 			this->skip_frames = 3;
+			this->Energize();
 		}
 
 		// Remove the item from the tile (memory will be freed by the Map later)
 		this->current_tile_->contained_item = nullptr;
+	}
+
+	// If energized timer has completed => go back to normal state (deenergized)
+	if (this->energized_timer_.UpdateAndCheck(delta_time)) {
+		this->is_energized_ = false;
+		this->animation_delay_ = PacMan::default_animation_delay_;
+		this->velocity_x_ = PacMan::default_velocity_;
+		this->velocity_y_ = PacMan::default_velocity_;
 	}
 }
 

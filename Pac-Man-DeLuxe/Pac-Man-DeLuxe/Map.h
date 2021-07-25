@@ -21,7 +21,7 @@ public:
 	bool no_more_items_;
 
 	PacMan* pacman_;
-	std::vector<Unit*> units_;
+	std::vector<Ghost*> ghosts_;
 	std::vector<Item*> items_;
 
 	Map();
@@ -45,6 +45,12 @@ public:
 	/// Returns the direction that has to be used to travel from a given tile to another given neighbouring tile.
 	/// </summary>
 	Direction GetDirectionBetweenNeighbourTiles(Tile* source, Tile* destination);
+
+	/// <summary>
+	/// Frighten the ghosts.
+	/// Used when Pac-Man eats an energizer.
+	/// </summary>
+	void FrightenGhosts();
 
 	void Update(float delta_time, const Uint8* keyboard_state);
 	void Render(SDL_Renderer* renderer, AssetLoader* asset_loader);

@@ -162,6 +162,7 @@ XCOPY "$(ProjectDir)"\Libraries\SDL2_image-2.0.5\lib\x64\*.DLL "$(TargetDir)" /D
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="PacMan.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Unit.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="Vector2.cpp" />
@@ -171,6 +172,7 @@ XCOPY "$(ProjectDir)"\Libraries\SDL2_image-2.0.5\lib\x64\*.DLL "$(TargetDir)" /D
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Ghost.h" />
+    <ClInclude Include="GhostMode.h" />
     <ClInclude Include="GhostType.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemType.h" />
@@ -180,6 +182,7 @@ XCOPY "$(ProjectDir)"\Libraries\SDL2_image-2.0.5\lib\x64\*.DLL "$(TargetDir)" /D
     <ClInclude Include="AssetLoader.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileType.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Unit.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vector2.h" />

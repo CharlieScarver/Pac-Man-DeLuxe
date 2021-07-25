@@ -1,37 +1,50 @@
 #include <vector>
 #include <queue>
 #include <unordered_map>
+
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+
 #include "Ghost.h"
 #include "Map.h"
+
+// Original ghost speed is 1.46 pixels per frame (at 60 fps)
 const float Ghost::ghost_default_velocity_ = 1.46f * 1.08f;
 
-Ghost::Ghost(float x, float y, Map* map, GhostType ghost_type) : Unit(x, y, Ghost::ghost_render_width_, Ghost::ghost_render_height_, map) {
+// Frightened velocity is 50% of normal velocity
+const float Ghost::ghost_frightened_velocity_ = Ghost::ghost_default_velocity_ * 0.5f;
 
-	this->ghost_type_ = ghost_type;
+Ghost::Ghost(float x, float y, Map* map, GhostType ghost_type)
+	: Unit(x, y, Ghost::ghost_render_width_, Ghost::ghost_render_height_, map), scatter_timer_(), chase_timer_(), frightened_timer_()
+{
 
-	switch (this->ghost_type_)
+	this->type_ = ghost_type;
+
+	switch (this->type_)
 	{
 		case GhostType::BLINKY:
 			this->spritesheet_position_ = Vector2(Ghost::blinky_spritesheet_x_, Ghost::blinky_spritesheet_y_);
 
 			// Initial movement
-			this->direction_ = Direction::LEFT;
+			this->direction_ = Direction::RIGHT;
 			break;
 		case GhostType::PINKY:
 			this->spritesheet_position_ = Vector2(Ghost::pinky_spritesheet_x_, Ghost::pinky_spritesheet_y_);
+			
 			// Initial movement
-			this->direction_ = Direction::RIGHT;
+			this->direction_ = Direction::LEFT;
 			break;
 		case GhostType::INKY:
 			this->spritesheet_position_ = Vector2(Ghost::inky_spritesheet_x_, Ghost::inky_spritesheet_y_);
 
 			// Initial movement
-			this->direction_ = Direction::LEFT;
+			this->direction_ = Direction::RIGHT;
 			break;
 		case GhostType::CLYDE:
 			this->spritesheet_position_ = Vector2(Ghost::clyde_spritesheet_x_, Ghost::clyde_spritesheet_y_);
+			
 			// Initial movement
-			this->direction_ = Direction::RIGHT;
+			this->direction_ = Direction::LEFT;
 			break;
 	}
 
@@ -43,10 +56,93 @@ Ghost::Ghost(float x, float y, Map* map, GhostType ghost_type) : Unit(x, y, Ghos
 
 	this->is_turning_ = false;
 
+	this->is_eaten_ = false;
+	this->previous_mode_ = GhostMode::SCATTER;
+	this->mode_ = GhostMode::SCATTER;
+	this->scatter_timer_.Start(ghost_scatter_duration_);
+
 	this->target_tile_ = this->map_->pacman_->current_tile_;
+
+	// Initialize random seed
+	srand(time(NULL));
 }
 
-Ghost::~Ghost() {}
+GhostMode Ghost::Mode() {
+	return this->mode_;
+}
+
+bool Ghost::IsEaten() {
+	return this->is_eaten_;
+}
+
+Tile* Ghost::GetTargetTile() {
+	Tile* new_target_tile = this->target_tile_;
+
+	if (this->is_eaten_) {
+		// TODO - respawn tile is const field
+		// If the mode is Chase and the ghost is not "eaten" => chase the respawn tile
+		new_target_tile = this->map_->GetTile(14, 14);
+	}
+	else if (this->mode_ == GhostMode::CHASE && !this->is_eaten_) {
+		// If the mode is Chase and the ghost is not "eaten" => chase a Pac-Man-dependent tile based on ghost type
+		if (this->type_ == GhostType::BLINKY) {
+			// Blinky targets Pac-Man's current tile
+			new_target_tile = this->map_->pacman_->current_tile_;
+		}
+		else if (this->type_ == GhostType::PINKY) {
+			// Pinky targets two tiles ahead of Pac-Man's current tile in the corresponding direction
+			Tile* one_tile_ahead = this->map_->GetNextTileInDirection(this->map_->pacman_->current_tile_, this->map_->pacman_->direction_);
+			new_target_tile = this->map_->GetNextTileInDirection(one_tile_ahead, this->map_->pacman_->direction_);
+		}
+		else if (this->type_ == GhostType::INKY) {
+			// Pinky targets two tiles ahead of Pac-Man's current tile in the corresponding direction
+			Direction pacman_direction = Utilities::GetDirectionFromOrientation(this->map_->pacman_->orientation_);
+			Direction opposite_direction = Utilities::GetOppositeDirection(pacman_direction);
+			Tile* one_tile_behind = this->map_->GetNextTileInDirection(this->map_->pacman_->current_tile_, opposite_direction);
+			new_target_tile = this->map_->GetNextTileInDirection(one_tile_behind, opposite_direction);
+		}
+		else if (this->type_ == GhostType::CLYDE) {
+			// If Pac-Man's current tile is more than 8 tiles away => Clyde targets Pac'Man's current tile
+			if (this->map_->GetTileDistanceBetweenTwoTiles(this->current_tile_, this->map_->pacman_->current_tile_) >= 8) {
+				new_target_tile = this->map_->pacman_->current_tile_;
+			}
+			else {
+				// Otherwise Clyde targets the bottom left
+				new_target_tile = this->map_->GetTile(1, 32);
+			}
+		}
+	}
+	else if (this->mode_ == GhostMode::SCATTER) {
+		// If the mode is Scatter => chase the scatter tile based on ghost type
+		if (this->type_ == GhostType::BLINKY) {
+			// Blinky targets the top right corner
+			new_target_tile = this->map_->GetTile(26, 4);
+		}
+		else if (this->type_ == GhostType::PINKY) {
+			// Pinky targets the top left corner
+			new_target_tile = this->map_->GetTile(1, 4);
+		}
+		else if (this->type_ == GhostType::INKY) {
+			// Inky targets the bottom right
+			new_target_tile = this->map_->GetTile(26, 32);
+		}
+		else {
+			// Clyde targets the bottom left
+			new_target_tile = this->map_->GetTile(1, 32);
+		}
+	}
+	else if (this->mode_ == GhostMode::FRIGHTENED) {
+		// If frightened target the respawn tile (just to have a target, it doesn't matter)
+		new_target_tile = this->map_->GetTile(14, 14);
+	}
+
+	// If the new target is invalid => target Pac-Man
+	if (new_target_tile == nullptr || new_target_tile->is_solid_) {
+		new_target_tile = this->map_->pacman_->current_tile_;
+	}
+
+	return new_target_tile;
+}
 
 std::vector<Tile*> Ghost::FindShortestPath(Tile* start, Tile* goal) {
 	// If the start and goal match => return a path with zero steps
@@ -192,18 +288,44 @@ Direction Ghost::GetNextTurnDirection() {
 		}
 	}
 
+	// Make sure ghosts don't get stuck
+	if (next_turn_direction == Direction::NONE) {
+		next_turn_direction = GetRandomValidDirection();
+	}
+
 	return next_turn_direction;
 }
 
-void Ghost::AI() {
-	if (this->ghost_type_ == GhostType::BLINKY) {
-		// Update target tile to be Pac-Man's current tile
-		this->target_tile_ = this->map_->pacman_->current_tile_;
+Direction Ghost::GetRandomValidDirection() {
+	// Get neighbouring tiles
+	std::vector<Tile*> neighbour_tiles = this->map_->GetNeighbourTiles(this->current_tile_);
+	// Vector to save possible directions
+	std::vector<Direction> possible_directions;
+
+	// Loop through neighbouring tiles
+	for (int i = 0; i < neighbour_tiles.size(); i++)
+	{
+		Direction neighbour_direction = this->map_->GetDirectionBetweenNeighbourTiles(this->current_tile_, neighbour_tiles[i]);
+
+		// If tile is not solid and is not behind the ghost => turn in that direction
+		if (!neighbour_tiles[i]->is_solid_ && neighbour_direction != Utilities::GetOppositeDirection(this->direction_)) {
+			possible_directions.push_back(neighbour_direction);
+		}
 	}
-	else {
-		// Fixed target
-		this->target_tile_ = this->map_->GetTile(26, 32);
-	}
+
+	// Random number between 0 and (size - 1)
+	int random_number = possible_directions.size() == 1
+		? 0
+		: rand() % (possible_directions.size() - 1);
+
+	return possible_directions[random_number];
+}
+
+void Ghost::AI(float delta_time) {
+	// Get target tile based on mode and ghost type
+	this->target_tile_ = this->GetTargetTile();
+
+	// Manage movement:	
 
 	// If on a turn tile and not currently turning => take the turn
 	if (this->current_tile_->is_turn_tile_ && !this->is_turning_) {
@@ -225,14 +347,159 @@ void Ghost::AI() {
 			// Position the ghost in the center of the tile
 			this->SetCenterToTileCenter(this->current_tile_);
 
-			// Set the turn direction
-			this->direction_ = this->GetNextTurnDirection();
+			// If the ghost is "eaten" or the mode is Chase or Scatter => follow the normal ghost movement rules
+			if (this->is_eaten_ || this->mode_ == GhostMode::CHASE || this->mode_ == GhostMode::SCATTER) {
+				// Set the turn direction
+				this->direction_ = this->GetNextTurnDirection();
+			}
+			else {
+				// If the mode is Frightened => pick directions at random on every turn
+				this->direction_ = this->GetRandomValidDirection();
+			}
 		}
 	}
 	else if (!this->current_tile_->is_turn_tile_) {
 		// Turning completed
 		this->is_turning_ = false;
 	}
+
+	// When ghost reaches the respawn tile after being eaten => revive it
+	if (this->current_tile_->id_ == this->map_->GetTile(14, 14)->id_ && this->is_eaten_) {
+		this->is_eaten_ = false;
+
+		// Restart the chase mode
+		this->ChangeMode(GhostMode::CHASE);
+
+		// Get target tile based on mode and ghost type
+		this->target_tile_ = this->GetTargetTile();
+	}
+
+	// Timers:
+
+	// If the ghost has been "eaten" => don't update the timers
+	if (!this->is_eaten_) {
+		switch (this->mode_)
+		{
+			case GhostMode::SCATTER:
+				if (this->scatter_timer_.UpdateAndCheck(delta_time)) {
+					this->ChangeMode(GhostMode::CHASE);
+				}
+				break;
+			case GhostMode::CHASE:
+				if (this->chase_timer_.UpdateAndCheck(delta_time)) {
+					this->ChangeMode(GhostMode::SCATTER);
+				}
+				break;
+			case GhostMode::FRIGHTENED:
+				if (this->frightened_timer_.UpdateAndCheck(delta_time)) {
+					this->ChangeMode(this->previous_mode_);
+				}
+				break;
+		}
+	}
+}
+
+void Ghost::ChangeMode(GhostMode new_mode) {
+	// If ghost was frightened until now => update the sprites and velocity
+	if (this->mode_ == GhostMode::FRIGHTENED && new_mode != GhostMode::FRIGHTENED) {
+		switch (this->type_)	
+		{
+			case GhostType::BLINKY:
+				this->spritesheet_position_.x_ = Ghost::blinky_spritesheet_x_;
+				this->spritesheet_position_.y_ = Ghost::blinky_spritesheet_y_;
+				break;
+			case GhostType::PINKY:
+				this->spritesheet_position_.x_ = Ghost::pinky_spritesheet_x_;
+				this->spritesheet_position_.y_ = Ghost::pinky_spritesheet_y_;
+				break;
+			case GhostType::INKY:
+				this->spritesheet_position_.x_ = Ghost::inky_spritesheet_x_;
+				this->spritesheet_position_.y_ = Ghost::inky_spritesheet_y_;
+				break;
+			case GhostType::CLYDE:
+				this->spritesheet_position_.x_ = Ghost::clyde_spritesheet_x_;
+				this->spritesheet_position_.y_ = Ghost::clyde_spritesheet_y_;
+				break;
+			}
+
+		// Update ghost velocity
+		this->velocity_x_ = Ghost::ghost_default_velocity_;
+		this->velocity_y_ = Ghost::ghost_default_velocity_;
+	}
+
+	switch (new_mode)
+	{
+		case GhostMode::SCATTER:
+			// If the current mode is Frigtherend and the previous mode was Scatter and the scatter timer didn't complete (was paused) => unpause it
+			if (this->mode_ == GhostMode::FRIGHTENED && this->previous_mode_ == GhostMode::SCATTER && !this->scatter_timer_.HasCompleted()) {
+				this->scatter_timer_.Unpause();
+			}
+			else {
+				// If not => start a new scatter timer
+				this->scatter_timer_.Start(Ghost::ghost_scatter_duration_);
+			}
+			break;
+		case GhostMode::CHASE:
+			// If the current mode is Frigtherend and the previous mode was Chase and the chase timer didn't complete (was paused) => unpause it
+			if (this->mode_ == GhostMode::FRIGHTENED && this->previous_mode_ == GhostMode::CHASE && !this->chase_timer_.HasCompleted()) {
+				this->chase_timer_.Unpause();
+				// But what if eaten??
+			}
+			else {
+				// If not => start a new chase timer
+				this->chase_timer_.Start(Ghost::ghost_chase_duration_);
+			}
+			break;
+		case GhostMode::FRIGHTENED:
+			this->frightened_timer_.Start(Ghost::ghost_frightened_duration_);
+			
+			// Pause the other timers (only one of them is running)
+			this->scatter_timer_.Pause();
+			this->chase_timer_.Pause();
+
+			// Update the sprites
+			this->spritesheet_position_.x_ = Ghost::frightened_spritesheet_x_;
+			this->spritesheet_position_.y_ = Ghost::frightened_spritesheet_y_;
+
+			// Update ghost velocity
+			this->velocity_x_ = Ghost::ghost_frightened_velocity_;
+			this->velocity_y_ = Ghost::ghost_frightened_velocity_;
+			break;
+	}
+
+	// If current mode is Frightened and the new mode is Frighetened => don't update the previous state (because the pre-fright state will be lost)
+	// (Pac-Man ate a second enerizer before the first one ran out)
+	if (!(this->mode_ == GhostMode::FRIGHTENED && new_mode == GhostMode::FRIGHTENED)) {
+		// Save previous mode
+		this->previous_mode_ = this->mode_;
+	}
+
+	// Update the current mode
+	this->mode_ = new_mode;
+	// Reverse ghosts' direction of movement when changing modes
+	this->direction_ = Utilities::GetOppositeDirection(this->direction_);
+}
+
+void Ghost::Frighten() {
+	if (!this->is_eaten_) {
+		this->ChangeMode(GhostMode::FRIGHTENED);
+	}
+}
+
+void Ghost::GetEaten() {
+	this->is_eaten_ = true;
+
+	// Chase the respawn tile
+	//this->ChangeMode(GhostMode::CHASE);
+	this->target_tile_ = this->GetTargetTile();
+
+	// Restore default ghost velocity
+	this->velocity_x_ = Ghost::ghost_default_velocity_;
+	this->velocity_y_ = Ghost::ghost_default_velocity_;
+
+	// Update sprite (no sprite)
+	this->spritesheet_position_.x_ = 100;
+	this->spritesheet_position_.y_ = 100;
 }
 
 void Ghost::Update(float delta_time, const Uint8* keyboard_state) {
@@ -242,14 +509,14 @@ void Ghost::Update(float delta_time, const Uint8* keyboard_state) {
 
 	Unit::Update(delta_time, keyboard_state);
 
-	this->AI();
+	this->AI(delta_time);
 }
 
 void Ghost::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	Unit::Render(renderer, asset_loader);
 
 	// Render the searching algorithm (only for Blinky to save resources and make it more readable)
-	if (RENDER_GHOSTS_DEBUG && this->ghost_type_ == GhostType::BLINKY) {
+	if (RENDER_GHOSTS_DEBUG && this->type_ == GhostType::BLINKY) {
 		for (int layer = 0; layer < this->visited_layers_.size(); layer++)
 		{
 			for (int tile = 0; tile < this->visited_layers_[layer].size(); tile++)
@@ -281,16 +548,16 @@ void Ghost::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 			tile_rect.w = TILE_RENDER_WIDTH;
 			tile_rect.h = TILE_RENDER_HEIGHT;
 
-			if (this->ghost_type_ == GhostType::BLINKY) {
+			if (this->type_ == GhostType::BLINKY) {
 				SDL_SetRenderDrawColor(renderer, 200, 25, 25, 0);
 			}
-			else if (this->ghost_type_ == GhostType::PINKY) {
+			else if (this->type_ == GhostType::PINKY) {
 				SDL_SetRenderDrawColor(renderer, 255, 175, 250, 0);
 			}
-			else if (this->ghost_type_ == GhostType::INKY) {
+			else if (this->type_ == GhostType::INKY) {
 				SDL_SetRenderDrawColor(renderer, 25, 200, 200, 0);
 			}
-			else if (this->ghost_type_ == GhostType::CLYDE) {
+			else if (this->type_ == GhostType::CLYDE) {
 				SDL_SetRenderDrawColor(renderer, 175, 100, 25, 0);
 			}
 			else {

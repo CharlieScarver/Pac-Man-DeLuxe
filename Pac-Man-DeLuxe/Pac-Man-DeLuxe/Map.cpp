@@ -33,9 +33,9 @@ Map::~Map() {
 	delete this->pacman_;
 
 	// Free the other units
-	for (int i = 0; i < this->units_.size(); i++)
+	for (int i = 0; i < this->ghosts_.size(); i++)
 	{
-		delete this->units_[i];
+		delete this->ghosts_[i];
 	}
 
 	// Free the items
@@ -172,11 +172,11 @@ void Map::LoadMapFromFile(const char* file_name) {
 	// Create Pac-Man
 	this->pacman_ = new PacMan(pacman_x, pacman_y, UNIT_RENDER_WIDTH, UNIT_RENDER_HEIGHT, this);
 
-	// Create ghosts
-	this->units_.push_back(new Ghost(636, 84, this, GhostType::BLINKY));
-	//this->units_.push_back(new Ghost(36, 84, this, GhostType::PINKY));
-	//this->units_.push_back(new Ghost(636, 756, this, GhostType::INKY));
-	//this->units_.push_back(new Ghost(36, 756, this, GhostType::CLYDE));
+	// Create ghosts	
+	this->ghosts_.push_back(new Ghost(312, 324, this, GhostType::BLINKY));
+	this->ghosts_.push_back(new Ghost(312, 324, this, GhostType::PINKY));
+	this->ghosts_.push_back(new Ghost(312, 324, this, GhostType::INKY));
+	this->ghosts_.push_back(new Ghost(312, 324, this, GhostType::CLYDE));
 
 	std::cout << "Map loaded." << std::endl;
 }
@@ -283,18 +283,50 @@ Direction Map::GetDirectionBetweenNeighbourTiles(Tile* source, Tile* destination
 	return Direction::NONE;
 }
 
+void Map::FrightenGhosts() {
+	for (int j = 0; j < this->ghosts_.size(); j++)
+	{
+		this->ghosts_[j]->Frighten();
+	}
+}
+
 void Map::Update(float delta_time, const Uint8* keyboard_state) {
 	// Update Pac-Man
 	this->pacman_->Update(delta_time, keyboard_state);
 
 	// Update the other units
-	for (int i = 0; i < this->units_.size(); i++)
+	for (int i = 0; i < this->ghosts_.size(); i++)
 	{
-		this->units_[i]->Update(delta_time, keyboard_state);
+		this->ghosts_[i]->Update(delta_time, keyboard_state);
 
 		// Check for collision between Pac-Man and other units
-		if (this->pacman_->current_tile_ == this->units_[i]->current_tile_) {
-			this->collision_occured_ = true;
+		if (this->pacman_->current_tile_->id_ == this->ghosts_[i]->current_tile_->id_) {
+			
+			// If ghost is "eaten" => do nothing (pass through each other)
+			if (this->ghosts_[i]->IsEaten()) {
+				continue;
+			}
+			else if (this->ghosts_[i]->Mode() == GhostMode::FRIGHTENED && !this->ghosts_[i]->IsEaten()) {
+				// If ghost is frightened (and not "eaten") => Pac-Man eats it
+				
+				// Calculate score gained = (200 * (2 ^ ghosts_already_eaten))
+				int gained_score = 200;
+				for (int j = 0; j < this->ghosts_.size(); j++)
+				{
+					// Double the score for every other eaten ghost
+					if (this->ghosts_[j]->IsEaten()) {
+						gained_score *= 2;
+					}
+				}
+				this->pacman_->GainScore(200);
+
+				// Mark the ghost as eaten
+				this->ghosts_[i]->GetEaten();
+			}
+			else {
+				// If ghost is not frightened and is not "eaten" (all other cases) => collision occured => Game over
+				this->collision_occured_ = true;
+			}
 		}
 	}
 
@@ -329,8 +361,8 @@ void Map::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	this->pacman_->Render(renderer, asset_loader);
 
 	// Render the other units
-	for (int i = 0; i < this->units_.size(); i++)
+	for (int i = 0; i < this->ghosts_.size(); i++)
 	{
-		this->units_[i]->Render(renderer, asset_loader);
+		this->ghosts_[i]->Render(renderer, asset_loader);
 	}
 }
