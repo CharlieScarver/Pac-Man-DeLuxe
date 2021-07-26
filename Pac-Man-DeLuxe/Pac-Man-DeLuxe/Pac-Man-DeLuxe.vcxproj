@@ -127,8 +127,10 @@
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY "$(ProjectDir)"\Libraries\SDL2-2.0.14\lib\x64\*.DLL "$(TargetDir)" /D /K /Y
-XCOPY "$(ProjectDir)"\Libraries\SDL2_image-2.0.5\lib\x64\*.DLL "$(TargetDir)" /D /K /Y</Command>
+      <Command>XCOPY "$(ProjectDir)Libraries\SDL2-2.0.14\lib\x64\*.DLL" "$(TargetDir)" /D /K /Y
+XCOPY "$(ProjectDir)Libraries\SDL2_image-2.0.5\lib\x64\*.DLL" "$(TargetDir)" /D /K /Y
+XCOPY "$(ProjectDir)Assets" "$(TargetDir)Assets\" /S /Y
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -148,8 +150,10 @@ XCOPY "$(ProjectDir)"\Libraries\SDL2_image-2.0.5\lib\x64\*.DLL "$(TargetDir)" /D
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>XCOPY "$(ProjectDir)"\Libraries\SDL2-2.0.14\lib\x64\*.DLL "$(TargetDir)" /D /K /Y
-XCOPY "$(ProjectDir)"\Libraries\SDL2_image-2.0.5\lib\x64\*.DLL "$(TargetDir)" /D /K /Y</Command>
+      <Command>XCOPY "$(ProjectDir)Libraries\SDL2-2.0.14\lib\x64\*.DLL" "$(TargetDir)" /D /K /Y
+XCOPY "$(ProjectDir)Libraries\SDL2_image-2.0.5\lib\x64\*.DLL" "$(TargetDir)" /D /K /Y
+XCOPY "$(ProjectDir)Assets" "$(TargetDir)Assets\" /S /Y
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -180,6 +184,7 @@ XCOPY "$(ProjectDir)"\Libraries\SDL2_image-2.0.5\lib\x64\*.DLL "$(TargetDir)" /D
     <ClInclude Include="Orientation.h" />
     <ClInclude Include="PacMan.h" />
     <ClInclude Include="AssetLoader.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileType.h" />
     <ClInclude Include="Timer.h" />
@@ -192,9 +197,18 @@ XCOPY "$(ProjectDir)"\Libraries\SDL2_image-2.0.5\lib\x64\*.DLL "$(TargetDir)" /D
     <Text Include="Assets\Maps\level1.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\Spritesheets\pac-man-ghosts-sprites.png" />
+    <Image Include="Assets\pac-man-icon.ico" />
+    <Image Include="Assets\Spritesheets\pac-man-ghosts-sprites.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
     <Image Include="Assets\Spritesheets\pac-man-letters-sprites.png" />
     <Image Include="Assets\Spritesheets\pac-man-tiles-sprites.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Pac-Man-DeLuxe.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
