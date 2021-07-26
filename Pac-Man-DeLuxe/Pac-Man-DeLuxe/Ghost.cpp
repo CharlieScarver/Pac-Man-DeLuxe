@@ -478,8 +478,12 @@ void Ghost::ChangeMode(GhostMode new_mode) {
 
 	// Update the current mode
 	this->mode_ = new_mode;
-	// Reverse ghosts' direction of movement when changing modes
-	this->direction_ = Utilities::GetOppositeDirection(this->direction_);
+
+	// If the current mode and the new mode are different => reverse the direction of the ghost to signify the change
+	if (this->mode_ != new_mode) {
+		// Reverse ghosts' direction of movement when changing modes
+		this->direction_ = Utilities::GetOppositeDirection(this->direction_);
+	}
 }
 
 void Ghost::Frighten() {
