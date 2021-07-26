@@ -39,7 +39,7 @@ public:
 	/// The type of the item.
 	/// The three possible values are: Pellet, Energizer and Fruit.
 	/// </summary>
-	ItemType item_type_;
+	ItemType type_;
 
 	/// <summary>
 	/// Shows how much score will the player receive when Pac-Man eats this item.
@@ -51,8 +51,8 @@ public:
 	/// </summary>
 	Tile* container_tile_;
 
-	Item(int tile_map_x, float tile_map_y, ItemType item_type);
-	Item(Tile* container_tile, ItemType item_type);
+	Item(int tile_map_x, float tile_map_y, ItemType type);
+	Item(Tile* container_tile, ItemType type);
 	~Item();
 
 	void Update(float delta_time, const Uint8* keyboard_state);

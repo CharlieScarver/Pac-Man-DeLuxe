@@ -22,9 +22,11 @@ private:
 
 	static const int frightened_spritesheet_x_ = 0;
 	static const int frightened_spritesheet_y_ = 48;
+	static const int eaten_spritesheet_x_ = -1;
+	static const int eaten_spritesheet_y_ = -1;
 
-	static const int ghost_animation_frames_ = 2;
-	static const int ghost_animation_delay_ = 200;
+	static const int animation_frames_ = 2;
+	static const int animation_delay_ = 200;
 
 	// Movement
 
@@ -32,13 +34,13 @@ private:
 	/// The speed of the ghost in pixels per frame.
 	/// Original ghost speed is 1.46 pixels per frame (at 60 fps).
 	/// </summary>
-	static const float ghost_default_velocity_; // in pixels per frame
+	static const float default_velocity_; // in pixels per frame
 	
 	/// <summary>
 	///	Frightened velocity is 50% of normal velocity.
 	/// Value is in pixels per frame.
 	/// </summary>
-	static const float ghost_frightened_velocity_;
+	static const float frightened_velocity_;
 
 	/// <summary>
 	/// The radius of the interval in which Pac-Man is allow to turn.
@@ -46,9 +48,9 @@ private:
 	/// </summary>
 	static const float turn_radius_; // in pixels
 
-	static const int ghost_scatter_duration_ = 7000; // in ms
-	static const int ghost_chase_duration_ = 20000;
-	static const int ghost_frightened_duration_ = 5000;
+	static const int scatter_duration_ = 7000; // in ms
+	static const int chase_duration_ = 20000;
+	static const int frightened_duration_ = 5000;
 
 	// Turning
 	bool is_turning_;
@@ -125,12 +127,11 @@ private:
 	/// <summary>
 	/// Change the ghost's mode to a given one.
 	/// </summary>
-	/// <param name="ghost_mode"></param>
 	void ChangeMode(GhostMode new_mode);
 
 public:
 
-	Ghost(float x, float y, Map* map, GhostType ghost_type);
+	Ghost(float x, float y, Map* map, GhostType type);
 	~Ghost() = default;
 
 	// Properties

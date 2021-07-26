@@ -9,18 +9,18 @@
 #include "Map.h"
 
 // Original ghost speed is 1.46 pixels per frame (at 60 fps)
-const float Ghost::ghost_default_velocity_ = 1.46f * 1.08f;
+const float Ghost::default_velocity_ = 1.46f * 1.08f;
 
 // Frightened velocity is 50% of normal velocity
-const float Ghost::ghost_frightened_velocity_ = Ghost::ghost_default_velocity_ * 0.5f;
+const float Ghost::frightened_velocity_ = Ghost::default_velocity_ * 0.5f;
 
 const float Ghost::turn_radius_ = 2;
 
-Ghost::Ghost(float x, float y, Map* map, GhostType ghost_type)
+Ghost::Ghost(float x, float y, Map* map, GhostType type)
 	: Unit(x, y, Unit::render_width_, Unit::render_height_, map), scatter_timer_(), chase_timer_(), frightened_timer_()
 {
 
-	this->type_ = ghost_type;
+	this->type_ = type;
 
 	switch (this->type_)
 	{
@@ -50,18 +50,18 @@ Ghost::Ghost(float x, float y, Map* map, GhostType ghost_type)
 			break;
 	}
 
-	this->animation_frames_count_ = Ghost::ghost_animation_frames_;
-	this->animation_delay_ = Ghost::ghost_animation_delay_;
+	this->animation_frames_count_ = Ghost::animation_frames_;
+	this->animation_delay_ = Ghost::animation_delay_;
 	
-	this->velocity_x_ = Ghost::ghost_default_velocity_;
-	this->velocity_y_ = Ghost::ghost_default_velocity_;
+	this->velocity_x_ = Ghost::default_velocity_;
+	this->velocity_y_ = Ghost::default_velocity_;
 
 	this->is_turning_ = false;
 
 	this->is_eaten_ = false;
 	this->previous_mode_ = GhostMode::SCATTER;
 	this->mode_ = GhostMode::SCATTER;
-	this->scatter_timer_.Start(ghost_scatter_duration_);
+	this->scatter_timer_.Start(Ghost::scatter_duration_);
 
 	this->target_tile_ = this->map_->pacman_->current_tile_;
 
@@ -425,8 +425,8 @@ void Ghost::ChangeMode(GhostMode new_mode) {
 			}
 
 		// Update ghost velocity
-		this->velocity_x_ = Ghost::ghost_default_velocity_;
-		this->velocity_y_ = Ghost::ghost_default_velocity_;
+		this->velocity_x_ = Ghost::default_velocity_;
+		this->velocity_y_ = Ghost::default_velocity_;
 	}
 
 	switch (new_mode)
@@ -438,7 +438,7 @@ void Ghost::ChangeMode(GhostMode new_mode) {
 			}
 			else {
 				// If not => start a new scatter timer
-				this->scatter_timer_.Start(Ghost::ghost_scatter_duration_);
+				this->scatter_timer_.Start(Ghost::scatter_duration_);
 			}
 			break;
 		case GhostMode::CHASE:
@@ -449,11 +449,11 @@ void Ghost::ChangeMode(GhostMode new_mode) {
 			}
 			else {
 				// If not => start a new chase timer
-				this->chase_timer_.Start(Ghost::ghost_chase_duration_);
+				this->chase_timer_.Start(Ghost::chase_duration_);
 			}
 			break;
 		case GhostMode::FRIGHTENED:
-			this->frightened_timer_.Start(Ghost::ghost_frightened_duration_);
+			this->frightened_timer_.Start(Ghost::frightened_duration_);
 			
 			// Pause the other timers (only one of them is running)
 			this->scatter_timer_.Pause();
@@ -464,8 +464,8 @@ void Ghost::ChangeMode(GhostMode new_mode) {
 			this->spritesheet_position_.y_ = Ghost::frightened_spritesheet_y_;
 
 			// Update ghost velocity
-			this->velocity_x_ = Ghost::ghost_frightened_velocity_;
-			this->velocity_y_ = Ghost::ghost_frightened_velocity_;
+			this->velocity_x_ = Ghost::frightened_velocity_;
+			this->velocity_y_ = Ghost::frightened_velocity_;
 			break;
 	}
 
@@ -500,12 +500,12 @@ void Ghost::GetEaten() {
 	this->target_tile_ = this->GetTargetTile();
 
 	// Restore default ghost velocity
-	this->velocity_x_ = Ghost::ghost_default_velocity_;
-	this->velocity_y_ = Ghost::ghost_default_velocity_;
+	this->velocity_x_ = Ghost::default_velocity_;
+	this->velocity_y_ = Ghost::default_velocity_;
 
 	// Update sprite (no sprite)
-	this->spritesheet_position_.x_ = 100;
-	this->spritesheet_position_.y_ = 100;
+	this->spritesheet_position_.x_ = Ghost::eaten_spritesheet_x_;
+	this->spritesheet_position_.y_ = Ghost::eaten_spritesheet_y_;
 }
 
 void Ghost::Update(float delta_time, const Uint8* keyboard_state) {

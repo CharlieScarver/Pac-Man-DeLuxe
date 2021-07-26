@@ -135,11 +135,11 @@ void PacMan::Update(float delta_time, const Uint8* keyboard_state) {
 		// Gain score
 		this->score_ += this->current_tile_->contained_item_->score_;
 
-		if (this->current_tile_->contained_item_->item_type_ == ItemType::PELLET) {
+		if (this->current_tile_->contained_item_->type_ == ItemType::PELLET) {
 			// Skip one frame after consuming a pellet
 			this->skip_frames = 1;
 		}
-		else if (this->current_tile_->contained_item_->item_type_ == ItemType::ENERGIZER) {
+		else if (this->current_tile_->contained_item_->type_ == ItemType::ENERGIZER) {
 			// Skip three frames after consuming an energizer
 			this->skip_frames = 3;
 			this->Energize();

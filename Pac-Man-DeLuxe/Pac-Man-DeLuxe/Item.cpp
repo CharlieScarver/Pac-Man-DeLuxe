@@ -1,12 +1,12 @@
 #include "Item.h"
 #include "Tile.h"
 
-Item::Item(Tile* container_tile, ItemType item_type) 
+Item::Item(Tile* container_tile, ItemType type) 
 	: GameObject(container_tile->render_position_.x_, container_tile->render_position_.y_, Item::item_render_width_, Item::item_render_height_)
 {
-	this->item_type_ = item_type;
+	this->type_ = type;
 
-	switch (this->item_type_)
+	switch (this->type_)
 	{
 		case ItemType::PELLET:
 			this->spritesheet_position_ = Vector2(this->pellet_spritesheet_x_, this->pellet_spritesheet_y_);
