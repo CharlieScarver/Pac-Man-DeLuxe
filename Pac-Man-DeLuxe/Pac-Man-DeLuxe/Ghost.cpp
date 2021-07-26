@@ -50,8 +50,8 @@ Ghost::Ghost(float x, float y, Map* map, GhostType type)
 			break;
 	}
 
-	this->animation_frames_count_ = Ghost::animation_frames_;
-	this->animation_delay_ = Ghost::animation_delay_;
+	this->animation_frames_count_ = Ghost::default_animation_frames_;
+	this->animation_delay_ = Ghost::default_animation_delay_;
 	
 	this->velocity_x_ = Ghost::default_velocity_;
 	this->velocity_y_ = Ghost::default_velocity_;

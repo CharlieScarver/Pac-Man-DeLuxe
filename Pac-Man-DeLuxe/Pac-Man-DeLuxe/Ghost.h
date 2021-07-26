@@ -22,11 +22,11 @@ private:
 
 	static const int frightened_spritesheet_x_ = 0;
 	static const int frightened_spritesheet_y_ = 48;
-	static const int eaten_spritesheet_x_ = -1;
-	static const int eaten_spritesheet_y_ = -1;
+	static const int eaten_spritesheet_x_ = -100;
+	static const int eaten_spritesheet_y_ = -100;
 
-	static const int animation_frames_ = 2;
-	static const int animation_delay_ = 200;
+	static const int default_animation_frames_ = 2;
+	static const int default_animation_delay_ = 200;
 
 	// Movement
 
