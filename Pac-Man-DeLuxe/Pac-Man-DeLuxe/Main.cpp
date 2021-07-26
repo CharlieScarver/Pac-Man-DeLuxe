@@ -24,14 +24,18 @@ int main(int argc, char* argv[])
 	Game* game = nullptr; 
 	
 	do {
-		//if (game != nullptr) {
-		
-		//}
-		delete game;
+		if (game != nullptr) {
+			delete game;
+		}
 
 		game = new Game();
 		game->Run();
+
 	} while (game->stop_and_restart_);
+
+	// Don't close the console window immediately
+	std::cout << std::endl << "Press any key to close..." << std::endl;
+	char ignore = getchar();
 
 	return 0;
 }
