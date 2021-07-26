@@ -44,6 +44,6 @@ void Timer::Pause() {
 }
 
 void Timer::Unpause() {
-	this->is_running_ = false;
+	this->is_running_ = true;
 }
 
