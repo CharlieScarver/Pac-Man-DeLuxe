@@ -37,5 +37,7 @@ Direction Utilities::GetDirectionFromOrientation(Orientation orientation) {
 			return Direction::RIGHT;
 		case Orientation::RIGHT:
 			return Direction::LEFT;
+		default:
+			return Direction::LEFT;
 	}
 }

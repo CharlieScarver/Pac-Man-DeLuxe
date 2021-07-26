@@ -1,7 +1,7 @@
 #include "Tile.h"
 
 Tile::Tile(int x, int y, TileType type, Item* contained_item)
-	: GameObject(x * Tile::render_width_, y * Tile::render_height_, Tile::render_width_, Tile::render_height_)
+	: GameObject((float)(x * Tile::render_width_), (float)(y * Tile::render_height_), (float)Tile::render_width_, (float)Tile::render_height_)
 {
 	this->type_ = type;
     this->map_x_ = x;

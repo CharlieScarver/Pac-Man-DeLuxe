@@ -66,7 +66,7 @@ Ghost::Ghost(float x, float y, Map* map, GhostType type)
 	this->target_tile_ = this->map_->pacman_->current_tile_;
 
 	// Initialize random seed
-	srand(time(NULL));
+	srand((unsigned)time(nullptr));
 
 	this->render_debug_ = false;
 }
@@ -544,10 +544,10 @@ void Ghost::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 			{
 				// Draw target tile rect
 				SDL_FRect target_tile_rect;
-				target_tile_rect.x = this->visited_layers_[layer][tile]->map_x_ * Tile::render_width_;
-				target_tile_rect.y = this->visited_layers_[layer][tile]->map_y_ * Tile::render_height_;
-				target_tile_rect.w = Tile::render_width_;
-				target_tile_rect.h = Tile::render_height_;
+				target_tile_rect.x = (float)(this->visited_layers_[layer][tile]->map_x_ * Tile::render_width_);
+				target_tile_rect.y = (float)(this->visited_layers_[layer][tile]->map_y_ * Tile::render_height_);
+				target_tile_rect.w = (float)Tile::render_width_;
+				target_tile_rect.h = (float)Tile::render_height_;
 
 				// Pretty colors that depend on the layer
 				SDL_SetRenderDrawColor(renderer, layer * 10, 200, 255 - (layer * 10), 0);
@@ -564,10 +564,10 @@ void Ghost::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 			Tile* tile = this->reversed_path_to_target_[i];
 
 			SDL_FRect tile_rect;
-			tile_rect.x = tile->map_x_ * Tile::render_width_;
-			tile_rect.y = tile->map_y_ * Tile::render_height_;
-			tile_rect.w = Tile::render_width_;
-			tile_rect.h = Tile::render_height_;
+			tile_rect.x = (float)(tile->map_x_ * Tile::render_width_);
+			tile_rect.y = (float)(tile->map_y_ * Tile::render_height_);
+			tile_rect.w = (float)Tile::render_width_;
+			tile_rect.h = (float)Tile::render_height_;
 
 			if (this->type_ == GhostType::BLINKY) {
 				SDL_SetRenderDrawColor(renderer, 200, 25, 25, 0);
@@ -589,10 +589,10 @@ void Ghost::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 
 		// Draw target tile rect
 		SDL_FRect target_tile_rect;
-		target_tile_rect.x = this->target_tile_->map_x_ * Tile::render_width_;
-		target_tile_rect.y = this->target_tile_->map_y_ * Tile::render_height_;
-		target_tile_rect.w = Tile::render_width_;
-		target_tile_rect.h = Tile::render_height_;
+		target_tile_rect.x = (float)(this->target_tile_->map_x_ * Tile::render_width_);
+		target_tile_rect.y = (float)(this->target_tile_->map_y_ * Tile::render_height_);
+		target_tile_rect.w = (float)Tile::render_width_;
+		target_tile_rect.h = (float)Tile::render_height_;
 
 		SDL_SetRenderDrawColor(renderer, 25, 200, 25, 0);
 		SDL_RenderDrawRectF(renderer, &target_tile_rect);

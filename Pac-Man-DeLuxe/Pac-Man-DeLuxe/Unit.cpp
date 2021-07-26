@@ -208,10 +208,10 @@ void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 
 		// Draw current tile in red
 		SDL_FRect current_tile_rect;
-		current_tile_rect.x = this->current_tile_->map_x_ * Tile::render_width_;
-		current_tile_rect.y = this->current_tile_->map_y_ * Tile::render_height_;
-		current_tile_rect.w = Tile::render_width_;
-		current_tile_rect.h = Tile::render_height_;
+		current_tile_rect.x = (float)(this->current_tile_->map_x_ * Tile::render_width_);
+		current_tile_rect.y = (float)(this->current_tile_->map_y_ * Tile::render_height_);
+		current_tile_rect.w = (float)Tile::render_width_;
+		current_tile_rect.h = (float)Tile::render_height_;
 
 		SDL_SetRenderDrawColor(renderer, 200, 25, 25, 0);
 		SDL_RenderDrawRectF(renderer, &current_tile_rect);
