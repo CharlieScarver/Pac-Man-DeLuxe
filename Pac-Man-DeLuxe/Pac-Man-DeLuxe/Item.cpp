@@ -33,8 +33,6 @@ Item::~Item() {}
 void Item::Update(float delta_time, const Uint8* keyboard_state) {}
 
 void Item::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
-	this->spritesheet_texture_ = asset_loader->tiles_spritesheet_;
-
     // Spritesheet poistion and size actually use integers
     SDL_Rect spritesheet_rect;
     spritesheet_rect.x = (int)this->spritesheet_position_.x_;

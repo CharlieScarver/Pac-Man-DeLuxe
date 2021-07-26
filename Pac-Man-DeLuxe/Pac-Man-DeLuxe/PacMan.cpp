@@ -8,7 +8,8 @@ const float PacMan::energized_velocity_ = PacMan::default_velocity_ * 1.1f;
 
 const float PacMan::turn_radius_ = 3.5f;
 
-PacMan::PacMan(float x, float y, float width, float height, Map* map) : Unit(x, y, width, height, map), energized_timer_() {
+PacMan::PacMan(float x, float y, Map* map)
+	: Unit(x, y, Unit::render_width_, Unit::render_height_, map), energized_timer_() {
 
 	this->spritesheet_position_ = Vector2(PacMan::spritesheet_x_, PacMan::spritesheet_y_);
 
@@ -130,22 +131,22 @@ void PacMan::Update(float delta_time, const Uint8* keyboard_state) {
 	}
 
 	// If the current tile contains an item
-	if (this->current_tile_->contained_item != nullptr) {
+	if (this->current_tile_->contained_item_ != nullptr) {
 		// Gain score
-		this->score_ += this->current_tile_->contained_item->score_;
+		this->score_ += this->current_tile_->contained_item_->score_;
 
-		if (this->current_tile_->contained_item->item_type_ == ItemType::PELLET) {
+		if (this->current_tile_->contained_item_->item_type_ == ItemType::PELLET) {
 			// Skip one frame after consuming a pellet
 			this->skip_frames = 1;
 		}
-		else if (this->current_tile_->contained_item->item_type_ == ItemType::ENERGIZER) {
+		else if (this->current_tile_->contained_item_->item_type_ == ItemType::ENERGIZER) {
 			// Skip three frames after consuming an energizer
 			this->skip_frames = 3;
 			this->Energize();
 		}
 
 		// Remove the item from the tile (memory will be freed by the Map later)
-		this->current_tile_->contained_item = nullptr;
+		this->current_tile_->contained_item_ = nullptr;
 	}
 
 	// If energized timer has completed => go back to normal state (deenergized)

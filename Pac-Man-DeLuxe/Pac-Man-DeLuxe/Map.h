@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "AssetLoader.h"
 #include "Tile.h"
 #include "PacMan.h"
 #include "Ghost.h"
@@ -17,6 +18,12 @@ private:
 	Tile* tile_matrix_[MAP_WIDTH_IN_TILES][MAP_HEIGHT_IN_TILES];
 
 public:
+	/// <summary>
+	/// The asset loader used to get the loaded assets (like spritesheets). 
+	/// Used to load, get and unload assets.
+	/// </summary>
+	AssetLoader* asset_loader_;
+
 	bool collision_occured_;
 	bool no_more_items_;
 
@@ -24,7 +31,7 @@ public:
 	std::vector<Ghost*> ghosts_;
 	std::vector<Item*> items_;
 
-	Map();
+	Map(AssetLoader* asset_loader);
 	~Map();
 
 	void LoadMapFromFile(const char* file_name);

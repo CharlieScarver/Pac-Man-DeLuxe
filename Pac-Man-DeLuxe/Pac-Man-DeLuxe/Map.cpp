@@ -3,7 +3,9 @@
 #include <cmath>
 #include "Map.h"
 
-Map::Map() {
+Map::Map(AssetLoader* asset_loader) {
+	this->asset_loader_ = asset_loader;
+
 	this->file_name_ = nullptr;
 	this->pacman_ = nullptr;
 
@@ -32,7 +34,7 @@ Map::~Map() {
 	// Free Pac-Man
 	delete this->pacman_;
 
-	// Free the other units
+	// Free the ghosts
 	for (int i = 0; i < this->ghosts_.size(); i++)
 	{
 		delete this->ghosts_[i];
@@ -87,7 +89,7 @@ void Map::LoadMapFromFile(const char* file_name) {
 			this->items_.push_back(item);
 
 			// Set the contained item
-			tile->contained_item = item;
+			tile->contained_item_ = item;
 
 			// Set proper tile and increase the column counter
 			this->SetTile(tile_x, tile_y, tile);
@@ -102,7 +104,7 @@ void Map::LoadMapFromFile(const char* file_name) {
 			this->items_.push_back(item);
 
 			// Set the contained item
-			tile->contained_item = item;
+			tile->contained_item_ = item;
 
 			// Set proper tile and increase the column counter
 			this->SetTile(tile_x, tile_y, tile);
@@ -170,7 +172,7 @@ void Map::LoadMapFromFile(const char* file_name) {
 	}
 
 	// Create Pac-Man
-	this->pacman_ = new PacMan(pacman_x, pacman_y, UNIT_RENDER_WIDTH, UNIT_RENDER_HEIGHT, this);
+	this->pacman_ = new PacMan(pacman_x, pacman_y, this);
 
 	// Create ghosts	
 	this->ghosts_.push_back(new Ghost(312, 324, this, GhostType::BLINKY));
@@ -294,12 +296,12 @@ void Map::Update(float delta_time, const Uint8* keyboard_state) {
 	// Update Pac-Man
 	this->pacman_->Update(delta_time, keyboard_state);
 
-	// Update the other units
+	// Update the ghosts
 	for (int i = 0; i < this->ghosts_.size(); i++)
 	{
 		this->ghosts_[i]->Update(delta_time, keyboard_state);
 
-		// Check for collision between Pac-Man and other units
+		// Check for collision between Pac-Man and ghost
 		if (this->pacman_->current_tile_->id_ == this->ghosts_[i]->current_tile_->id_) {
 			
 			// If ghost is "eaten" => do nothing (pass through each other)
@@ -351,7 +353,7 @@ void Map::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 			// Render tile
 			this->tile_matrix_[i][j]->Render(renderer, asset_loader);
 
-			if (this->tile_matrix_[i][j]->contained_item != nullptr) {
+			if (this->tile_matrix_[i][j]->contained_item_ != nullptr) {
 				this->no_more_items_ = false;
 			}
 		}
@@ -360,7 +362,7 @@ void Map::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	// Render Pac-Man
 	this->pacman_->Render(renderer, asset_loader);
 
-	// Render the other units
+	// Render the ghosts
 	for (int i = 0; i < this->ghosts_.size(); i++)
 	{
 		this->ghosts_[i]->Render(renderer, asset_loader);

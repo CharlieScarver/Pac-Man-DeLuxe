@@ -58,7 +58,7 @@ private:
 	void Energize();
 
 public:
-	PacMan(float x, float y, float width, float height, Map* map);
+	PacMan(float x, float y, Map* map);
 	~PacMan() = default;
 
 	/// <summary>

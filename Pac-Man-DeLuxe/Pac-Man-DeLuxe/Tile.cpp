@@ -1,18 +1,17 @@
 #include "Tile.h"
 
 Tile::Tile(int x, int y, TileType type, Item* contained_item)
-	: GameObject(x * TILE_RENDER_WIDTH, y * TILE_RENDER_HEIGHT, TILE_RENDER_WIDTH, TILE_RENDER_HEIGHT) {
+	: GameObject(x * Tile::render_width_, y * Tile::render_height_, Tile::render_width_, Tile::render_height_)
+{
 	this->type_ = type;
     this->map_x_ = x;
     this->map_y_ = y;
     
-    this->contains_player_ = false;
-    this->contains_ghost_ = false;
     this->is_turn_tile_ = false;
 
-    this->sprite_size_ = Vector2(TILE_SPRITE_WIDTH, TILE_SPRITE_HEIGHT);
+    this->sprite_size_ = Vector2(Tile::sprite_width_, Tile::sprite_height_);
 
-    this->contained_item = contained_item;
+    this->contained_item_ = contained_item;
 
 	switch (this->type_)
 	{
@@ -106,7 +105,7 @@ void Tile::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
     }
 
     // Render the contained item (if any)
-    if (this->contained_item != nullptr) {
-        this->contained_item->Render(renderer, asset_loader);
+    if (this->contained_item_ != nullptr) {
+        this->contained_item_->Render(renderer, asset_loader);
     }
 }

@@ -58,7 +58,7 @@ int Game::Init(const char* title, int x, int y, int width, int height, bool full
 	}
 
 	// Load map file
-	this->map_ = new Map();
+	this->map_ = new Map(this->asset_loader_);
 	map_->LoadMapFromFile("Assets/Maps/level1.txt");
 
 	return 0;

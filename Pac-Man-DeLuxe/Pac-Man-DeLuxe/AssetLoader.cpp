@@ -7,6 +7,9 @@ AssetLoader::AssetLoader() {
 }
 
 AssetLoader::~AssetLoader() {
+	this->units_spritesheet_ = nullptr;
+	this->tiles_spritesheet_ = nullptr;
+
 	// Unload the dynamically loaded image libraries
 	IMG_Quit();
 }

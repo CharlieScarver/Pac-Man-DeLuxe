@@ -3,17 +3,17 @@
 #include "TileType.h"
 #include "Item.h"
 
-#define TILE_SPRITE_WIDTH 8
-#define TILE_SPRITE_HEIGHT 8
-
-// Determines the scale of the tiles (has to be a multiple of TILE_SPRITE_WIDTH)
-#define TILE_RENDER_WIDTH 24
-#define TILE_RENDER_HEIGHT 24
-
 #define RENDER_TILES_DEBUG 0
 
 class Tile final : public GameObject {
 public:
+	// Sizes
+	static const int sprite_width_ = 8;
+	static const int sprite_height_ = 8;
+	// Has to be a multiple of TILE_SPRITE_WIDTH for integer scaling
+	static const int render_width_ = 24;
+	static const int render_height_ = 24;
+
 	// Tile properties
 	TileType type_;
 	// Units cannot enter solid tiles
@@ -26,9 +26,7 @@ public:
 	int map_y_;
 
 	// Tile contents
-	bool contains_player_;
-	bool contains_ghost_;
-	Item* contained_item;
+	Item* contained_item_;
 
 	Tile(int x, int y, TileType type);
 	Tile(int x, int y, TileType type, Item* contained_item);

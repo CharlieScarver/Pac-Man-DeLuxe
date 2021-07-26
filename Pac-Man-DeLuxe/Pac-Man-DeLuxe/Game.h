@@ -11,18 +11,37 @@ private:
 	const int default_window_width = 672;
 	const int default_window_height = 864;
 
+	/// <summary>
+	/// Shows if the game is running (if the main loop is being executed or not).
+	/// </summary>
 	bool is_running_;
+
+	/// <summary>
+	/// Shows if the game is paused or not (if the map is being updated).
+	/// </summary>
 	bool is_paused_;
+
+	/// <summary>
+	/// The SDL game window.
+	/// </summary>
 	SDL_Window* window_;
+
+	/// <summary>
+	/// The SDL renderer.
+	/// </summary>
 	SDL_Renderer* renderer_;
 
-	SDL_Texture* texture_;
-	SDL_Rect* source_rect_;
-	SDL_FRect* destination_rect_;
+	/// <summary>
+	/// The asset loader.
+	/// Used to load, get and unload assets.
+	/// </summary>
+	AssetLoader* asset_loader_;
 
-	bool is_moving_left_;
-	bool is_moving_right_;
-	bool is_idle_;
+	/// <summary>
+	/// The game map.
+	/// Holds the tiles, items, units.
+	/// </summary>
+	Map* map_;
 
 	int Init(const char* title, int x, int y, int width, int height, bool fullscreen);
 	void Update(float delta_time, const Uint8* keyboard_state);
@@ -31,11 +50,11 @@ private:
 	void Cleanup();
 
 public:
-	AssetLoader* asset_loader_;
-	Map* map_;
-
 	Game();
 	~Game();
 
+	/// <summary>
+	/// Starts the game and keeps running until the game ends.
+	/// </summary>
 	int Run();
 };

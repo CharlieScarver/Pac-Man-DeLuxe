@@ -4,7 +4,7 @@
 
 Unit::Unit(float x, float y, float width, float height, Map* map) : GameObject(x, y, width, height) {
 
-	this->sprite_size_ = Vector2(UNIT_SPRITE_WIDTH, UNIT_SPRITE_HEIGHT);
+	this->sprite_size_ = Vector2(Unit::sprite_width_, Unit::sprite_height_);
 
 	this->direction_ = Direction::NONE;
 	this->orientation_ = Orientation::LEFT;
@@ -23,16 +23,14 @@ Unit::Unit(float x, float y, float width, float height, Map* map) : GameObject(x
 	this->current_tile_ = GetTileForUnitCoordinates(x, y);
 }
 
-Unit::~Unit() {}
-
 Tile* Unit::GetTileForUnitCoordinates(float x, float y) {
 	// Coordinates of the center point of the sprite
-	float center_x = x + (UNIT_RENDER_WIDTH / 2);
-	float center_y = y + (UNIT_RENDER_HEIGHT / 2);
+	float center_x = x + (Unit::render_width_/ 2);
+	float center_y = y + (Unit::render_height_ / 2);
 
 	// Calculate which tile that should be in
-	int center_tile_x = (int)(center_x / TILE_RENDER_WIDTH);
-	int center_tile_y = (int)(center_y / TILE_RENDER_HEIGHT);
+	int center_tile_x = (int)(center_x / Tile::render_width_);
+	int center_tile_y = (int)(center_y / Tile::render_height_);
 
 	// Get the tile object
 	return this->map_->GetTile(center_tile_x, center_tile_y);
@@ -40,19 +38,19 @@ Tile* Unit::GetTileForUnitCoordinates(float x, float y) {
 
 Tile* Unit::GetTileForCenterUnitCoordinates(float center_x, float center_y) {
 	// Calculate which tile that should be in
-	int center_tile_x = (int)(center_x / TILE_RENDER_WIDTH);
-	int center_tile_y = (int)(center_y / TILE_RENDER_HEIGHT);
+	int center_tile_x = (int)(center_x / Tile::render_width_);
+	int center_tile_y = (int)(center_y / Tile::render_height_);
 
 	// Get the tile object
 	return this->map_->GetTile(center_tile_x, center_tile_y);
 }
 
 void Unit::SetCenterToTileCenter(Tile* tile) {
-	float tile_center_x = (tile->map_x_ * TILE_RENDER_WIDTH) + (float)TILE_RENDER_WIDTH / 2.0f;
-	float tile_center_y = (tile->map_y_* TILE_RENDER_HEIGHT) + (float)TILE_RENDER_HEIGHT / 2.0f;
+	float tile_center_x = (tile->map_x_ * Tile::render_width_) + (float)Tile::render_width_ / 2.0f;
+	float tile_center_y = (tile->map_y_* Tile::render_height_) + (float)Tile::render_height_ / 2.0f;
 
-	this->render_position_.x_ = tile_center_x - (float)UNIT_RENDER_WIDTH / 2.0f;
-	this->render_position_.y_ = tile_center_y - (float)UNIT_RENDER_HEIGHT / 2.0f;
+	this->render_position_.x_ = tile_center_x - (float)Unit::render_width_ / 2.0f;
+	this->render_position_.y_ = tile_center_y - (float)Unit::render_height_ / 2.0f;
 }
 
 void Unit::StopMoving() {
@@ -150,8 +148,6 @@ void Unit::Update(float delta_time, const Uint8* keyboard_state) {
 }
 
 void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
-	this->spritesheet_texture_ = asset_loader->units_spritesheet_;
-
 	// Spritesheet poistion and size actually use integers
 	SDL_Rect spritesheet_rect;
 	spritesheet_rect.x = (int)this->spritesheet_position_.x_ + (this->current_animation_frame_ * (int)this->sprite_size_.x_);
@@ -201,10 +197,10 @@ void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 
 		// Draw current tile in red
 		SDL_FRect current_tile_rect;
-		current_tile_rect.x = this->current_tile_->map_x_ * TILE_RENDER_WIDTH;
-		current_tile_rect.y = this->current_tile_->map_y_ * TILE_RENDER_HEIGHT;
-		current_tile_rect.w = TILE_RENDER_WIDTH;
-		current_tile_rect.h = TILE_RENDER_HEIGHT;
+		current_tile_rect.x = this->current_tile_->map_x_ * Tile::render_width_;
+		current_tile_rect.y = this->current_tile_->map_y_ * Tile::render_height_;
+		current_tile_rect.w = Tile::render_width_;
+		current_tile_rect.h = Tile::render_height_;
 
 		SDL_SetRenderDrawColor(renderer, 200, 25, 25, 0);
 		SDL_RenderDrawRectF(renderer, &current_tile_rect);

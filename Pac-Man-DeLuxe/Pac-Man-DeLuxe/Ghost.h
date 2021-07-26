@@ -6,16 +6,10 @@
 #include "Timer.h"
 #include "GhostMode.h"
 
-#define RENDER_GHOSTS_DEBUG 0
+#define RENDER_GHOSTS_DEBUG 1
 
 class Ghost final : public Unit {
 private:
-	// Sizes
-	static const int ghost_sprite_width_ = 16;
-	static const int ghost_sprite_height_ = 16;
-	static const int ghost_render_width_ = 48;
-	static const int ghost_render_height_ = 48;
-
 	// Animation
 	static const int blinky_spritesheet_x_ = 0;
 	static const int blinky_spritesheet_y_ = 16;
@@ -34,11 +28,23 @@ private:
 
 	// Movement
 
-	// Original ghost speed is 1.46 pixels per frame (at 60 fps)
+	/// <summary>
+	/// The speed of the ghost in pixels per frame.
+	/// Original ghost speed is 1.46 pixels per frame (at 60 fps).
+	/// </summary>
 	static const float ghost_default_velocity_; // in pixels per frame
 	
-	// Frightened velocity is 50% of normal velocity
+	/// <summary>
+	///	Frightened velocity is 50% of normal velocity.
+	/// Value is in pixels per frame.
+	/// </summary>
 	static const float ghost_frightened_velocity_;
+
+	/// <summary>
+	/// The radius of the interval in which Pac-Man is allow to turn.
+	/// The center point of the interval is the center point of the corresponding turn tile.
+	/// </summary>
+	static const float turn_radius_; // in pixels
 
 	static const int ghost_scatter_duration_ = 7000; // in ms
 	static const int ghost_chase_duration_ = 20000;

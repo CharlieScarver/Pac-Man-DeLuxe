@@ -14,8 +14,10 @@ const float Ghost::ghost_default_velocity_ = 1.46f * 1.08f;
 // Frightened velocity is 50% of normal velocity
 const float Ghost::ghost_frightened_velocity_ = Ghost::ghost_default_velocity_ * 0.5f;
 
+const float Ghost::turn_radius_ = 2;
+
 Ghost::Ghost(float x, float y, Map* map, GhostType ghost_type)
-	: Unit(x, y, Ghost::ghost_render_width_, Ghost::ghost_render_height_, map), scatter_timer_(), chase_timer_(), frightened_timer_()
+	: Unit(x, y, Unit::render_width_, Unit::render_height_, map), scatter_timer_(), chase_timer_(), frightened_timer_()
 {
 
 	this->type_ = ghost_type;
@@ -336,8 +338,8 @@ void Ghost::AI(float delta_time) {
 		Vector2 current_tile_center = Utilities::GetCenterPointOfRectangle(this->current_tile_->render_position_, this->current_tile_->render_size_);
 
 		// Check if ghost is in the turn interval
-		bool center_x_in_turn_interval = render_center.x_ >= current_tile_center.x_ - UNIT_TURN_PIXEL_RADIUS && render_center.x_ <= current_tile_center.x_ + UNIT_TURN_PIXEL_RADIUS;
-		bool center_y_in_turn_interval = render_center.y_ >= current_tile_center.y_ - UNIT_TURN_PIXEL_RADIUS && render_center.y_ <= current_tile_center.y_ + UNIT_TURN_PIXEL_RADIUS;
+		bool center_x_in_turn_interval = render_center.x_ >= current_tile_center.x_ - Ghost::turn_radius_ && render_center.x_ <= current_tile_center.x_ + Ghost::turn_radius_;
+		bool center_y_in_turn_interval = render_center.y_ >= current_tile_center.y_ - Ghost::turn_radius_ && render_center.y_ <= current_tile_center.y_ + Ghost::turn_radius_;
 
 		// If the ghost is in the turn interval (around the center of the tile) => take the turn
 		if (center_x_in_turn_interval && center_y_in_turn_interval) {
@@ -523,10 +525,10 @@ void Ghost::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 			{
 				// Draw target tile rect
 				SDL_FRect target_tile_rect;
-				target_tile_rect.x = this->visited_layers_[layer][tile]->map_x_ * TILE_RENDER_WIDTH;
-				target_tile_rect.y = this->visited_layers_[layer][tile]->map_y_ * TILE_RENDER_HEIGHT;
-				target_tile_rect.w = TILE_RENDER_WIDTH;
-				target_tile_rect.h = TILE_RENDER_HEIGHT;
+				target_tile_rect.x = this->visited_layers_[layer][tile]->map_x_ * Tile::render_width_;
+				target_tile_rect.y = this->visited_layers_[layer][tile]->map_y_ * Tile::render_height_;
+				target_tile_rect.w = Tile::render_width_;
+				target_tile_rect.h = Tile::render_height_;
 
 				// Pretty colors that depend on the layer
 				SDL_SetRenderDrawColor(renderer, layer * 10, 200, 255 - (layer * 10), 0);
@@ -543,10 +545,10 @@ void Ghost::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 			Tile* tile = this->reversed_path_to_target_[i];
 
 			SDL_FRect tile_rect;
-			tile_rect.x = tile->map_x_ * TILE_RENDER_WIDTH;
-			tile_rect.y = tile->map_y_ * TILE_RENDER_HEIGHT;
-			tile_rect.w = TILE_RENDER_WIDTH;
-			tile_rect.h = TILE_RENDER_HEIGHT;
+			tile_rect.x = tile->map_x_ * Tile::render_width_;
+			tile_rect.y = tile->map_y_ * Tile::render_height_;
+			tile_rect.w = Tile::render_width_;
+			tile_rect.h = Tile::render_height_;
 
 			if (this->type_ == GhostType::BLINKY) {
 				SDL_SetRenderDrawColor(renderer, 200, 25, 25, 0);
@@ -568,10 +570,10 @@ void Ghost::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 
 		// Draw target tile rect
 		SDL_FRect target_tile_rect;
-		target_tile_rect.x = this->target_tile_->map_x_ * TILE_RENDER_WIDTH;
-		target_tile_rect.y = this->target_tile_->map_y_ * TILE_RENDER_HEIGHT;
-		target_tile_rect.w = TILE_RENDER_WIDTH;
-		target_tile_rect.h = TILE_RENDER_HEIGHT;
+		target_tile_rect.x = this->target_tile_->map_x_ * Tile::render_width_;
+		target_tile_rect.y = this->target_tile_->map_y_ * Tile::render_height_;
+		target_tile_rect.w = Tile::render_width_;
+		target_tile_rect.h = Tile::render_height_;
 
 		SDL_SetRenderDrawColor(renderer, 25, 200, 25, 0);
 		SDL_RenderDrawRectF(renderer, &target_tile_rect);

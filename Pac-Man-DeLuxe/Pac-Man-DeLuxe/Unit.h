@@ -7,14 +7,7 @@
 class Tile;
 class Map;
 
-#define UNIT_SPRITE_WIDTH 16
-#define UNIT_SPRITE_HEIGHT 16
-#define UNIT_RENDER_WIDTH 48
-#define UNIT_RENDER_HEIGHT 48
-
-#define UNIT_TURN_PIXEL_RADIUS 2
-
-#define RENDER_UNITS_DEBUG 0
+#define RENDER_UNITS_DEBUG 1
 
 class Unit : public GameObject {
 protected:
@@ -25,7 +18,7 @@ protected:
 	int current_animation_frame_;
 	int animation_frames_count_;
 	float animation_timer_;
-	int animation_delay_; // static? no need?
+	int animation_delay_;
 
 	// Velocity
 	float velocity_x_;
@@ -43,6 +36,13 @@ protected:
 	void ManageMovement(float delta_time);
 	void ManageAnimation(float delta_time);
 
+protected:
+	// Sizes
+	static const int sprite_width_ = 16;
+	static const int sprite_height_ = 16;
+	static const int render_width_ = 48;
+	static const int render_height_ = 48;
+
 public:
 	// Current tile
 	Tile* current_tile_;
@@ -50,7 +50,7 @@ public:
 	Orientation orientation_;
 	Direction direction_;
 
-	~Unit();
+	~Unit() = default;
 
 	virtual void Update(float delta_time, const Uint8* keyboard_state);
 	virtual void Render(SDL_Renderer* renderer, AssetLoader* asset_loader) override;
