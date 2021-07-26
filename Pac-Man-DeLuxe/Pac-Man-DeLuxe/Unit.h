@@ -2,15 +2,22 @@
 #include "GameObject.h"
 #include "Orientation.h"
 #include "Direction.h"
+#include "Timer.h"
 
 // Forward declaration to resolve circular dependency
 class Tile;
 class Map;
 
-#define RENDER_UNITS_DEBUG 1
-
 class Unit : public GameObject {
 protected:
+	// Sizes
+	static const int sprite_width_ = 16;
+	static const int sprite_height_ = 16;
+	static const int render_width_ = 48;
+	static const int render_height_ = 48;
+
+	static const int input_delay_ = 150;
+
 	// The loaded spritesheet texture
 	SDL_Texture* spritesheet_texture_;
 
@@ -26,6 +33,14 @@ protected:
 
 	Map* map_;
 
+	/// <summary>
+	/// Shows if debug info will be rendered or not.
+	/// </summary>
+	bool render_debug_;
+
+	// Timers
+	Timer input_timer_;
+
 	Unit(float x, float y, float width, float height, Map* map);
 
 	Tile* GetTileForUnitCoordinates(float x, float y);
@@ -35,13 +50,6 @@ protected:
 
 	void ManageMovement(float delta_time);
 	void ManageAnimation(float delta_time);
-
-protected:
-	// Sizes
-	static const int sprite_width_ = 16;
-	static const int sprite_height_ = 16;
-	static const int render_width_ = 48;
-	static const int render_height_ = 48;
 
 public:
 	// Current tile

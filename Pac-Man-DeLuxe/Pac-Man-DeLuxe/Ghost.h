@@ -6,8 +6,6 @@
 #include "Timer.h"
 #include "GhostMode.h"
 
-#define RENDER_GHOSTS_DEBUG 1
-
 class Ghost final : public Unit {
 private:
 	// Animation
@@ -49,7 +47,7 @@ private:
 	static const float turn_radius_; // in pixels
 
 	static const int scatter_duration_ = 7000; // in ms
-	static const int chase_duration_ = 20000;
+	static const int chase_duration_ = 15000;
 	static const int frightened_duration_ = 5000;
 
 	// Turning
@@ -128,6 +126,12 @@ private:
 	/// Change the ghost's mode to a given one.
 	/// </summary>
 	void ChangeMode(GhostMode new_mode);
+
+	/// <summary>
+	/// Reverses the ghost's direction.
+	/// Used when changing modes.
+	/// </summary>
+	void ReverseDirection();
 
 public:
 

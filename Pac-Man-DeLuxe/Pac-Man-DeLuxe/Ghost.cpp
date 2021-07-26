@@ -67,6 +67,8 @@ Ghost::Ghost(float x, float y, Map* map, GhostType type)
 
 	// Initialize random seed
 	srand(time(NULL));
+
+	this->render_debug_ = false;
 }
 
 GhostMode Ghost::Mode() {
@@ -165,7 +167,7 @@ std::vector<Tile*> Ghost::FindShortestPath(Tile* start, Tile* goal) {
 	std::unordered_map<int, Tile*> previous_tiles;
 
 	// Toggle-able logic for visualizing the algorithm
-	if (RENDER_GHOSTS_DEBUG) {
+	if (this->render_debug_) {
 		// Clear the data from the last algorithm run (reallocation not guaranteed but also not needed)
 		this->visited_layers_.clear();
 		// Add the vector for the first layer
@@ -184,13 +186,13 @@ std::vector<Tile*> Ghost::FindShortestPath(Tile* start, Tile* goal) {
 		if (tiles_in_next_layer == 0) {
 			visited_layers_count++;
 
-			if (RENDER_GHOSTS_DEBUG) {
+			if (this->render_debug_) {
 				// When a new layer starts => add a new vector for it
 				this->visited_layers_.push_back(std::vector<Tile*>());
 			}
 		}
 
-		if (RENDER_GHOSTS_DEBUG) {
+		if (this->render_debug_) {
 			// Add visited tile to the current layer vector
 			this->visited_layers_[visited_layers_count].push_back(visiting_tile);
 		}
@@ -479,13 +481,23 @@ void Ghost::ChangeMode(GhostMode new_mode) {
 		this->previous_mode_ = this->mode_;
 	}
 
-	// Update the current mode
-	this->mode_ = new_mode;
-
 	// If the current mode and the new mode are different => reverse the direction of the ghost to signify the change
 	if (this->mode_ != new_mode) {
 		// Reverse ghosts' direction of movement when changing modes
-		this->direction_ = Utilities::GetOppositeDirection(this->direction_);
+		this->ReverseDirection();
+	}
+
+	// Update the current mode
+	this->mode_ = new_mode;
+}
+
+void Ghost::ReverseDirection() {
+	// Reverse ghosts' direction of movement when changing modes
+	this->direction_ = Utilities::GetOppositeDirection(this->direction_);
+
+	// If the ghost is on a turn tile => calculate the shortest path and the next direction again to avoid getting stuck after reversing
+	if (this->current_tile_->is_turn_tile_) {
+		this->is_turning_ = false;
 	}
 }
 
@@ -525,7 +537,7 @@ void Ghost::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	Unit::Render(renderer, asset_loader);
 
 	// Render the searching algorithm (only for Blinky to save resources and make it more readable)
-	if (RENDER_GHOSTS_DEBUG && this->type_ == GhostType::BLINKY) {
+	if (this->render_debug_ && this->type_ == GhostType::BLINKY) {
 		for (int layer = 0; layer < this->visited_layers_.size(); layer++)
 		{
 			for (int tile = 0; tile < this->visited_layers_[layer].size(); tile++)
@@ -545,7 +557,7 @@ void Ghost::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	}
 
 	// Render shortest path chosen by the ghost
-	if (RENDER_GHOSTS_DEBUG) {
+	if (this->render_debug_) {
 		// Draw last calculated path
 		for (int i = (int)this->reversed_path_to_target_.size() - 1; i >= 0; i--)
 		{

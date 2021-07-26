@@ -2,7 +2,7 @@
 #include "Unit.h"
 #include "Map.h"
 
-Unit::Unit(float x, float y, float width, float height, Map* map) : GameObject(x, y, width, height) {
+Unit::Unit(float x, float y, float width, float height, Map* map) : GameObject(x, y, width, height), input_timer_() {
 
 	this->sprite_size_ = Vector2(Unit::sprite_width_, Unit::sprite_height_);
 
@@ -141,6 +141,17 @@ void Unit::ManageAnimation(float delta_time) {
 }
 
 void Unit::Update(float delta_time, const Uint8* keyboard_state) {
+	// If input timer is running => update it
+	if (this->input_timer_.IsRunning()) {
+		this->input_timer_.Update(delta_time);
+	}
+
+	// If "I" key is pressed => show/hide debug info
+	if (keyboard_state[SDL_SCANCODE_I] && this->input_timer_.HasCompleted()) {
+		this->render_debug_ = !this->render_debug_;
+		this->input_timer_.Start(Unit::input_delay_);
+	}
+
 	this->ManageMovement(delta_time);
 	if (this->direction_ != Direction::NONE) {
 		this->ManageAnimation(delta_time);
@@ -161,7 +172,7 @@ void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	render_rect.w = this->render_size_.x_;
 	render_rect.h = this->render_size_.y_;
 
-	if (RENDER_UNITS_DEBUG) {
+	if (this->render_debug_) {
 		// Draw sprite box
 		SDL_SetRenderDrawColor(renderer, 50, 25, 200, 0);
 		SDL_RenderDrawRectF(renderer, &render_rect);
@@ -184,7 +195,7 @@ void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 			break;
 	}
 	
-	if (RENDER_UNITS_DEBUG) {
+	if (this->render_debug_) {
 		// Draw center point in red
 		SDL_FRect center_point_rect;
 		center_point_rect.x = this->render_position_.x_ + (this->render_size_.x_ / 2);
