@@ -1,7 +1,7 @@
 #include "Game.h"
 #include <iostream>
 
-Game::Game() {
+Game::Game() : input_timer_() {
 	this->is_running_ = false;
 	this->window_ = nullptr;
 	this->renderer_ = nullptr;
@@ -10,6 +10,7 @@ Game::Game() {
 	this->map_ = nullptr;
 
 	this->is_paused_ = false;
+	this->stop_and_restart_ = false;
 }
 
 Game::~Game() {
@@ -125,7 +126,7 @@ void Game::Cleanup() {
 }
 
 int Game::Run() {
-	if (this->Init("SDL Game Window", 0, 0, this->default_window_width, this->default_window_height, false) != 0) {
+	if (this->Init("SDL Game Window", 0, 0, Game::default_window_width_, Game::default_window_height_, false) != 0) {
 		this->Cleanup();
 		return -1;
 	}
@@ -146,11 +147,6 @@ int Game::Run() {
 		}
 
 		const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
-
-		if (keyboard_state[SDL_SCANCODE_P]) {
-			this->is_paused_ = !this->is_paused_;
-			SDL_Delay(500);
-		}
 
 		// Calculate delta time
 		const Uint64 now = SDL_GetPerformanceCounter();
@@ -174,6 +170,24 @@ int Game::Run() {
 			fps_timer = 0;
 
 			std::cout << "FPS: " << fps << std::endl;
+		}
+
+		// Check for pause input
+		if (keyboard_state[SDL_SCANCODE_P] && this->input_timer_.HasCompleted()) {
+			this->is_paused_ = !this->is_paused_;
+			this->input_timer_.Start(Game::input_delay_);
+		}
+
+		// Check for restart input
+		if (keyboard_state[SDL_SCANCODE_R] && this->input_timer_.HasCompleted()) {
+			this->is_running_ = false;
+			this->stop_and_restart_ = true;
+			this->input_timer_.Start(Game::input_delay_);
+		}
+
+		// If input timer is running (a key was pressed previously) => update the input timer
+		if (this->input_timer_.IsRunning()) {
+			this->input_timer_.Update(delta_time);
 		}
 
 		// Update the game is not paused

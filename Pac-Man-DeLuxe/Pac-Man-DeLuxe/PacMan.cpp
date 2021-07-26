@@ -153,8 +153,13 @@ void PacMan::Update(float delta_time, const Uint8* keyboard_state) {
 		this->current_tile_->contained_item_ = nullptr;
 	}
 
+	// If energized => update the energized timer
+	if (this->is_energized_) {
+		this->energized_timer_.Update(delta_time);
+	}
+
 	// If energized timer has completed => go back to normal state (deenergized)
-	if (this->energized_timer_.UpdateAndCheck(delta_time)) {
+	if (this->energized_timer_.HasCompleted()) {
 		this->is_energized_ = false;
 		this->animation_delay_ = PacMan::default_animation_delay_;
 		this->velocity_x_ = PacMan::default_velocity_;

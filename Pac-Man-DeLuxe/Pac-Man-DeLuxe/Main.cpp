@@ -21,8 +21,17 @@ int main(int argc, char* argv[])
 {
 	std::cout << "Hi" << std::endl;
 
-	Game* game = new Game();
-	game->Run();
+	Game* game = nullptr; 
+	
+	do {
+		//if (game != nullptr) {
+		
+		//}
+		delete game;
+
+		game = new Game();
+		game->Run();
+	} while (game->stop_and_restart_);
 
 	return 0;
 }

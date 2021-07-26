@@ -45,7 +45,7 @@ public:
     /// <summary>
     /// Update the timer with the given delta time and check if the time ran out.
     /// </summary>
-    bool UpdateAndCheck(float delta_time);
+    void Update(float delta_time);
 
     /// <summary>
     /// Pause the timer.

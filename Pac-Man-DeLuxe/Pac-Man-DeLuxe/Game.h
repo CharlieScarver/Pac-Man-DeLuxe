@@ -8,8 +8,10 @@ class Game final {
 private:
 	// Original 224x288
 	// Scale 3:1
-	const int default_window_width = 672;
-	const int default_window_height = 864;
+	static const int default_window_width_ = 672;
+	static const int default_window_height_ = 864;
+
+	static const int input_delay_ = 150;
 
 	/// <summary>
 	/// Shows if the game is running (if the main loop is being executed or not).
@@ -43,6 +45,9 @@ private:
 	/// </summary>
 	Map* map_;
 
+	// Timers
+	Timer input_timer_;
+
 	int Init(const char* title, int x, int y, int width, int height, bool fullscreen);
 	void Update(float delta_time, const Uint8* keyboard_state);
 	void Events(SDL_Event* event);
@@ -52,6 +57,11 @@ private:
 public:
 	Game();
 	~Game();
+
+	/// <summary>
+	/// Shows if the game will stop for a restart.
+	/// </summary>
+	bool stop_and_restart_;
 
 	/// <summary>
 	/// Starts the game and keeps running until the game ends.

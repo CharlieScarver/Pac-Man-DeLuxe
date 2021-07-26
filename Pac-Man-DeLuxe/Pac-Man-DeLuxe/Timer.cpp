@@ -5,7 +5,7 @@ Timer::Timer() {
 	this->duration_ = 0;
 
 	this->is_running_ = false;
-	this->has_completed_ = false;
+	this->has_completed_ = true;
 }
 
 bool Timer::IsRunning() {
@@ -24,24 +24,19 @@ void Timer::Start(float milliseconds) {
 	this->has_completed_ = false;
 }
 
-bool Timer::UpdateAndCheck(float delta_time) {
-	// If timer is not running (not started or paused) => return false (not completed)
+void Timer::Update(float delta_time) {
+	// If timer is not running (not started or paused) => don't update the time passed
 	if (!this->is_running_) {
-		return false;
+		return;
 	}
 
 	this->time_passed_ += delta_time;
 
-	// If timer the duration has passed => return true (completed)
+	// If timer the duration has passed => the timer has completed
 	if (this->time_passed_ >= this->duration_) {
 		this->is_running_ = false;
 		this->has_completed_ = true;
-
-		return true;
 	}
-
-	// If duration has not passed => return false (not completed)
-	return false;
 }
 
 void Timer::Pause() {

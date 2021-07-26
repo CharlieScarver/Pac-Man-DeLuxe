@@ -166,7 +166,7 @@ std::vector<Tile*> Ghost::FindShortestPath(Tile* start, Tile* goal) {
 
 	// Toggle-able logic for visualizing the algorithm
 	if (RENDER_GHOSTS_DEBUG) {
-		// Clear the data from the last algorithm run
+		// Clear the data from the last algorithm run (reallocation not guaranteed but also not needed)
 		this->visited_layers_.clear();
 		// Add the vector for the first layer
 		this->visited_layers_.push_back(std::vector<Tile*>());
@@ -383,17 +383,20 @@ void Ghost::AI(float delta_time) {
 		switch (this->mode_)
 		{
 			case GhostMode::SCATTER:
-				if (this->scatter_timer_.UpdateAndCheck(delta_time)) {
+				this->scatter_timer_.Update(delta_time);
+				if (this->scatter_timer_.HasCompleted()) {
 					this->ChangeMode(GhostMode::CHASE);
 				}
 				break;
 			case GhostMode::CHASE:
-				if (this->chase_timer_.UpdateAndCheck(delta_time)) {
+				this->chase_timer_.Update(delta_time);
+				if (this->chase_timer_.HasCompleted()) {
 					this->ChangeMode(GhostMode::SCATTER);
 				}
 				break;
 			case GhostMode::FRIGHTENED:
-				if (this->frightened_timer_.UpdateAndCheck(delta_time)) {
+				this->frightened_timer_.Update(delta_time);
+				if (this->frightened_timer_.HasCompleted()) {
 					this->ChangeMode(this->previous_mode_);
 				}
 				break;
