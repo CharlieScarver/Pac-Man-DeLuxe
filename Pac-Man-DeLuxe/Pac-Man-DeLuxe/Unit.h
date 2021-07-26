@@ -22,15 +22,43 @@ protected:
 	SDL_Texture* spritesheet_texture_;
 
 	// Animation
+	
+	/// <summary>
+	/// The index of the current animation frame.
+	/// </summary>
 	int current_animation_frame_;
+	
+	/// <summary>
+	/// The total count of animation frames for the current animation.
+	/// </summary>
 	int animation_frames_count_;
-	float animation_timer_;
-	int animation_delay_;
+
+	/// <summary>
+	/// The animation timer which counts how much time has passed since the last animation frame change.
+	/// </summary>
+	float animation_timer_; // in ms
+
+	/// <summary>
+	/// The time duration between animation frames.
+	/// </summary>
+	int animation_delay_; // in ms
 
 	// Velocity
-	float velocity_x_;
-	float velocity_y_;
 
+	/// <summary>
+	/// The horizontal velocity of the unit in pixels per frame.
+	/// </summary>
+	float velocity_x_; // in pixels per frame
+
+	/// <summary>
+	/// The vertical velocity of the unit in pixels per frame.
+	/// </summary>
+	float velocity_y_; // in pixels per frame
+
+	/// <summary>
+	/// The game map.
+	/// Used to access tiles and Pac-Man.
+	/// </summary>
 	Map* map_;
 
 	/// <summary>
@@ -43,19 +71,52 @@ protected:
 
 	Unit(float x, float y, float width, float height, Map* map);
 
+	/// <summary>
+	/// Returns the tile in which the center of the unit with given render coordinates is located.
+	/// </summary>
 	Tile* GetTileForUnitCoordinates(float x, float y);
+
+	/// <summary>
+	/// Returns the tile in which the given unit center coordinates are located.
+	/// </summary>
 	Tile* GetTileForCenterUnitCoordinates(float center_x, float center_y);
+
+	/// <summary>
+	/// Set the center of the unit to the center of the given tile.
+	/// </summary>
 	void SetCenterToTileCenter(Tile* tile);
+
+	/// <summary>
+	/// Stop the unit on its current location.
+	/// </summary>
 	void StopMoving();
 
+	/// <summary>
+	/// The basic movement logic of the unit.
+	/// </summary>
 	void ManageMovement(float delta_time);
+
+	/// <summary>
+	/// The basic animation logic of the unit.
+	/// </summary>
 	void ManageAnimation(float delta_time);
 
 public:
-	// Current tile
+	/// <summary>
+	/// The tile in which the unit is currently located.
+	/// </summary>
 	Tile* current_tile_;
 
+	/// <summary>
+	/// The orientation of the unit.
+	/// Possible values: Up, Down, Left, Right.
+	/// </summary>
 	Orientation orientation_;
+
+	/// <summary>
+	/// The movement direction of the unit.
+	/// Possible values: None, Up, Down, Left, Right.
+	/// </summary>
 	Direction direction_;
 
 	~Unit() = default;
