@@ -14,8 +14,72 @@
 
 class Map final {
 private:
+	static const int letter_sprite_width_ = 8;
+	static const int letter_sprite_height_ = 8;
+	static const int letter_render_width_ = 24;
+	static const int letter_render_height_ = 24;
+
+	static const int win_msg_spritesheet_x_ = 0;
+	static const int win_msg_spritesheet_y_ = 0;
+	// Message size = number of letters * letter size
+	static const int win_msg_sprite_width_ = 8 * Map::letter_sprite_width_;
+	static const int win_msg_sprite_height_ = Map::letter_sprite_height_;
+	static const float win_msg_render_x_;
+	static const float win_msg_render_y_;
+	static const int win_msg_render_width_ = 8 * Map::letter_render_width_;
+	static const int win_msg_render_height_ = Map::letter_render_width_;
+
+	static const int loss_msg_spritesheet_x_ = 0;
+	static const int loss_msg_spritesheet_y_ = 8;
+	static const int loss_msg_sprite_width_ = 9 * Map::letter_sprite_width_;
+	static const int loss_msg_sprite_height_ = Map::letter_sprite_height_;
+	static const float loss_msg_render_x_;
+	static const float loss_msg_render_y_;
+	static const int loss_msg_render_width_ = 9 * Map::letter_render_width_;
+	static const int loss_msg_render_height_ = Map::letter_render_width_;
+
+	static const int score_msg_spritesheet_x_ = 0;
+	static const int score_msg_spritesheet_y_ = 16;
+	static const int score_msg_sprite_width_ = 9 * Map::letter_sprite_width_;
+	static const int score_msg_sprite_height_ = Map::letter_sprite_height_;
+	static const float score_msg_render_x_;
+	static const float score_msg_render_y_;
+	static const int score_msg_render_width_ = 9 * Map::letter_render_width_;
+	static const int score_msg_render_height_ = Map::letter_render_width_;
+
+	static const int score_number_digits_ = 6;
+	static const float score_number_render_x_;
+	static const float score_number_render_y_;
+
+	// Numbers spritesheet coordinates
+	static const int zero_spritesheet_x_ = 0;
+	static const int zero_spritesheet_y_ = 24;
+	static const int one_spritesheet_x_ = 8;
+	static const int one_spritesheet_y_ = 24;
+	static const int two_spritesheet_x_ = 16;
+	static const int two_spritesheet_y_ = 24;
+	static const int three_spritesheet_x_ = 24;
+	static const int three_spritesheet_y_ = 24;
+	static const int four_spritesheet_x_ = 32;
+	static const int four_spritesheet_y_ = 24;
+	static const int five_spritesheet_x_ = 40;
+	static const int five_spritesheet_y_ = 24;
+	static const int six_spritesheet_x_ = 48;
+	static const int six_spritesheet_y_ = 24;
+	static const int seven_spritesheet_x_ = 56;
+	static const int seven_spritesheet_y_ = 24;
+	static const int eight_spritesheet_x_ = 64;
+	static const int eight_spritesheet_y_ = 24;
+	static const int nine_spritesheet_x_ = 72;
+	static const int nine_spritesheet_y_ = 24;
+
 	char* file_name_;
 	Tile* tile_matrix_[MAP_WIDTH_IN_TILES][MAP_HEIGHT_IN_TILES];
+
+	/// <summary>
+	/// Renders the numerical part of the score.
+	/// </summary>
+	void RenderScoreNumber(int score, int digits, SDL_Renderer* renderer, AssetLoader* asset_loader);
 
 public:
 	/// <summary>

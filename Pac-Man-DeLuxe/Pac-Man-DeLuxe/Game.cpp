@@ -125,7 +125,7 @@ void Game::Cleanup() {
 }
 
 int Game::Run() {
-	if (this->Init("SDL Game Window", 50, 50, this->default_window_width, this->default_window_height, false) != 0) {
+	if (this->Init("SDL Game Window", 0, 0, this->default_window_width, this->default_window_height, false) != 0) {
 		this->Cleanup();
 		return -1;
 	}

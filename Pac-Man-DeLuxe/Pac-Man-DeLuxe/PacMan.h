@@ -62,7 +62,12 @@ public:
 	~PacMan() = default;
 
 	/// <summary>
-	/// Increase Pac-Man's score
+	/// Returns Pac-Man's score.
+	/// </summary>
+	int Score();
+
+	/// <summary>
+	/// Increases Pac-Man's score.
 	/// </summary>
 	void GainScore(int gained_score);
 

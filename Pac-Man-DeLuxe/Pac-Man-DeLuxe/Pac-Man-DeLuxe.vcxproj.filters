@@ -165,7 +165,13 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\pac-man-hosts-sprites.png">
+    <Image Include="Assets\Spritesheets\pac-man-ghosts-sprites.png">
+      <Filter>Assets\Spritesheets</Filter>
+    </Image>
+    <Image Include="Assets\Spritesheets\pac-man-tiles-sprites.png">
+      <Filter>Assets\Spritesheets</Filter>
+    </Image>
+    <Image Include="Assets\Spritesheets\pac-man-letters-sprites.png">
       <Filter>Assets\Spritesheets</Filter>
     </Image>
   </ItemGroup>

@@ -3,6 +3,18 @@
 #include <cmath>
 #include "Map.h"
 
+const float Map::win_msg_render_x_ = 10 * Map::letter_render_width_;
+const float Map::win_msg_render_y_ = 17 * Map::letter_render_height_;
+
+const float Map::loss_msg_render_x_ = 10 * Map::letter_render_width_;
+const float Map::loss_msg_render_y_ = 17 * Map::letter_render_height_;
+
+const float Map::score_msg_render_x_ = 17 * Map::letter_render_width_;
+const float Map::score_msg_render_y_ = 0;
+
+const float Map::score_number_render_x_ = 15 * Map::letter_render_width_;
+const float Map::score_number_render_y_ = Map::letter_render_height_;
+
 Map::Map(AssetLoader* asset_loader) {
 	this->asset_loader_ = asset_loader;
 
@@ -44,6 +56,81 @@ Map::~Map() {
 	for (int i = 0; i < this->items_.size(); i++)
 	{
 		delete this->items_[i];
+	}
+}
+
+void Map::RenderScoreNumber(int score, int digits, SDL_Renderer* renderer, AssetLoader* asset_loader) {
+	// Start rendering from the smallest (right most) digits
+	Vector2 smallest_digit_position(Map::score_number_render_x_ + (digits * Map::letter_render_width_), Map::score_number_render_y_);
+
+	for (int i = 0; i < digits; i++)
+	{
+		// Get current smallest digit
+		int digit = score % 10;
+
+		SDL_Rect spritesheet_rect;
+		spritesheet_rect.w = Map::letter_sprite_width_;
+		spritesheet_rect.h = Map::letter_sprite_height_;
+
+		// Choose the correct srite
+		switch (digit)
+		{
+			case 0:
+				spritesheet_rect.x = Map::zero_spritesheet_x_;
+				spritesheet_rect.y = Map::zero_spritesheet_y_;
+				break;
+			case 1:
+				spritesheet_rect.x = Map::one_spritesheet_x_;
+				spritesheet_rect.y = Map::one_spritesheet_y_;
+				break;
+			case 2:
+				spritesheet_rect.x = Map::two_spritesheet_x_;
+				spritesheet_rect.y = Map::two_spritesheet_y_;
+				break;
+			case 3:
+				spritesheet_rect.x = Map::three_spritesheet_x_;
+				spritesheet_rect.y = Map::three_spritesheet_y_;
+				break;
+			case 4:
+				spritesheet_rect.x = Map::four_spritesheet_x_;
+				spritesheet_rect.y = Map::four_spritesheet_y_;
+				break;
+			case 5:
+				spritesheet_rect.x = Map::five_spritesheet_x_;
+				spritesheet_rect.y = Map::five_spritesheet_y_;
+				break;
+			case 6:
+				spritesheet_rect.x = Map::six_spritesheet_x_;
+				spritesheet_rect.y = Map::six_spritesheet_y_;
+				break;
+			case 7:
+				spritesheet_rect.x = Map::seven_spritesheet_x_;
+				spritesheet_rect.y = Map::seven_spritesheet_y_;
+				break;
+			case 8:
+				spritesheet_rect.x = Map::eight_spritesheet_x_;
+				spritesheet_rect.y = Map::eight_spritesheet_y_;
+				break;
+			case 9:
+				spritesheet_rect.x = Map::nine_spritesheet_x_;
+				spritesheet_rect.y = Map::nine_spritesheet_y_;
+				break;
+		}
+
+		SDL_FRect render_rect;
+		render_rect.x = smallest_digit_position.x_;
+		render_rect.y = smallest_digit_position.y_;
+		render_rect.w = Map::letter_render_width_;
+		render_rect.h = Map::letter_render_height_;
+
+		// Render the digit
+		SDL_RenderCopyF(renderer, asset_loader->letters_spritesheet_, &spritesheet_rect, &render_rect);
+		
+		// Move one digit to the left (to the next bigger digit)
+		smallest_digit_position.x_ -= Map::letter_render_width_;
+
+		// Remove the rendered digit
+		score /= 10;
 	}
 }
 
@@ -366,5 +453,59 @@ void Map::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	for (int i = 0; i < this->ghosts_.size(); i++)
 	{
 		this->ghosts_[i]->Render(renderer, asset_loader);
+	}
+
+	// Render the score text
+	SDL_Rect spritesheet_rect;
+	spritesheet_rect.x = Map::score_msg_spritesheet_x_;
+	spritesheet_rect.y = Map::score_msg_spritesheet_y_;
+	spritesheet_rect.w = Map::score_msg_sprite_width_;
+	spritesheet_rect.h = Map::score_msg_sprite_height_;
+
+	SDL_FRect render_rect;
+	render_rect.x = Map::score_msg_render_x_;
+	render_rect.y = Map::score_msg_render_y_;
+	render_rect.w = Map::score_msg_render_width_;
+	render_rect.h = Map::score_msg_render_height_;
+
+	// Render the text sprite
+	SDL_RenderCopyF(renderer, asset_loader->letters_spritesheet_, &spritesheet_rect, &render_rect);
+
+	// Render the score number
+	this->RenderScoreNumber(this->pacman_->Score(), Map::score_number_digits_, renderer, asset_loader);
+
+	// If there are no items left (player won) => render the win text
+	if (this->no_more_items_) {
+		SDL_Rect spritesheet_rect;
+		spritesheet_rect.x = Map::win_msg_spritesheet_x_;
+		spritesheet_rect.y = Map::win_msg_spritesheet_y_;
+		spritesheet_rect.w = Map::win_msg_sprite_width_;
+		spritesheet_rect.h = Map::win_msg_sprite_height_;
+
+		SDL_FRect render_rect;
+		render_rect.x = Map::win_msg_render_x_;
+		render_rect.y = Map::win_msg_render_y_;
+		render_rect.w = Map::win_msg_render_width_;
+		render_rect.h = Map::win_msg_render_height_;
+
+		// Render the text sprite
+		SDL_RenderCopyF(renderer, asset_loader->letters_spritesheet_, &spritesheet_rect, &render_rect);
+	}
+	else if (this->collision_occured_) {
+		// If Pac-Man collided with a ghost (player lost) => render the game over text
+		SDL_Rect spritesheet_rect;
+		spritesheet_rect.x = Map::loss_msg_spritesheet_x_;
+		spritesheet_rect.y = Map::loss_msg_spritesheet_y_;
+		spritesheet_rect.w = Map::loss_msg_sprite_width_;
+		spritesheet_rect.h = Map::loss_msg_sprite_height_;
+
+		SDL_FRect render_rect;
+		render_rect.x = Map::loss_msg_render_x_;
+		render_rect.y = Map::loss_msg_render_y_;
+		render_rect.w = Map::loss_msg_render_width_;
+		render_rect.h = Map::loss_msg_render_height_;
+
+		// Render the text sprite
+		SDL_RenderCopyF(renderer, asset_loader->letters_spritesheet_, &spritesheet_rect, &render_rect);
 	}
 }

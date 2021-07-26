@@ -18,6 +18,11 @@ public:
 	SDL_Texture* tiles_spritesheet_;
 
 	/// <summary>
+	/// The spritesheet usded for letters and labels.
+	/// </summary>
+	SDL_Texture* letters_spritesheet_;
+
+	/// <summary>
 	/// Initialize SDL Image.
 	/// </summary>
 	/// <returns></returns>

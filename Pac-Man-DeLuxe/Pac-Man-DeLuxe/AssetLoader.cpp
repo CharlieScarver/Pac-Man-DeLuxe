@@ -4,11 +4,13 @@
 AssetLoader::AssetLoader() {
 	this->units_spritesheet_ = nullptr;
 	this->tiles_spritesheet_ = nullptr;
+	this->letters_spritesheet_ = nullptr;
 }
 
 AssetLoader::~AssetLoader() {
 	this->units_spritesheet_ = nullptr;
 	this->tiles_spritesheet_ = nullptr;
+	this->letters_spritesheet_ = nullptr;
 
 	// Unload the dynamically loaded image libraries
 	IMG_Quit();
@@ -45,6 +47,16 @@ int AssetLoader::LoadAssets(SDL_Renderer* renderer) {
 		return -1;
 	}
 	this->tiles_spritesheet_ = SDL_CreateTextureFromSurface(renderer, tempSurface);
+
+	// Load the letters spritesheet
+	// Reuse tempSurface
+	tempSurface = IMG_Load("Assets/Spritesheets/pac-man-letters-sprites.png");
+	if (tempSurface == nullptr) {
+		std::cout << "IMG load error: " << SDL_GetError() << std::endl;
+		return -1;
+	}
+	this->letters_spritesheet_ = SDL_CreateTextureFromSurface(renderer, tempSurface);
+
 
 	// Free the surface
 	SDL_FreeSurface(tempSurface);

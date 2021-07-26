@@ -101,6 +101,10 @@ void PacMan::HandleInput(const Uint8* keyboard_state) {
 	}
 }
 
+int PacMan::Score() {
+	return this->score_;
+}
+
 void PacMan::GainScore(int gained_score) {
 	this->score_ += gained_score;
 }
