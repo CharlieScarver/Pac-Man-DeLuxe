@@ -170,6 +170,7 @@ XCOPY "$(ProjectDir)Assets" "$(TargetDir)Assets\" /S /Y
     <ClCompile Include="Unit.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="Vector2.cpp" />
+    <ClCompile Include="Vector2F.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Direction.h" />
@@ -191,6 +192,7 @@ XCOPY "$(ProjectDir)Assets" "$(TargetDir)Assets\" /S /Y
     <ClInclude Include="Unit.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vector2.h" />
+    <ClInclude Include="Vector2F.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\level0.txt" />

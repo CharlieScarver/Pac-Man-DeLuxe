@@ -334,10 +334,10 @@ void Ghost::AI(float delta_time) {
 	// If on a turn tile and not currently turning => take the turn
 	if (this->current_tile_->is_turn_tile_ && !this->is_turning_) {
 		// Get ghost render center
-		Vector2 render_center = Utilities::GetCenterPointOfRectangle(this->render_position_, this->render_size_);
+		Vector2F render_center = Utilities::GetCenterPointOfRectangle(this->render_position_, this->render_size_);
 
 		// Get current tile center
-		Vector2 current_tile_center = Utilities::GetCenterPointOfRectangle(this->current_tile_->render_position_, this->current_tile_->render_size_);
+		Vector2F current_tile_center = Utilities::GetCenterPointOfRectangle(this->current_tile_->render_position_, this->current_tile_->render_size_);
 
 		// Check if ghost is in the turn interval
 		bool center_x_in_turn_interval = render_center.x_ >= current_tile_center.x_ - Ghost::turn_radius_ && render_center.x_ <= current_tile_center.x_ + Ghost::turn_radius_;

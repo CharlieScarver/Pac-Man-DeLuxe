@@ -20,6 +20,9 @@ Item::Item(Tile* container_tile, ItemType type)
 			this->spritesheet_position_ = Vector2(this->fruit_spritesheet_x_, this->fruit_spritesheet_x_);
 			this->score_ = this->fruit_score_;
 			break;
+		default:
+			this->spritesheet_position_ = Vector2(0, 0);
+			this->score_ = 0;
 	}
 
 	this->sprite_size_ = Vector2(this->item_sprite_width_, this->item_sprite_height_);

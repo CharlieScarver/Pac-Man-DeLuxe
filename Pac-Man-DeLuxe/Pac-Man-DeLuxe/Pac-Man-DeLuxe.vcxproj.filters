@@ -90,7 +90,7 @@
     <ClCompile Include="Utilities.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="Vector2.cpp">
+    <ClCompile Include="Vector2F.cpp">
       <Filter>Source Files\Structs</Filter>
     </ClCompile>
     <ClCompile Include="Item.cpp">
@@ -98,6 +98,9 @@
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>Source Files\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>Source Files\Structs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -137,7 +140,7 @@
     <ClInclude Include="Direction.h">
       <Filter>Header Files\Enums</Filter>
     </ClInclude>
-    <ClInclude Include="Vector2.h">
+    <ClInclude Include="Vector2F.h">
       <Filter>Header Files\Structs</Filter>
     </ClInclude>
     <ClInclude Include="Utilities.h">
@@ -157,6 +160,9 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>Header Files\Structs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

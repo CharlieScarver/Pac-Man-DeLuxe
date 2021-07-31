@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector2.h"
+#include "Vector2F.h"
 #include "Direction.h"
 #include "Orientation.h"
 
@@ -12,7 +12,7 @@ public:
 	/// <summary>
 	/// Returns the center point of a rectangle represented by two vectors - one for the position of the top left vertex (x, y) and one for the size (width, height).
 	/// </summary>
-	static Vector2 GetCenterPointOfRectangle(Vector2 position, Vector2 size);
+	static Vector2F GetCenterPointOfRectangle(Vector2F position, Vector2F size);
 
 	/// <summary>
 	/// Returns if a given value in a given interval represented by a center point and an interval radius.

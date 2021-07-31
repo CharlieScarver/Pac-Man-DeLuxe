@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "AssetLoader.h"
 #include "Vector2.h"
+#include "Vector2F.h"
 
 class GameObject {
 private:
@@ -12,7 +13,7 @@ private:
 
 protected:
 	GameObject(float x, float y, float width, float height);
-	GameObject(float x, float y, float width, float height, float spritesheet_x, float spritesheet_y, float sprite_width, float sprite_height);
+	GameObject(float x, float y, float width, float height, int spritesheet_x, int spritesheet_y, int sprite_width, int sprite_height);
 	~GameObject();
 
 public:
@@ -27,13 +28,13 @@ public:
 	/// Represents the top-left vertex of the rendered sprite.
 	/// Relative to the top-left vertex of the game window.
 	/// </summary>
-	Vector2 render_position_;
+	Vector2F render_position_;
 
 	// Size - width, height
 	/// <summary>
 	/// The size (width, height) that the GameObject's sprite will be rendered in.
 	/// </summary>
-	Vector2 render_size_;
+	Vector2F render_size_;
 
 	/// <summary>
 	/// The position (x, y) of the sprite on the spritesheet.

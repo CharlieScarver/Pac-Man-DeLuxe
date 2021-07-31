@@ -61,7 +61,7 @@ Map::~Map() {
 
 void Map::RenderScoreNumber(int score, int digits, SDL_Renderer* renderer, AssetLoader* asset_loader) {
 	// Start rendering from the smallest (right most) digits
-	Vector2 smallest_digit_position(Map::score_number_render_x_ + (digits * Map::letter_render_width_), Map::score_number_render_y_);
+	Vector2F smallest_digit_position(Map::score_number_render_x_ + (digits * Map::letter_render_width_), Map::score_number_render_y_);
 
 	for (int i = 0; i < digits; i++)
 	{

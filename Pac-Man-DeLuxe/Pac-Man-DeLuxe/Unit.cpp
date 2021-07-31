@@ -64,10 +64,10 @@ void Unit::ManageMovement(float delta_time) {
 	}
 
 	// Center point of the rendered unit sprite
-	Vector2 render_center = Utilities::GetCenterPointOfRectangle(this->render_position_, this->render_size_);
+	Vector2F render_center = Utilities::GetCenterPointOfRectangle(this->render_position_, this->render_size_);
 
 	// Future position of the center
-	Vector2 future_center = render_center;
+	Vector2F future_center = render_center;
 
 	Orientation future_orientation = this->orientation_;
 
@@ -91,7 +91,7 @@ void Unit::ManageMovement(float delta_time) {
 
 
 	// Get current tile center
-	Vector2 current_tile_center = Utilities::GetCenterPointOfRectangle(this->current_tile_->render_position_, this->current_tile_->render_size_);
+	Vector2F current_tile_center = Utilities::GetCenterPointOfRectangle(this->current_tile_->render_position_, this->current_tile_->render_size_);
 
 	// Don't allow unit to move beyond the center of the tile
 	if ((this->direction_ == Direction::UP && future_center.y_ <= current_tile_center.y_) ||
@@ -159,7 +159,7 @@ void Unit::Update(float delta_time, const Uint8* keyboard_state) {
 }
 
 void Unit::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
-	// Spritesheet poistion and size actually use integers
+	// Spritesheet position and size actually use integers
 	SDL_Rect spritesheet_rect;
 	spritesheet_rect.x = (int)this->spritesheet_position_.x_ + (this->current_animation_frame_ * (int)this->sprite_size_.x_);
 	spritesheet_rect.y = (int)this->spritesheet_position_.y_;

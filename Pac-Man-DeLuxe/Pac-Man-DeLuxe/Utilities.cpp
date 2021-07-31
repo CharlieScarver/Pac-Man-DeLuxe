@@ -1,7 +1,7 @@
 #include "Utilities.h"
 
-Vector2 Utilities::GetCenterPointOfRectangle(Vector2 position, Vector2 size) {
-	return Vector2(position.x_ + size.x_ / 2.0f, position.y_ + size.y_ / 2.0f);
+Vector2F Utilities::GetCenterPointOfRectangle(Vector2F position, Vector2F size) {
+	return Vector2F(position.x_ + size.x_ / 2.0f, position.y_ + size.y_ / 2.0f);
 }
 
 bool Utilities::IsValueInInterval(float value, float interval_center, float interval_radius) {
