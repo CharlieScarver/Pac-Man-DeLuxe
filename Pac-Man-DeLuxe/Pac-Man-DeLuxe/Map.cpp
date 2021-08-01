@@ -20,6 +20,7 @@ Map::Map(AssetLoader* asset_loader) {
 
 	this->file_name_ = nullptr;
 	this->pacman_ = nullptr;
+	this->blinky_ = nullptr;
 
 	this->collision_occured_ = false;
 	this->no_more_items_ = false;
@@ -261,8 +262,9 @@ void Map::LoadMapFromFile(const char* file_name) {
 	// Create Pac-Man
 	this->pacman_ = new PacMan(pacman_x, pacman_y, this);
 
-	// Create ghosts	
-	this->ghosts_.push_back(new Ghost(312, 324, this, GhostType::BLINKY));
+	// Create ghosts
+	this->blinky_ = new Ghost(312, 324, this, GhostType::BLINKY);
+	this->ghosts_.push_back(this->blinky_);
 	this->ghosts_.push_back(new Ghost(312, 324, this, GhostType::PINKY));
 	this->ghosts_.push_back(new Ghost(312, 324, this, GhostType::INKY));
 	this->ghosts_.push_back(new Ghost(312, 324, this, GhostType::CLYDE));
@@ -298,10 +300,18 @@ bool Map::DetermineIfTileIsTurn(int x, int y) {
 }
 
 int Map::GetTileDistanceBetweenTwoTiles(Tile* tile1, Tile* tile2) {
-	int x_distance = abs(tile1->map_x_ - tile2->map_x_);
-	int y_distance = abs(tile1->map_y_ - tile2->map_y_);
+	int x_distance = abs(GetHorizontalTileDistanceBetweenTwoTiles(tile1, tile2));
+	int y_distance = abs(GetVerticalTileDistanceBetweenTwoTiles(tile1, tile2));
 
 	return x_distance + y_distance;
+}
+
+int Map::GetHorizontalTileDistanceBetweenTwoTiles(Tile* tile1, Tile* tile2) {
+	return tile1->map_x_ - tile2->map_x_;
+}
+
+int Map::GetVerticalTileDistanceBetweenTwoTiles(Tile* tile1, Tile* tile2) {
+	return tile1->map_y_ - tile2->map_y_;
 }
 
 Tile* Map::GetNextTileInDirection(Tile* source_tile, Direction direction) {
@@ -324,6 +334,16 @@ Tile* Map::GetNextTileInDirection(Tile* source_tile, Direction direction) {
 		default:
 			return nullptr;
 	}
+}
+
+Tile* Map::GetNthTileInDirection(Tile* source_tile, Direction direction, int steps) {
+	Tile* current_tile = source_tile;
+	for (int i = 0; i < steps; i++)
+	{
+		current_tile = this->GetNextTileInDirection(current_tile, direction);
+	}
+
+	return current_tile;
 }
 
 std::vector<Tile*> Map::GetNeighbourTiles(Tile* origin_tile) {

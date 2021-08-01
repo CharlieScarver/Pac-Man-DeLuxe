@@ -30,13 +30,13 @@ Direction Utilities::GetDirectionFromOrientation(Orientation orientation) {
 	switch (orientation)
 	{
 		case Orientation::UP:
-			return Direction::DOWN;
-		case Orientation::DOWN:
 			return Direction::UP;
+		case Orientation::DOWN:
+			return Direction::DOWN;
 		case Orientation::LEFT:
-			return Direction::RIGHT;
-		case Orientation::RIGHT:
 			return Direction::LEFT;
+		case Orientation::RIGHT:
+			return Direction::RIGHT;
 		default:
 			return Direction::LEFT;
 	}

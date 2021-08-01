@@ -88,10 +88,20 @@ public:
 	/// </summary>
 	AssetLoader* asset_loader_;
 
+	/// <summary>
+	/// Shows if a collision between a non-energized Pac-Man and a non-frigthened Ghost has occured (if they're on the same tile).
+	/// This is the lose condition.
+	/// </summary>
 	bool collision_occured_;
+
+	/// <summary>
+	/// Shows if all items (pellets, energizers, fruits) have been consumed by Pac-Man.
+	/// This is the win condition.
+	/// </summary>
 	bool no_more_items_;
 
 	PacMan* pacman_;
+	Ghost* blinky_;
 	std::vector<Ghost*> ghosts_;
 	std::vector<Item*> items_;
 
@@ -104,8 +114,33 @@ public:
 
 	bool DetermineIfTileIsTurn(int x, int y);
 
+	/// <summary>
+	/// Returns the horizontal tile distance between two tiles (how much tiles away is the second tile from the first horizontally).
+	/// A positive value means tile2 is to the left of tile1 (left) and a negative value means tile2 is to the right of tile1 (right).
+	/// </summary>
+	int GetHorizontalTileDistanceBetweenTwoTiles(Tile* tile1, Tile* tile2);
+
+	/// <summary>
+	/// Returns the vertical tile distance between two tiles (how much tiles away is the second tile from the first vertically).
+	/// A positive value means tile2 is lower than tile1 (down) and a negative value means tile2 is highter than tile1 (up).
+	/// </summary>
+	int GetVerticalTileDistanceBetweenTwoTiles(Tile* tile1, Tile* tile2);
+
+	/// <summary>
+	/// Returns the absolute tile distance between two tiles (how much tiles away is the second tile from the first horizontally + vertically).
+	/// The distance will always be positive with no indication for direction.
+	/// </summary>
 	int GetTileDistanceBetweenTwoTiles(Tile* tile1, Tile* tile2);
+
+	/// <summary>
+	/// Returns the next tile in a given direction from a given source tile.
+	/// </summary>
 	Tile* GetNextTileInDirection(Tile* source_tile, Direction direction);
+
+	/// <summary>
+	/// Returns the next tile in a given direction from a given source tile.
+	/// </summary>
+	Tile* GetNthTileInDirection(Tile* source_tile, Direction direction, int steps);
 
 	/// <summary>
 	/// Returns a vector with the neighbouring tiles (four or less if on the edge of the map).

@@ -98,11 +98,24 @@ Tile* Ghost::GetTargetTile() {
 			new_target_tile = this->map_->GetNextTileInDirection(one_tile_ahead, this->map_->pacman_->direction_);
 		}
 		else if (this->type_ == GhostType::INKY) {
-			// Pinky targets two tiles ahead of Pac-Man's current tile in the corresponding direction
-			Direction pacman_direction = Utilities::GetDirectionFromOrientation(this->map_->pacman_->orientation_);
-			Direction opposite_direction = Utilities::GetOppositeDirection(pacman_direction);
-			Tile* one_tile_behind = this->map_->GetNextTileInDirection(this->map_->pacman_->current_tile_, opposite_direction);
-			new_target_tile = this->map_->GetNextTileInDirection(one_tile_behind, opposite_direction);
+			// Inky mirrors Blinky's position using two tiles ahead of Pac-Man as the origin point.
+			// He takes the tile distance and the direction between Blinky and two tiles ahead of Pac-Man and doubles the distance in the same direction. The resulting tile is his target.
+
+			// Get the tile that is two tiles ahead of Pac-Man using his orientation as the direction
+			Tile* two_tiles_ahead = this->map_->GetNthTileInDirection(this->map_->pacman_->current_tile_, Utilities::GetDirectionFromOrientation(this->map_->pacman_->orientation_), 2);
+
+			// If two tiles ahead of Pac-Man is outside of the map => use Pac-Man's tile
+			if (two_tiles_ahead == nullptr) {
+				two_tiles_ahead = this->map_->pacman_->current_tile_;
+			}
+
+			// Get the tile distance and the direction between Blinky and two tiles ahead of Pac-Man
+			// Note - Returned direction is where tile2 (Blinky) is in regard to tile1 (two tiles ahead of Pac-Man)
+			int distance_x = this->map_->GetHorizontalTileDistanceBetweenTwoTiles(two_tiles_ahead, this->map_->blinky_->current_tile_);
+			int distance_y = this->map_->GetVerticalTileDistanceBetweenTwoTiles(two_tiles_ahead, this->map_->blinky_->current_tile_);
+
+			// The new target is this much tiles away from "two tiles ahead of Pac-Man" using the same direction (might be outside of the map in which case = nullptr)
+			new_target_tile = this->map_->GetTile(two_tiles_ahead->map_x_ + distance_x, two_tiles_ahead->map_y_ + distance_y);
 		}
 		else if (this->type_ == GhostType::CLYDE) {
 			// If Pac-Man's current tile is more than 8 tiles away => Clyde targets Pac'Man's current tile
