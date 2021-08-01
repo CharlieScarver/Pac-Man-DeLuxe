@@ -6,7 +6,7 @@ const float PacMan::default_velocity_ = 1.46f * 1.12f;
 // Energized velocity is 110% of original velocity
 const float PacMan::energized_velocity_ = PacMan::default_velocity_ * 1.1f;
 
-const float PacMan::turn_radius_ = 3.5f;
+const float PacMan::turn_radius_ = 4.0f;
 
 PacMan::PacMan(float x, float y, Map* map)
 	: Unit(x, y, Unit::render_width_, Unit::render_height_, map), energized_timer_() {

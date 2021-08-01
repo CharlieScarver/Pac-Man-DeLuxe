@@ -14,7 +14,7 @@ const float Ghost::default_velocity_ = 1.46f * 1.08f;
 // Frightened velocity is 50% of normal velocity
 const float Ghost::frightened_velocity_ = Ghost::default_velocity_ * 0.5f;
 
-const float Ghost::turn_radius_ = 2;
+const float Ghost::turn_radius_ = 2.5f;
 
 Ghost::Ghost(float x, float y, Map* map, GhostType type)
 	: Unit(x, y, Unit::render_width_, Unit::render_height_, map), scatter_timer_(), chase_timer_(), frightened_timer_()
