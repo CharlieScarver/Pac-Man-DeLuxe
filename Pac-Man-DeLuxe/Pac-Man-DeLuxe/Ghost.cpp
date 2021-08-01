@@ -93,9 +93,10 @@ Tile* Ghost::GetTargetTile() {
 			new_target_tile = this->map_->pacman_->current_tile_;
 		}
 		else if (this->type_ == GhostType::PINKY) {
-			// Pinky targets two tiles ahead of Pac-Man's current tile in the corresponding direction
-			Tile* one_tile_ahead = this->map_->GetNextTileInDirection(this->map_->pacman_->current_tile_, this->map_->pacman_->direction_);
-			new_target_tile = this->map_->GetNextTileInDirection(one_tile_ahead, this->map_->pacman_->direction_);
+			// Pinky targets four tiles ahead of Pac-Man's current tile in the corresponding direction
+
+			// Get the tile that is four tiles ahead of Pac-Man using his orientation as the direction
+			new_target_tile = this->map_->GetNthTileInDirection(this->map_->pacman_->current_tile_, Utilities::GetDirectionFromOrientation(this->map_->pacman_->orientation_), 4);
 		}
 		else if (this->type_ == GhostType::INKY) {
 			// Inky mirrors Blinky's position using two tiles ahead of Pac-Man as the origin point.
