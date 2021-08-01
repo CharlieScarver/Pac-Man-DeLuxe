@@ -16,7 +16,7 @@ protected:
 	static const int render_width_ = 48;
 	static const int render_height_ = 48;
 
-	static const int input_delay_ = 150;
+	static const int input_delay_ = 200;
 
 	// The loaded spritesheet texture
 	SDL_Texture* spritesheet_texture_;

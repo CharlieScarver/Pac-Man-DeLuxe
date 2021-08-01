@@ -11,7 +11,7 @@ private:
 	static const int default_window_width_ = 672;
 	static const int default_window_height_ = 864;
 
-	static const int input_delay_ = 150;
+	static const int input_delay_ = 200;
 
 	/// <summary>
 	/// Shows if the game is running (if the main loop is being executed or not).
