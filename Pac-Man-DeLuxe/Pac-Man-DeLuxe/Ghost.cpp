@@ -19,7 +19,6 @@ const float Ghost::turn_radius_ = 2;
 Ghost::Ghost(float x, float y, Map* map, GhostType type)
 	: Unit(x, y, Unit::render_width_, Unit::render_height_, map), scatter_timer_(), chase_timer_(), frightened_timer_()
 {
-
 	this->type_ = type;
 
 	switch (this->type_)
@@ -534,7 +533,58 @@ void Ghost::Update(float delta_time, const Uint8* keyboard_state) {
 }
 
 void Ghost::Render(SDL_Renderer* renderer, AssetLoader* asset_loader) {
-	Unit::Render(renderer, asset_loader);
+	// Body spritesheet rect
+	SDL_Rect spritesheet_rect;
+	spritesheet_rect.x = this->spritesheet_position_.x_ + (this->current_animation_frame_ * this->sprite_size_.x_);
+	spritesheet_rect.y = this->spritesheet_position_.y_;
+	spritesheet_rect.w = this->sprite_size_.x_;
+	spritesheet_rect.h = this->sprite_size_.y_;
+
+	SDL_FRect render_rect;
+	render_rect.x = this->render_position_.x_;
+	render_rect.y = this->render_position_.y_;
+	render_rect.w = this->render_size_.x_;
+	render_rect.h = this->render_size_.y_;
+
+	// Render the body
+	SDL_RenderCopyF(renderer, asset_loader->units_spritesheet_, &spritesheet_rect, &render_rect);
+
+	if (this->render_debug_) {
+		// Draw sprite box
+		SDL_SetRenderDrawColor(renderer, 50, 25, 200, 0);
+		SDL_RenderDrawRectF(renderer, &render_rect);
+	}
+
+	// Render the eyes when not frightened or when "eaten"
+	if (this->mode_ != GhostMode::FRIGHTENED || this->is_eaten_) {
+		// Render the eyes according to the orientation
+		switch (this->orientation_)
+		{
+		case Orientation::UP:
+			// Up eyes spritesheet rect
+			spritesheet_rect.x = Ghost::eyes_up_spritesheet_x_;
+			spritesheet_rect.y = Ghost::eyes_up_spritesheet_y_;
+			break;
+		case Orientation::DOWN:
+			// Down eyes spritesheet rect
+			spritesheet_rect.x = Ghost::eyes_down_spritesheet_x_;
+			spritesheet_rect.y = Ghost::eyes_down_spritesheet_y_;
+			break;
+		case Orientation::LEFT:
+			// Left eyes spritesheet rect
+			spritesheet_rect.x = Ghost::eyes_left_spritesheet_x_;
+			spritesheet_rect.y = Ghost::eyes_left_spritesheet_y_;
+			break;
+		case Orientation::RIGHT:
+			// Right eyes spritesheet rect
+			spritesheet_rect.x = Ghost::eyes_right_spritesheet_x_;
+			spritesheet_rect.y = Ghost::eyes_right_spritesheet_y_;
+			break;
+		}
+
+		// Render the eyes
+		SDL_RenderCopyF(renderer, asset_loader->units_spritesheet_, &spritesheet_rect, &render_rect);
+	}
 
 	// Render the searching algorithm (only for Blinky to save resources and make it more readable)
 	if (this->render_debug_ && this->type_ == GhostType::BLINKY) {

@@ -18,6 +18,15 @@ private:
 	static const int clyde_spritesheet_x_ = 32;
 	static const int clyde_spritesheet_y_ = 32;
 
+	static const int eyes_left_spritesheet_x_ = 0;
+	static const int eyes_left_spritesheet_y_ = 64;
+	static const int eyes_up_spritesheet_x_ = 16;
+	static const int eyes_up_spritesheet_y_ = 64;
+	static const int eyes_down_spritesheet_x_ = 32;
+	static const int eyes_down_spritesheet_y_ = 64;
+	static const int eyes_right_spritesheet_x_ = 48;
+	static const int eyes_right_spritesheet_y_ = 64;
+
 	static const int frightened_spritesheet_x_ = 0;
 	static const int frightened_spritesheet_y_ = 48;
 	static const int eaten_spritesheet_x_ = -100;
