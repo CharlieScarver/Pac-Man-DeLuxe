@@ -24,5 +24,6 @@ Inspired by:
 * This greatly detailed article by Don Hodges - [link](http://donhodges.com/pacman_pinky_explanation.htm)
 * This perfect run video of Level 1 by Jamey Pittman - [link](https://www.youtube.com/watch?v=VbzW6iNDx9U)
 * The Pac-Man Tips article in StrategyWiki - [link](https://strategywiki.org/wiki/Pac-Man/Tips)
+* This amazing explanation video of the Kill Screen by Retro Game Mechanics Explained - [link](https://www.youtube.com/watch?v=NKKfW8X9uYk)
 
 ...and many more articles and comments scattered online. Big thanks to all of those helpful people!
