@@ -120,6 +120,10 @@ void Game::Cleanup() {
 	delete this->map_;
 	delete this->asset_loader_;
 
+	// Destroy window and renderer
+	SDL_DestroyWindow(this->window_);
+	SDL_DestroyRenderer(this->renderer_);
+
 	// Close and cleanup all SDL systems
 	SDL_Quit();
 	std::cout << "Cleanup finished." << std::endl;
